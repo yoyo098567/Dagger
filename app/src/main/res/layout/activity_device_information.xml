@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".device_information.DeviceInformationActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_line_horizontal_13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.13" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_line_horizontal_37"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.37" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_line_horizontal_61"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.61" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_line_vertical_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_line_vertical_10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_line_vertical_95"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_device_information_title_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_device_information_back_button"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.2" />
+
+    <!-- 公司、作業產廠、生產廠 -->
+    <View
+        android:id="@+id/view_company_data"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_information_device_data"
+        app:layout_constraintEnd_toStartOf="@id/guide_line_vertical_95"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_5"
+        app:layout_constraintTop_toBottomOf="@id/guide_line_horizontal_13" />
+
+    <TextView
+        android:id="@+id/text_company"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="公        司: "
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toTopOf="@+id/text_job_site"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_10"
+        app:layout_constraintTop_toBottomOf="@+id/view_company_data" />
+
+    <TextView
+        android:id="@+id/text_company_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textColor="@color/black"
+        tools:text="aaaa"
+        app:layout_constraintTop_toTopOf="@id/text_company"
+        app:layout_constraintBottom_toBottomOf="@id/text_company"
+        app:layout_constraintStart_toEndOf="@id/text_company"/>
+
+    <TextView
+        android:id="@+id/text_job_site"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="作業廠處: "
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toTopOf="@+id/text_production_plant"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_10"
+        app:layout_constraintTop_toBottomOf="@+id/text_company" />
+
+    <TextView
+        android:id="@+id/text_job_site_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textColor="@color/black"
+        tools:text="bbbb"
+        app:layout_constraintTop_toTopOf="@id/text_job_site"
+        app:layout_constraintBottom_toBottomOf="@id/text_job_site"
+        app:layout_constraintStart_toEndOf="@id/text_job_site"/>
+
+    <TextView
+        android:id="@+id/text_production_plant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="生  產  廠: "
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toTopOf="@+id/view_company_data"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_10"
+        app:layout_constraintTop_toBottomOf="@+id/text_job_site" />
+
+    <TextView
+        android:id="@+id/text_production_plant_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textColor="@color/black"
+        tools:text="cccc"
+        app:layout_constraintTop_toTopOf="@id/text_production_plant"
+        app:layout_constraintBottom_toBottomOf="@id/text_production_plant"
+        app:layout_constraintStart_toEndOf="@id/text_production_plant"/>
+
+    <!-- 路線代號、路線名稱-->
+    <View
+        android:id="@+id/view_route"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_information_device_data"
+        app:layout_constraintEnd_toStartOf="@id/guide_line_vertical_95"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_5"
+        app:layout_constraintTop_toBottomOf="@id/guide_line_horizontal_37" />
+
+    <TextView
+        android:id="@+id/text_route_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="路線代號: "
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toTopOf="@+id/text_route_name"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_10"
+        app:layout_constraintTop_toBottomOf="@+id/view_route" />
+
+    <TextView
+        android:id="@+id/text_route_code_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textColor="@color/black"
+        tools:text="ffff"
+        app:layout_constraintTop_toTopOf="@id/text_route_code"
+        app:layout_constraintBottom_toBottomOf="@id/text_route_code"
+        app:layout_constraintStart_toEndOf="@id/text_route_code"/>
+
+    <TextView
+        android:id="@+id/text_route_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="路線名稱: "
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toTopOf="@+id/view_route"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_10"
+        app:layout_constraintTop_toBottomOf="@+id/text_route_code" />
+
+    <TextView
+        android:id="@+id/text_route_name_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textColor="@color/black"
+        tools:text="gggg"
+        app:layout_constraintTop_toTopOf="@id/text_route_name"
+        app:layout_constraintBottom_toBottomOf="@id/text_route_name"
+        app:layout_constraintStart_toEndOf="@id/text_route_name"/>
+
+    <!-- 設備類別、設備編號、設備名稱 -->
+    <View
+        android:id="@+id/view_devices"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_information_device_data"
+        app:layout_constraintEnd_toStartOf="@id/guide_line_vertical_95"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_5"
+        app:layout_constraintTop_toBottomOf="@id/guide_line_horizontal_61" />
+
+    <TextView
+        android:id="@+id/text_device_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="設備類別: "
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toTopOf="@id/text_device_number"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_10"
+        app:layout_constraintTop_toTopOf="@+id/view_devices" />
+
+    <TextView
+        android:id="@+id/text_device_category_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textColor="@color/black"
+        tools:text="tttt"
+        app:layout_constraintTop_toTopOf="@id/text_device_category"
+        app:layout_constraintBottom_toBottomOf="@id/text_device_category"
+        app:layout_constraintStart_toEndOf="@id/text_device_category"/>
+
+    <TextView
+        android:id="@+id/text_device_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="設備編號: "
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_10"
+        app:layout_constraintTop_toBottomOf="@id/text_device_category"
+        app:layout_constraintBottom_toTopOf="@id/text_device_name"/>
+
+    <TextView
+        android:id="@+id/text_device_number_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textColor="@color/black"
+        tools:text="4444"
+        app:layout_constraintTop_toTopOf="@id/text_device_number"
+        app:layout_constraintBottom_toBottomOf="@id/text_device_number"
+        app:layout_constraintStart_toEndOf="@id/text_device_number"/>
+
+    <TextView
+        android:id="@+id/text_device_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="設備名稱: "
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="@id/view_devices"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_10"
+        app:layout_constraintTop_toBottomOf="@id/text_device_number" />
+
+    <TextView
+        android:id="@+id/text_device_name_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textColor="@color/black"
+        tools:text="dddd"
+        app:layout_constraintTop_toTopOf="@id/text_device_name"
+        app:layout_constraintBottom_toBottomOf="@id/text_device_name"
+        app:layout_constraintStart_toEndOf="@id/text_device_name"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

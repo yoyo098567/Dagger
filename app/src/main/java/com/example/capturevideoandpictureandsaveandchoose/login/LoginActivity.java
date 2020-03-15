@@ -12,22 +12,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.capturevideoandpictureandsaveandchoose.MainActivity;
 import com.example.capturevideoandpictureandsaveandchoose.R;
 import com.example.capturevideoandpictureandsaveandchoose.base.BaseActivity;
+import com.example.capturevideoandpictureandsaveandchoose.chose_device.ChooseDeviceActivity;
+import com.example.capturevideoandpictureandsaveandchoose.device_information.DeviceInformationActivity;
+import com.example.capturevideoandpictureandsaveandchoose.route_code.RouteCodeActivity;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
-    EditText editAccount,editPassword;
+    EditText editAccount, editPassword;
     Button btnLogin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        init();
     }
 
     @Override
     public void init() {
-        editAccount=findViewById(R.id.edit_account);
-        editAccount=findViewById(R.id.edit_password);
-        btnLogin=findViewById(R.id.btn_login);
+        editAccount = findViewById(R.id.edit_account);
+        editPassword = findViewById(R.id.edit_password);
+        btnLogin = findViewById(R.id.btn_login);
         btnLogin.setOnClickListener(this);
     }
 
@@ -35,19 +39,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
-                Log.e("gggg","www");
+                Log.e("gggg", "www");
                 onLogin();
                 break;
         }
     }
-    private void onLogin(){
-        if("".equals(editAccount.getText().toString())){
-            showDialogMessage(getResourceString(R.string.login_accoutn_hint));
+
+    private void onLogin() {
+        if ("".equals(editAccount.getText().toString())) {
+            showDialogMessage(getResourceString(R.string.login_account_hint));
         }
-        if ("".equals(editPassword.getText().toString())){
+        if ("".equals(editPassword.getText().toString())) {
             showDialogMessage(getResourceString(R.string.login_password_hint));
         }
-        Intent intent=new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, RouteCodeActivity.class);
         startActivity(intent);
     }
 }

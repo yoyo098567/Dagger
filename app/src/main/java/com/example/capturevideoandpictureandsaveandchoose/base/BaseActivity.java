@@ -38,6 +38,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         mProgressDialog.setCanceledOnTouchOutside(false);
         mProgressDialog.show();
     }
+
     @Override
     public void showProgressDialog(String text) {
         dismissProgressDialog();
@@ -47,6 +48,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         mProgressDialog.setCanceledOnTouchOutside(false);
         mProgressDialog.show();
     }
+
     @Override
     public void dismissProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
@@ -55,7 +57,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
-    public void  showDialogCaveatMessage(String title,String message){
+    public void showDialogCaveatMessage(String title, String message) {
         new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
@@ -63,23 +65,26 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
+
     @Override
-    public void  showDialogCaveatMessage(String message){
+    public void showDialogCaveatMessage(String message) {
         new AlertDialog.Builder(this)
                 .setTitle(message)
                 .setPositiveButton(android.R.string.yes, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
+
     @Override
-    public void  showDialogMessage(String message){
+    public void showDialogMessage(String message) {
         new AlertDialog.Builder(this)
                 .setTitle(message)
                 .setPositiveButton(android.R.string.yes, null)
                 .show();
     }
+
     @Override
-    public void  showDialogMessage(String title,String message){
+    public void showDialogMessage(String title, String message) {
         new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
@@ -87,6 +92,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
+
     @Override
     public void showDatePickerDialog(DatePickerDialog.OnDateSetListener onDateSetListener) {
         DatePickerDialog dialog = new DatePickerDialog(this,
@@ -96,6 +102,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
                 mCalendar.get(Calendar.DAY_OF_MONTH));
         dialog.show();
     }
+
     @Override
     public void showSelectDialog(String text, DialogInterface.OnClickListener onClickListener) {
         new AlertDialog.Builder(this)

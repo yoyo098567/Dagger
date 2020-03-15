@@ -12,4 +12,15 @@
     <string name="updata_picture">拍照上傳</string>
     <string name="device">設備ID:</string>
     <string name="fetch">擷取</string>
+    <string name="device_company">公 &#160;&#160;&#160;&#160;&#160;&#160;&#160;司:&#160;</string>
+    <string name="job_site">作業廠處:&#160;</string>
+    <string name="production_plant">生 &#160;產 &#160;廠:&#160;</string>
+    <string name="route_code">路線代號:&#160;</string>
+    <string name="route_name">路線名稱:&#160;</string>
+    <string name="device_category">設備類別:&#160;</string>
+    <string name="device_number">設備編號:&#160;</string>
+    <string name="device_name">設備名稱:&#160;</string>
+    <string name="create">建立</string>
+    <string name="live_data">現場資料</string>
+    <string name="data_upload">資料上傳</string>
 </resources>

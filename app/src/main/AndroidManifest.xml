@@ -22,7 +22,7 @@
         <activity android:name=".routecode.RouteCodeActivity" />
         <activity
             android:name=".login.LoginActivity"
-            android:windowSoftInputMode="adjustResize|stateAlwaysVisible">
+            android:windowSoftInputMode="stateAlwaysVisible">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

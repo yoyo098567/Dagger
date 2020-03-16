@@ -1,11 +1,9 @@
-package com.example.capturevideoandpictureandsaveandchoose;
+package com.example.capturevideoandpictureandsaveandchoose.main;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -17,13 +15,12 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.VideoView;
 
+import com.example.capturevideoandpictureandsaveandchoose.MagicFileChooser;
+import com.example.capturevideoandpictureandsaveandchoose.R;
 import com.example.capturevideoandpictureandsaveandchoose.base.BaseActivity;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -40,9 +37,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private static final int PICK_FILE_REQUEST_CODE = 500;
 
     String imageFilePath;
-
-    private ImageView imgPreview;
-    private VideoView videoPreview;
     private Button btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnGetFile;
     private File photoFile;
 
@@ -55,8 +49,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void init() {
-        imgPreview = findViewById(R.id.imageView);
-        videoPreview = findViewById(R.id.videoView);
         btnCapturePicture = findViewById(R.id.btnCaptureImage);
         btnRecordVideo = findViewById(R.id.btnRecordVideo);
         btnGetImageFromGallery = findViewById(R.id.btnGetImageFromGallery);
@@ -72,8 +64,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     }
     private void pickImageFromGallery() {
-        imgPreview.setVisibility(View.VISIBLE);
-        videoPreview.setVisibility(View.INVISIBLE);
 
         //Create an Intent with action as ACTION_PICK
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -87,8 +77,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void pickVideoFromGallery() {
-        imgPreview.setVisibility(View.INVISIBLE);
-        videoPreview.setVisibility(View.VISIBLE);
 
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("video/*");
@@ -109,8 +97,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
     private void openCameraIntent() {
-        imgPreview.setVisibility(View.VISIBLE);
-        videoPreview.setVisibility(View.INVISIBLE);
         Intent pictureIntent = new Intent(
                 MediaStore.ACTION_IMAGE_CAPTURE);
         settingSystemCamera(pictureIntent);
@@ -134,8 +120,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void openRecordVideoIntent() {
-        imgPreview.setVisibility(View.INVISIBLE);
-        videoPreview.setVisibility(View.VISIBLE);
         Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         PackageManager packageManager = this.getPackageManager();
         List<ResolveInfo> listCam = packageManager.queryIntentActivities(takeVideoIntent, 0);
@@ -172,7 +156,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_CAPTURE_IMAGE && resultCode == RESULT_OK) {
             File imgFile = new File(imageFilePath);
-
+            //照片的檔案
             if (imgFile.exists()) {
                 Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                 try {
@@ -183,25 +167,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                imgPreview.setImageBitmap(myBitmap);
             }
         }
 
         if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
+            //影片的uri
             Uri videoUri = data.getData();
-            videoPreview.setVideoURI(videoUri);
-            videoPreview.start();
         }
 
         if (requestCode == PICK_IMAGE_FROM_GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri selectedImage = data.getData();
-            imgPreview.setImageURI(selectedImage);
+            //照片的uri
         }
 
         if (requestCode == PICK_VIDEO_FROM_GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri selectedVideo = data.getData();
-            videoPreview.setVideoURI(selectedVideo);
-            videoPreview.start();
+            //影片的uri
         }
 
         if (requestCode == PICK_FILE_REQUEST_CODE && resultCode == RESULT_OK) {

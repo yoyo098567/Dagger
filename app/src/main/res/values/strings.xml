@@ -4,8 +4,8 @@
     <string name="login_account">帳號</string>
     <string name="login_password">密碼</string>
     <string name="login_btn_login">登入</string>
-    <string name="login_account_hint">請 輸 入 帳 號</string>
-    <string name="login_password_hint">請 輸 入 密 碼</string>
+    <string name="login_account_hint">請輸入帳號</string>
+    <string name="login_password_hint">請輸入密碼</string>
     <string name="open_camera_for_capture">拍照</string>
     <string name="open_camera_for_video">錄影</string>
     <string name="updata_video">錄影上傳</string>
@@ -23,4 +23,7 @@
     <string name="create">建立</string>
     <string name="live_data">現場資料</string>
     <string name="data_upload">資料上傳</string>
+
+
+    <string name="api_base_url">http://api.laifudao.com/open/</string>
 </resources>

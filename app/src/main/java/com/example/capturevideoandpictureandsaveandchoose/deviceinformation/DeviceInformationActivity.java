@@ -1,6 +1,4 @@
-package com.example.capturevideoandpictureandsaveandchoose.device_information;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.example.capturevideoandpictureandsaveandchoose.deviceinformation;
 
 import android.os.Bundle;
 import android.view.View;

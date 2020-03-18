@@ -1,4 +1,4 @@
-package com.example.capturevideoandpictureandsaveandchoose.main;
+package com.example.capturevideoandpictureandsaveandchoose.ui.main;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
@@ -16,9 +16,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.capturevideoandpictureandsaveandchoose.Application;
 import com.example.capturevideoandpictureandsaveandchoose.MagicFileChooser;
 import com.example.capturevideoandpictureandsaveandchoose.R;
 import com.example.capturevideoandpictureandsaveandchoose.base.BaseActivity;
+import com.example.capturevideoandpictureandsaveandchoose.di.component.main.DaggerMainComponent;
+import com.example.capturevideoandpictureandsaveandchoose.di.component.main.MainComponent;
+import com.example.capturevideoandpictureandsaveandchoose.di.module.main.MainModule;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,7 +32,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener {
+import javax.inject.Inject;
+
+public class MainActivity extends BaseActivity implements MainContract.View,View.OnClickListener {
+    @Inject
+    MainContract.Presenter<MainContract.View> mPresenter;
 
     private static final int REQUEST_CAPTURE_IMAGE = 100;
     private static final int REQUEST_VIDEO_CAPTURE = 200;
@@ -39,12 +47,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     String imageFilePath;
     private Button btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnGetFile;
     private File photoFile;
+    private MainComponent mMainComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        mPresenter.onAttached(this);
     }
 
     @Override
@@ -55,6 +65,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         btnGetVideoFromGallery = findViewById(R.id.btnGetVideoFromGallery);
         btnGetFile = findViewById(R.id.btnGetFile);
 
+        mMainComponent = DaggerMainComponent.builder()
+                .mainModule(new MainModule(this))
+                .baseComponent(((Application) getApplication()).getApplicationComponent())
+                .build();
         btnCapturePicture.setOnClickListener(this);
         btnRecordVideo.setOnClickListener(this);
         btnGetImageFromGallery.setOnClickListener(this);

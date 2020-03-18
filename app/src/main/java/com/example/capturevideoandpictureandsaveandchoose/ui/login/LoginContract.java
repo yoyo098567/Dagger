@@ -1,11 +1,7 @@
-package com.example.capturevideoandpictureandsaveandchoose.login;
-
-import android.content.DialogInterface;
+package com.example.capturevideoandpictureandsaveandchoose.ui.login;
 
 import com.example.capturevideoandpictureandsaveandchoose.base.BaseAttacher;
 import com.example.capturevideoandpictureandsaveandchoose.base.BaseView;
-
-import java.util.List;
 
 public interface LoginContract {
     interface View extends BaseView {

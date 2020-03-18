@@ -1,6 +1,4 @@
-package com.example.capturevideoandpictureandsaveandchoose.login;
-
-import android.util.Log;
+package com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice;
 
 import com.example.capturevideoandpictureandsaveandchoose.base.BasePresenter;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.ApiService;
@@ -11,15 +9,11 @@ import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
 
-public class LoginPresenter <V extends LoginContract.View> extends BasePresenter<V> implements LoginContract.Presenter<V> {
+public class ChooseDevicePresenter  <V extends ChooseDeviceContract.View> extends BasePresenter<V> implements ChooseDeviceContract.Presenter<V>{
 
     @Inject
-    public LoginPresenter(ApiService api, ErpAPI erpAPI, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable) {
+    public ChooseDevicePresenter(ApiService api, ErpAPI erpAPI, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable) {
         super(api, erpAPI, schedulerProvider, compositeDisposable);
     }
 
-    @Override
-    public void onLogin() {
-        Log.e("gggg","sssss");
-    }
 }

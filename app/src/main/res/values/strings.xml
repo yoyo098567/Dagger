@@ -31,5 +31,6 @@
     <string name="api_on_getMNTFCT">SearchMNTFCT</string>
     <string name="api_on_getPMFCT">SearchPMFCT</string>
     <string name="api_on_getEQKD">SearchEQKD</string>
+    <string name="api_on_getEQNO">SearchEQNO</string>
 
 </resources>

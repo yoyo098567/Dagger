@@ -4,12 +4,13 @@ import android.util.Log;
 
 import com.example.capturevideoandpictureandsaveandchoose.R;
 import com.example.capturevideoandpictureandsaveandchoose.base.BasePresenter;
-import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceContract;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.ApiService;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.ErpAPI;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchco.CORequest;
-import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchco.COResponse;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchco.COResultList;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDRequest;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDResponse;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDResultList;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchmntfct.MNTFCTRequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchmntfct.MNTFCTResponse;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchmntfct.MNTFCTResultList;
@@ -17,8 +18,6 @@ import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.sear
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchpmfct.PMFCTResponse;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchpmfct.PMFCTResultList;
 import com.example.capturevideoandpictureandsaveandchoose.utils.rxjava.SchedulerProvider;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -101,9 +100,38 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
                     @Override
                     public void onNext(PMFCTResultList mPMFCTResultList) {
-                        for(PMFCTResponse mPMFCTResponse :mPMFCTResultList.getmNTFCTResponse()){
-                            Log.e("wwwww","getmPMFCT:"+mPMFCTResponse.getmPMFCT());
-                            Log.e("wwwww","getmPMFCTNM:"+mPMFCTResponse.getmPMFCTNM());
+                        for(PMFCTResponse mPMFCTResponse :mPMFCTResultList.getmPMFCTResponseList()){
+//                            Log.e("wwwww","getmPMFCT:"+mPMFCTResponse.getmPMFCT());
+//                            Log.e("wwwww","getmPMFCTNM:"+mPMFCTResponse.getmCO());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                })
+        );
+    }
+
+    @Override
+    public void onGetEQKDData(EQKDRequest mEQKDRequest) {
+        String url = getView().getResourceString(R.string.api_on_getEQKD);
+        getCompositeDisposable().add(getApiService().getEQKD(url, mEQKDRequest)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<EQKDResultList>() {
+
+                    @Override
+                    public void onNext(EQKDResultList mEQKDResultList) {
+                        for(EQKDResponse mEQKDResponse :mEQKDResultList.getmEQKDResponseList()){
+                            Log.e("wwwww","getmPMFCT:"+mEQKDResponse.getmPMFCT());
+                            Log.e("wwwww","getmPMFCTNM:"+mEQKDResponse.getmCO());
                         }
                     }
 

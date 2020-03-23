@@ -8,13 +8,13 @@ import java.util.List;
 public class PMFCTResultList {
     @SerializedName("ResultList")
     @Expose
-    private List<PMFCTResponse> mNTFCTResponse;
+    private List<PMFCTResponse> mPMFCTResponseList;
 
-    public List<PMFCTResponse> getmNTFCTResponse() {
-        return mNTFCTResponse;
+    public List<PMFCTResponse> getmPMFCTResponseList() {
+        return mPMFCTResponseList;
     }
 
-    public void setmNTFCTResponse(List<PMFCTResponse> mNTFCTResponse) {
-        this.mNTFCTResponse = mNTFCTResponse;
+    public void setmPMFCTResponseList(List<PMFCTResponse> mPMFCTResponseList) {
+        this.mPMFCTResponseList = mPMFCTResponseList;
     }
 }

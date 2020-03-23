@@ -1,6 +1,8 @@
 package com.example.capturevideoandpictureandsaveandchoose.utils.api;
 
 
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDRequest;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDResultList;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchpmfct.PMFCTRequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchco.CORequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchco.COResultList;
@@ -20,4 +22,6 @@ public interface ApiService {
     Observable<MNTFCTResultList> getMNTFCT(@Url String url, @Body MNTFCTRequest mMNTFCTRequest);
     @POST
     Observable<PMFCTResultList> getPMFCT(@Url String url, @Body PMFCTRequest mPMFCTRequest);
+    @POST
+    Observable<EQKDResultList> getEQKD(@Url String url, @Body EQKDRequest mEQKDRequest);
 }

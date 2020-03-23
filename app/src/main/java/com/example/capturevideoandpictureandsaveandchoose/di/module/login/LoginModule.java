@@ -5,8 +5,8 @@ import android.content.Context;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.capturevideoandpictureandsaveandchoose.di.annotation.LoginScoped;
-import com.example.capturevideoandpictureandsaveandchoose.login.LoginContract;
-import com.example.capturevideoandpictureandsaveandchoose.login.LoginPresenter;
+import com.example.capturevideoandpictureandsaveandchoose.ui.login.LoginContract;
+import com.example.capturevideoandpictureandsaveandchoose.ui.login.LoginPresenter;
 
 import dagger.Module;
 import dagger.Provides;

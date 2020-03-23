@@ -3,7 +3,7 @@ package com.example.capturevideoandpictureandsaveandchoose.di.component.login;
 import com.example.capturevideoandpictureandsaveandchoose.di.annotation.LoginScoped;
 import com.example.capturevideoandpictureandsaveandchoose.di.component.BaseComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.module.login.LoginModule;
-import com.example.capturevideoandpictureandsaveandchoose.login.LoginActivity;
+import com.example.capturevideoandpictureandsaveandchoose.ui.login.LoginActivity;
 
 import dagger.Component;
 @LoginScoped

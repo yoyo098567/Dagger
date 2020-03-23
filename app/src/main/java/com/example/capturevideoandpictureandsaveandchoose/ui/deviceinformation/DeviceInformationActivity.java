@@ -1,4 +1,4 @@
-package com.example.capturevideoandpictureandsaveandchoose.deviceinformation;
+package com.example.capturevideoandpictureandsaveandchoose.ui.deviceinformation;
 
 import android.os.Bundle;
 import android.view.View;

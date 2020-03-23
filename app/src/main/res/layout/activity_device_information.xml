@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".deviceinformation.DeviceInformationActivity">
+    tools:context=".ui.deviceinformation.DeviceInformationActivity">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guide_line_horizontal_13"

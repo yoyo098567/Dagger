@@ -1,4 +1,4 @@
-package com.example.capturevideoandpictureandsaveandchoose.chosedevice;
+package com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice;
 
 import android.os.Bundle;
 import android.view.View;
@@ -7,20 +7,31 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.capturevideoandpictureandsaveandchoose.Application;
 import com.example.capturevideoandpictureandsaveandchoose.R;
 import com.example.capturevideoandpictureandsaveandchoose.base.BaseActivity;
+import com.example.capturevideoandpictureandsaveandchoose.di.component.choosedevice.ChooseDeviceComponent;
+import com.example.capturevideoandpictureandsaveandchoose.di.component.choosedevice.DaggerChooseDeviceComponent;
+import com.example.capturevideoandpictureandsaveandchoose.di.module.choosedevice.ChooseDeviceModule;
 
-public class ChooseDeviceActivity extends BaseActivity implements View.OnClickListener {
+import javax.inject.Inject;
+
+public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceContract.View,View.OnClickListener {
+    @Inject
+    ChooseDeviceContract.Presenter<ChooseDeviceContract.View> mPresenter;
+
     private TextView textDeviceNumberData;
     private Button btnAdd, btnDelete;
     private RecyclerView recyclerView;
     private Button btnBack;
+    private ChooseDeviceComponent mChooseDeviceComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_device);
         init();
+        mPresenter.onAttached(this);
     }
 
     @Override
@@ -30,6 +41,10 @@ public class ChooseDeviceActivity extends BaseActivity implements View.OnClickLi
         btnAdd = findViewById(R.id.btn_add);
         btnDelete = findViewById(R.id.btn_delete);
         btnBack = findViewById(R.id.btn_back);
+        mChooseDeviceComponent = DaggerChooseDeviceComponent.builder()
+                .chooseDeviceModule(new ChooseDeviceModule(this))
+                .baseComponent(((Application) getApplication()).getApplicationComponent())
+                .build();
         btnBack.setOnClickListener(this);
         btnDelete.setOnClickListener(this);
         btnAdd.setOnClickListener(this);

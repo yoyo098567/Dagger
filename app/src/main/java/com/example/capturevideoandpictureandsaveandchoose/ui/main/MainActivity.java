@@ -1,4 +1,4 @@
-package com.example.capturevideoandpictureandsaveandchoose.main;
+package com.example.capturevideoandpictureandsaveandchoose.ui.main;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
@@ -16,9 +16,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.capturevideoandpictureandsaveandchoose.Application;
 import com.example.capturevideoandpictureandsaveandchoose.MagicFileChooser;
 import com.example.capturevideoandpictureandsaveandchoose.R;
 import com.example.capturevideoandpictureandsaveandchoose.base.BaseActivity;
+import com.example.capturevideoandpictureandsaveandchoose.di.component.main.DaggerMainComponent;
+import com.example.capturevideoandpictureandsaveandchoose.di.component.main.MainComponent;
+import com.example.capturevideoandpictureandsaveandchoose.di.module.main.MainModule;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDRequest;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchpmfct.PMFCTRequest;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,23 +34,33 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener {
+import javax.inject.Inject;
+
+public class MainActivity extends BaseActivity implements MainContract.View,View.OnClickListener {
+    @Inject
+    MainContract.Presenter<MainContract.View> mPresenter;
 
     private static final int REQUEST_CAPTURE_IMAGE = 100;
     private static final int REQUEST_VIDEO_CAPTURE = 200;
     private static final int PICK_IMAGE_FROM_GALLERY_REQUEST_CODE = 300;
     private static final int PICK_VIDEO_FROM_GALLERY_REQUEST_CODE = 400;
     private static final int PICK_FILE_REQUEST_CODE = 500;
-
     String imageFilePath;
     private Button btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnGetFile;
     private File photoFile;
+    private MainComponent mMainComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        mPresenter.onAttached(this);
+        mPresenter.onGetCOData("6c66fcbd-6dfe-45a2-ad6b-cbcda09b25bd","N123456789");
+        mPresenter.onGetMNTFCTData("345972b6-d20f-43d8-8688-d253477a6b26","N123456789");
+        mPresenter.onGetPMFCTData(new PMFCTRequest("25d5cf12-a1aa-428b-8297-3dc042580e24","N123456789","1","麥寮保養一廠"));
+        mPresenter.onGetEQKDData(new EQKDRequest("378540a4-6d39-448d-ad34-1db12e61550a","N123456789","1","A3"));
+
     }
 
     @Override
@@ -55,6 +71,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         btnGetVideoFromGallery = findViewById(R.id.btnGetVideoFromGallery);
         btnGetFile = findViewById(R.id.btnGetFile);
 
+        mMainComponent = DaggerMainComponent.builder()
+                .mainModule(new MainModule(this))
+                .baseComponent(((Application) getApplication()).getApplicationComponent())
+                .build();
+        mMainComponent.inject(this);
         btnCapturePicture.setOnClickListener(this);
         btnRecordVideo.setOnClickListener(this);
         btnGetImageFromGallery.setOnClickListener(this);

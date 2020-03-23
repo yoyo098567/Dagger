@@ -8,6 +8,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".Application"
@@ -17,19 +18,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".chosedevice.ChooseDeviceActivity"></activity>
-        <activity android:name=".deviceinformation.DeviceInformationActivity" />
-        <activity android:name=".routecode.RouteCodeActivity" />
+        <activity android:name=".ui.choosedevice.ChooseDeviceActivity"
+            android:screenOrientation="portrait"
+            ></activity>
+        <activity android:name=".ui.deviceinformation.DeviceInformationActivity"
+            android:screenOrientation="portrait"
+            />
         <activity
-            android:name=".login.LoginActivity"
-            android:windowSoftInputMode="stateAlwaysVisible">
+            android:name=".ui.login.LoginActivity"
+            android:windowSoftInputMode="stateAlwaysVisible"
+            android:screenOrientation="portrait"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".main.MainActivity" />
+        <activity android:name=".ui.main.MainActivity"
+            android:screenOrientation="portrait"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

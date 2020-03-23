@@ -1,15 +1,14 @@
-package com.example.capturevideoandpictureandsaveandchoose.login;
+package com.example.capturevideoandpictureandsaveandchoose.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.capturevideoandpictureandsaveandchoose.di.component.login.DaggerLoginComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.module.login.LoginModule;
-import com.example.capturevideoandpictureandsaveandchoose.main.MainActivity;
+import com.example.capturevideoandpictureandsaveandchoose.ui.main.MainActivity;
 import com.example.capturevideoandpictureandsaveandchoose.R;
 import com.example.capturevideoandpictureandsaveandchoose.base.BaseActivity;
 import com.example.capturevideoandpictureandsaveandchoose.di.component.login.LoginComponent;

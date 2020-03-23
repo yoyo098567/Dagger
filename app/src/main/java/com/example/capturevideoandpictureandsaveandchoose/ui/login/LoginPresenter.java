@@ -20,6 +20,5 @@ public class LoginPresenter <V extends LoginContract.View> extends BasePresenter
 
     @Override
     public void onLogin() {
-        Log.e("gggg","sssss");
     }
 }

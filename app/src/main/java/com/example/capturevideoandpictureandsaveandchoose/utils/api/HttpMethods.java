@@ -43,12 +43,4 @@ public class HttpMethods {
         return sinalInstance.instance;
     }
 
-    public void getJoke(Observer<List<DataResponse>> observer){
-
-        apiService.getData()
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
-    }
 }

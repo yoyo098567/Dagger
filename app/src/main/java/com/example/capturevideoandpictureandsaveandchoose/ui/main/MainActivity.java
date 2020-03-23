@@ -23,6 +23,7 @@ import com.example.capturevideoandpictureandsaveandchoose.base.BaseActivity;
 import com.example.capturevideoandpictureandsaveandchoose.di.component.main.DaggerMainComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.component.main.MainComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.module.main.MainModule;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchpmfct.PMFCTRequest;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,7 +44,6 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
     private static final int PICK_IMAGE_FROM_GALLERY_REQUEST_CODE = 300;
     private static final int PICK_VIDEO_FROM_GALLERY_REQUEST_CODE = 400;
     private static final int PICK_FILE_REQUEST_CODE = 500;
-
     String imageFilePath;
     private Button btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnGetFile;
     private File photoFile;
@@ -55,6 +55,9 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
         setContentView(R.layout.activity_main);
         init();
         mPresenter.onAttached(this);
+        mPresenter.onGetCOData("6c66fcbd-6dfe-45a2-ad6b-cbcda09b25bd","N123456789");
+        mPresenter.onGetMNTFCTData("345972b6-d20f-43d8-8688-d253477a6b26","N123456789");
+        mPresenter.onGetPMFCTData(new PMFCTRequest("25d5cf12-a1aa-428b-8297-3dc042580e24","N123456789","1","麥寮保養一廠"));
     }
 
     @Override
@@ -69,6 +72,7 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
                 .mainModule(new MainModule(this))
                 .baseComponent(((Application) getApplication()).getApplicationComponent())
                 .build();
+        mMainComponent.inject(this);
         btnCapturePicture.setOnClickListener(this);
         btnRecordVideo.setOnClickListener(this);
         btnGetImageFromGallery.setOnClickListener(this);

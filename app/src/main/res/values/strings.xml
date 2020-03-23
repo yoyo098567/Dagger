@@ -24,8 +24,11 @@
     <string name="live_data">現場資料</string>
     <string name="data_upload">資料上傳</string>
 
-
-    <string name="api_base_url">http://api.laifudao.com/open/</string>
+    <!--api使用部分-->
+    <string name="api_base_url">https://cloud.fpcetg.com.tw/FPC/API/MTN/API_MTN/MTN/</string>
     <string name="api_erp_url">http://api.laifudao.com/open/</string>
+    <string name="api_on_getCO">SearchCO</string>
+    <string name="api_on_getMNTFCT">SearchMNTFCT</string>
+    <string name="api_on_getPMFCT">SearchPMFCT</string>
 
 </resources>

@@ -26,6 +26,7 @@ import com.example.capturevideoandpictureandsaveandchoose.di.module.main.MainMod
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDRequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqno.EQNORequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchpmfct.PMFCTRequest;
+import com.example.capturevideoandpictureandsaveandchoose.utils.service.TeleportService;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,18 +51,18 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
     private Button btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnGetFile;
     private File photoFile;
     private MainComponent mMainComponent;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
         mPresenter.onAttached(this);
-        mPresenter.onGetCOData("6c66fcbd-6dfe-45a2-ad6b-cbcda09b25bd","N123456789");
-        mPresenter.onGetMNTFCTData("345972b6-d20f-43d8-8688-d253477a6b26","N123456789");
-        mPresenter.onGetPMFCTData(new PMFCTRequest("25d5cf12-a1aa-428b-8297-3dc042580e24","N123456789","1","麥寮保養一廠"));
-        mPresenter.onGetEQKDData(new EQKDRequest("378540a4-6d39-448d-ad34-1db12e61550a","N123456789","1","A3"));
-        mPresenter.onGetEQNOData(new EQNORequest("568c47b1-a332-49ee-929a-6f3cc7c7303c","N123456789","1","A3","CO"));
+        onStartTeleportService();
+//        mPresenter.onGetCOData("6c66fcbd-6dfe-45a2-ad6b-cbcda09b25bd","N123456789");
+//        mPresenter.onGetMNTFCTData("345972b6-d20f-43d8-8688-d253477a6b26","N123456789");
+//        mPresenter.onGetPMFCTData(new PMFCTRequest("25d5cf12-a1aa-428b-8297-3dc042580e24","N123456789","1","麥寮保養一廠"));
+//        mPresenter.onGetEQKDData(new EQKDRequest("378540a4-6d39-448d-ad34-1db12e61550a","N123456789","1","A3"));
+//        mPresenter.onGetEQNOData(new EQNORequest("568c47b1-a332-49ee-929a-6f3cc7c7303c","N123456789","1","A3","CO"));
     }
 
     @Override
@@ -266,5 +267,12 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
         }
     }
 
+    private void onStartTeleportService(){
+        Intent intent = new Intent(this, TeleportService.class);
+        Bundle serviceBundle =new Bundle();
+        serviceBundle.putString("aa","成功");
+        intent.putExtras(serviceBundle);
+        this.startService(intent);
+    }
 
 }

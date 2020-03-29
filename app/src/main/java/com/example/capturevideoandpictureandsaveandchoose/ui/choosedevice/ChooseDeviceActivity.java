@@ -1,5 +1,6 @@
 package com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +14,7 @@ import com.example.capturevideoandpictureandsaveandchoose.base.BaseActivity;
 import com.example.capturevideoandpictureandsaveandchoose.di.component.choosedevice.ChooseDeviceComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.component.choosedevice.DaggerChooseDeviceComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.module.choosedevice.ChooseDeviceModule;
+import com.example.capturevideoandpictureandsaveandchoose.ui.adddevice.AddDeviceActivity;
 
 import javax.inject.Inject;
 
@@ -54,6 +56,8 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_add:
+                Intent intent = new Intent(this, AddDeviceActivity.class);
+                startActivity(intent);
                 break;
             case R.id.btn_delete:
                 break;

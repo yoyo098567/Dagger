@@ -23,6 +23,13 @@
     <string name="create">建立</string>
     <string name="live_data">現場資料</string>
     <string name="data_upload">資料上傳</string>
+    <string name="record_date">紀錄日期:&#160;</string>
+    <string name="maintenance_plant">保 &#160;養 &#160;廠:&#160;</string>
+    <string name="file">檔 &#160;&#160;&#160;&#160;&#160;&#160;&#160;案:&#160;</string>
+    <string name="browse">瀏覽</string>
+    <string name="upload">上傳</string>
+    <string name="upload_person">上傳人員:&#160;</string>
+
 
     <!--api使用部分-->
     <string name="api_base_url">https://cloud.fpcetg.com.tw/FPC/API/MTN/API_MTN/MTN/</string>
@@ -32,5 +39,6 @@
     <string name="api_on_getPMFCT">SearchPMFCT</string>
     <string name="api_on_getEQKD">SearchEQKD</string>
     <string name="api_on_getEQNO">SearchEQNO</string>
+
 
 </resources>

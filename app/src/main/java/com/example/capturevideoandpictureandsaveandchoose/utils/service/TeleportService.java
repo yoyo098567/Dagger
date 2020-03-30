@@ -96,13 +96,13 @@ public class TeleportService extends Service {
         public void run() {
             handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
             ApiService apiService=retrofit.create(ApiService.class);
-//            final CORequest mCORequest = new CORequest("6c66fcbd-6dfe-45a2-ad6b-cbcda09b25bd","N123456789");
-//            CompositeDisposable compositeDisposable=new CompositeDisposable();
-//            compositeDisposable.add(apiService.getCO("SearchCO", mCORequest)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribeWith(new DisposableObserver<COResultList>() {
-//
+////            final CORequest mCORequest = new CORequest("6c66fcbd-6dfe-45a2-ad6b-cbcda09b25bd","N123456789");
+////            CompositeDisposable compositeDisposable=new CompositeDisposable();
+////            compositeDisposable.add(apiService.getCO("SearchCO", mCORequest)
+////                    .subscribeOn(Schedulers.io())
+////                    .observeOn(AndroidSchedulers.mainThread())
+////                    .subscribeWith(new DisposableObserver<COResultList>() {
+////
 //                        @Override
 //                        public void onNext(COResultList mCOResultList) {
 //                            for(COResponse mCOResponse :mCOResultList.getcOResponseList()){

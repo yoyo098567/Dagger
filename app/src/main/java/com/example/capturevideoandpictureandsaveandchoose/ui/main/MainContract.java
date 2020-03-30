@@ -4,6 +4,7 @@ import com.example.capturevideoandpictureandsaveandchoose.base.BaseAttacher;
 import com.example.capturevideoandpictureandsaveandchoose.base.BaseView;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchco.CORequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDRequest;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqno.EQNORequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchpmfct.PMFCTRequest;
 
 public interface MainContract {
@@ -15,6 +16,7 @@ public interface MainContract {
         void onGetMNTFCTData(String authorizedId,String idNo);
         void onGetPMFCTData(PMFCTRequest mPMFCTRequest);
         void onGetEQKDData(EQKDRequest mEQKDRequest);
+        void onGetEQNOData(EQNORequest mEQNORequest);
 
     }
 }

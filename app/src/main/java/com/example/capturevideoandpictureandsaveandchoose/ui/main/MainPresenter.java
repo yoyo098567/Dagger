@@ -11,6 +11,9 @@ import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.sear
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDRequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDResponse;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDResultList;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqno.EQNORequest;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqno.EQNOResponse;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqno.EQNOResultList;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchmntfct.MNTFCTRequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchmntfct.MNTFCTResponse;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchmntfct.MNTFCTResultList;
@@ -131,7 +134,38 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                     public void onNext(EQKDResultList mEQKDResultList) {
                         for(EQKDResponse mEQKDResponse :mEQKDResultList.getmEQKDResponseList()){
                             Log.e("wwwww","getmPMFCT:"+mEQKDResponse.getmPMFCT());
+                            Log.e("wwwww","getmEQKD:"+mEQKDResponse.getmEQKD());
+
                             Log.e("wwwww","getmPMFCTNM:"+mEQKDResponse.getmCO());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                })
+        );
+    }
+
+    @Override
+    public void onGetEQNOData(EQNORequest mEQNORequest) {
+        String url = getView().getResourceString(R.string.api_on_getEQNO);
+        getCompositeDisposable().add(getApiService().getEQNO(url, mEQNORequest)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<EQNOResultList>() {
+
+                    @Override
+                       public void onNext(EQNOResultList mEQNOResultList) {
+                        for(EQNOResponse mEQNOResponse :mEQNOResultList.getmEQNOResponseList()){
+                            Log.e("Eeeeeeeeee","getmPMFCT:"+mEQNOResponse.getmPMFCT());
+                            Log.e("Eeeeeeeeee","getmPMFCTNM:"+mEQNOResponse.getmCO());
                         }
                     }
 

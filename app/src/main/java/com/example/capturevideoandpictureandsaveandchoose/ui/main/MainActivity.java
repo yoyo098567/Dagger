@@ -24,12 +24,15 @@ import com.example.capturevideoandpictureandsaveandchoose.di.component.main.Dagg
 import com.example.capturevideoandpictureandsaveandchoose.di.component.main.MainComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.module.main.MainModule;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDRequest;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqno.EQNORequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchpmfct.PMFCTRequest;
+import com.example.capturevideoandpictureandsaveandchoose.utils.service.TeleportService;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -49,18 +52,20 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
     private Button btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnGetFile;
     private File photoFile;
     private MainComponent mMainComponent;
-
+    final String sn =  android.os.Build.SERIAL;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
         mPresenter.onAttached(this);
+        Log.e("ggggg",""+sn);
+//        onStartTeleportService();
         mPresenter.onGetCOData("6c66fcbd-6dfe-45a2-ad6b-cbcda09b25bd","N123456789");
         mPresenter.onGetMNTFCTData("345972b6-d20f-43d8-8688-d253477a6b26","N123456789");
         mPresenter.onGetPMFCTData(new PMFCTRequest("25d5cf12-a1aa-428b-8297-3dc042580e24","N123456789","1","麥寮保養一廠"));
         mPresenter.onGetEQKDData(new EQKDRequest("378540a4-6d39-448d-ad34-1db12e61550a","N123456789","1","A3"));
-
+        mPresenter.onGetEQNOData(new EQNORequest("568c47b1-a332-49ee-929a-6f3cc7c7303c","N123456789","1","A3","CO"));
     }
 
     @Override
@@ -90,6 +95,7 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
         Intent intent = new Intent(Intent.ACTION_PICK);
         // Sets the type as image/*. This ensures only components of type image are selected
         intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
         String[] mimeTypes = {"image/jpeg", "image/png"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
@@ -101,6 +107,7 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
 
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("video/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         String[] mimeTypes = {"video/mp4", "video/mov"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         startActivityForResult(intent, PICK_VIDEO_FROM_GALLERY_REQUEST_CODE);
@@ -197,12 +204,24 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
         }
 
         if (requestCode == PICK_IMAGE_FROM_GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Uri selectedImage = data.getData();
+            Uri selectedImage = data.getClipData().getItemAt(0).getUri();
+            ArrayList<Uri> uriList =new ArrayList<Uri>();
+            for(int i=0;i<data.getClipData().getItemCount();i++){
+                uriList.add(data.getClipData().getItemAt(i).getUri());
+                Log.e("gggg",""+uriList.get(i));
+            }
+            Log.e("gggg","1:"+data.getClipData().getItemCount());
+
             //照片的uri
         }
 
         if (requestCode == PICK_VIDEO_FROM_GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri selectedVideo = data.getData();
+            ArrayList<Uri> uriList =new ArrayList<Uri>();
+            for(int i=0;i<data.getClipData().getItemCount();i++){
+                uriList.add(data.getClipData().getItemAt(i).getUri());
+                Log.e("gggg",""+uriList.get(i));
+            }
             //影片的uri
         }
 
@@ -265,5 +284,12 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
         }
     }
 
+    private void onStartTeleportService(){
+        Intent intent = new Intent(this, TeleportService.class);
+        Bundle serviceBundle =new Bundle();
+        serviceBundle.putString("aa","成功");
+        intent.putExtras(serviceBundle);
+        this.startService(intent);
+    }
 
 }

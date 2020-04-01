@@ -2,6 +2,7 @@ package com.example.capturevideoandpictureandsaveandchoose.base;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.net.Uri;
 
 import androidx.annotation.StringRes;
 
@@ -28,4 +29,5 @@ public interface BaseView {
     void showToast(String text);
 
     void showToast(@StringRes int text);
+    String getPath(Uri uri);
 }

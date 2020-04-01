@@ -47,6 +47,25 @@ public class UploadRequest {
     @Expose
     private String mUploadDATETM;
 
+    public UploadRequest(String authorizedId, String mCO, String mCONM, String mPMFCT, String mPMFCTNM,
+                         String nEQKD, String mEQKDNM, String mEQNO, String mEQNM, String mRecordDate,
+                         String mRecordSubject, String mUploadEMP, String mUploadNM, String mUploadDATETM) {
+        this.authorizedId = authorizedId;
+        this.mCO = mCO;
+        this.mCONM = mCONM;
+        this.mPMFCT = mPMFCT;
+        this.mPMFCTNM = mPMFCTNM;
+        this.nEQKD = nEQKD;
+        this.mEQKDNM = mEQKDNM;
+        this.mEQNO = mEQNO;
+        this.mEQNM = mEQNM;
+        this.mRecordDate = mRecordDate;
+        this.mRecordSubject = mRecordSubject;
+        this.mUploadEMP = mUploadEMP;
+        this.mUploadNM = mUploadNM;
+        this.mUploadDATETM = mUploadDATETM;
+    }
+
     public String getAuthorizedId() {
         return authorizedId;
     }

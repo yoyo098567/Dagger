@@ -39,6 +39,13 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class MainActivity extends BaseActivity implements MainContract.View,View.OnClickListener {
     @Inject
     MainContract.Presenter<MainContract.View> mPresenter;
@@ -205,23 +212,24 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
 
         if (requestCode == PICK_IMAGE_FROM_GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri selectedImage = data.getClipData().getItemAt(0).getUri();
-            ArrayList<Uri> uriList =new ArrayList<Uri>();
+            ArrayList<String> uriList =new ArrayList<String>();
             for(int i=0;i<data.getClipData().getItemCount();i++){
-                uriList.add(data.getClipData().getItemAt(i).getUri());
+                uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
                 Log.e("gggg",""+uriList.get(i));
             }
             Log.e("gggg","1:"+data.getClipData().getItemCount());
-
             //照片的uri
+            onUploadFile(uriList);
         }
 
         if (requestCode == PICK_VIDEO_FROM_GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri selectedVideo = data.getData();
-            ArrayList<Uri> uriList =new ArrayList<Uri>();
+            ArrayList<String> uriList =new ArrayList<String>();
             for(int i=0;i<data.getClipData().getItemCount();i++){
-                uriList.add(data.getClipData().getItemAt(i).getUri());
+                uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
                 Log.e("gggg",""+uriList.get(i));
             }
+            onUploadFile(uriList);
             //影片的uri
         }
 
@@ -291,5 +299,53 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
         intent.putExtras(serviceBundle);
         this.startService(intent);
     }
+    //如果能改成用retrofit加rxjava最好，已經嘗試過三天的，可能有缺什麼，不過緊急所以先求功能
+    private void onUploadFile(final ArrayList<String> uriList){
+        showProgressDialog(getResourceString(R.string.on_upload_image));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OkHttpClient client = new OkHttpClient().newBuilder()
+                        .build();
+                MediaType mediaType = MediaType.parse("text/plain");
+                MultipartBody.Builder buildernew = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("AuthorizedId", "1179cf63-9f4c-4060-a0f3-201f108b20c1")
+                        .addFormDataPart("CO", "1")
+                        .addFormDataPart("CONM", "台塑")
+                        .addFormDataPart("PMFCT", "A3")
+                        .addFormDataPart("PMFCTNM", "麥寮AN廠")
+                        .addFormDataPart("EQKD", "PU")
+                        .addFormDataPart("EQKDNM", "泵浦")
+                        .addFormDataPart("EQNO", "P-166")
+                        .addFormDataPart("EQNM", "工業用水泵浦")
+                        .addFormDataPart("RecordDate", "2020/04/06")
+                        .addFormDataPart("RecordSubject", "測試")
+                        .addFormDataPart("UploadEMP", "1")
+                        .addFormDataPart("UploadNM", "新人")
+                        .addFormDataPart("UploadDATETM", "");
+                for(String path:uriList){
+                    File uploadFile = new File(path);
+                    buildernew.addFormDataPart("",uploadFile.getName(),
+                            RequestBody.create(MediaType.parse("application/octet-stream"),
+                                    uploadFile));
+                }
+                RequestBody body = buildernew.build();
 
+                Request request = new Request.Builder()
+                        .url("https://cloud.fpcetg.com.tw/FPC/API/MTN/API_MTN/MTN/Upload")
+                        .method("POST", body)
+                        .build();
+                try {
+                    Response response = client.newCall(request).execute();
+                    Log.e("response", response.body().string());
+                    dismissProgressDialog();
+//                        Log.e("isSuccess",json.get("IsSuccess").toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e("error", "" + e.getMessage());
+                }
+            }
+        }).start();
+    }
 }

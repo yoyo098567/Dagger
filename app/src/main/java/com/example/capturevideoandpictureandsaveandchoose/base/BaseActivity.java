@@ -51,7 +51,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     public void showProgressDialog(String text) {
         dismissProgressDialog();
         mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setTitle(text);
+        mProgressDialog.setMessage(text);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setCanceledOnTouchOutside(false);
         mProgressDialog.show();

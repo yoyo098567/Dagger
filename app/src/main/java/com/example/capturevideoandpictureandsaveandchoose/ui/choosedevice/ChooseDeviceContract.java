@@ -6,6 +6,7 @@ import com.example.capturevideoandpictureandsaveandchoose.ui.login.LoginContract
 
 public interface ChooseDeviceContract {
     interface View extends BaseView {
+        void setCurrentItem(int position);
     }
 
     interface Presenter<V extends ChooseDeviceContract.View> extends BaseAttacher<V> {

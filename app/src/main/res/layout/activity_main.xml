@@ -124,14 +124,14 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/bg_chose_device_button"
-        app:layout_constraintEnd_toStartOf="@+id/btnGetFile"
+        app:layout_constraintEnd_toStartOf="@+id/btn_device_edit"
         app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toEndOf="@+id/btnFetchDevice"
         app:layout_constraintTop_toBottomOf="@id/guide_line_horizontal_13"
         app:layout_constraintWidth_percent="0.29" />
 
     <Button
-        android:id="@+id/btnGetFile"
+        android:id="@+id/btn_device_edit"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/bg_edit_device_button"

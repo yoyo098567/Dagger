@@ -23,6 +23,7 @@ import com.example.capturevideoandpictureandsaveandchoose.base.BaseActivity;
 import com.example.capturevideoandpictureandsaveandchoose.di.component.main.DaggerMainComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.component.main.MainComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.module.main.MainModule;
+import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceActivity;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDRequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqno.EQNORequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchpmfct.PMFCTRequest;
@@ -39,7 +40,14 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-public class MainActivity extends BaseActivity implements MainContract.View,View.OnClickListener {
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+public class MainActivity extends BaseActivity implements MainContract.View, View.OnClickListener {
     @Inject
     MainContract.Presenter<MainContract.View> mPresenter;
 
@@ -49,23 +57,24 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
     private static final int PICK_VIDEO_FROM_GALLERY_REQUEST_CODE = 400;
     private static final int PICK_FILE_REQUEST_CODE = 500;
     String imageFilePath;
-    private Button btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnGetFile;
+    private Button btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnDeviceEdit;
     private File photoFile;
     private MainComponent mMainComponent;
-    final String sn =  android.os.Build.SERIAL;
+    final String sn = android.os.Build.SERIAL;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
         mPresenter.onAttached(this);
-        Log.e("ggggg",""+sn);
+        Log.e("ggggg", "" + sn);
 //        onStartTeleportService();
-        mPresenter.onGetCOData("6c66fcbd-6dfe-45a2-ad6b-cbcda09b25bd","N123456789");
-        mPresenter.onGetMNTFCTData("345972b6-d20f-43d8-8688-d253477a6b26","N123456789");
-        mPresenter.onGetPMFCTData(new PMFCTRequest("25d5cf12-a1aa-428b-8297-3dc042580e24","N123456789","1","麥寮保養一廠"));
-        mPresenter.onGetEQKDData(new EQKDRequest("378540a4-6d39-448d-ad34-1db12e61550a","N123456789","1","A3"));
-        mPresenter.onGetEQNOData(new EQNORequest("568c47b1-a332-49ee-929a-6f3cc7c7303c","N123456789","1","A3","CO"));
+//        mPresenter.onGetCOData("6c66fcbd-6dfe-45a2-ad6b-cbcda09b25bd", "N123456789");
+//        mPresenter.onGetMNTFCTData("345972b6-d20f-43d8-8688-d253477a6b26", "N123456789");
+//        mPresenter.onGetPMFCTData(new PMFCTRequest("25d5cf12-a1aa-428b-8297-3dc042580e24", "N123456789", "1", "麥寮保養一廠"));
+//        mPresenter.onGetEQKDData(new EQKDRequest("378540a4-6d39-448d-ad34-1db12e61550a", "N123456789", "1", "A3"));
+//        mPresenter.onGetEQNOData(new EQNORequest("568c47b1-a332-49ee-929a-6f3cc7c7303c", "N123456789", "1", "A3", "CO"));
     }
 
     @Override
@@ -74,7 +83,7 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
         btnRecordVideo = findViewById(R.id.btnRecordVideo);
         btnGetImageFromGallery = findViewById(R.id.btnGetImageFromGallery);
         btnGetVideoFromGallery = findViewById(R.id.btnGetVideoFromGallery);
-        btnGetFile = findViewById(R.id.btnGetFile);
+        btnDeviceEdit = findViewById(R.id.btn_device_edit);
 
         mMainComponent = DaggerMainComponent.builder()
                 .mainModule(new MainModule(this))
@@ -85,10 +94,11 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
         btnRecordVideo.setOnClickListener(this);
         btnGetImageFromGallery.setOnClickListener(this);
         btnGetVideoFromGallery.setOnClickListener(this);
-        btnGetFile.setOnClickListener(this);
+        btnDeviceEdit.setOnClickListener(this);
 
 
     }
+
     private void pickImageFromGallery() {
 
         //Create an Intent with action as ACTION_PICK
@@ -205,23 +215,24 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
 
         if (requestCode == PICK_IMAGE_FROM_GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri selectedImage = data.getClipData().getItemAt(0).getUri();
-            ArrayList<Uri> uriList =new ArrayList<Uri>();
-            for(int i=0;i<data.getClipData().getItemCount();i++){
-                uriList.add(data.getClipData().getItemAt(i).getUri());
-                Log.e("gggg",""+uriList.get(i));
+            ArrayList<String> uriList = new ArrayList<String>();
+            for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+                uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
+                Log.e("gggg", "" + uriList.get(i));
             }
-            Log.e("gggg","1:"+data.getClipData().getItemCount());
-
+            Log.e("gggg", "1:" + data.getClipData().getItemCount());
             //照片的uri
+            onUploadFile(uriList);
         }
 
         if (requestCode == PICK_VIDEO_FROM_GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri selectedVideo = data.getData();
-            ArrayList<Uri> uriList =new ArrayList<Uri>();
-            for(int i=0;i<data.getClipData().getItemCount();i++){
-                uriList.add(data.getClipData().getItemAt(i).getUri());
-                Log.e("gggg",""+uriList.get(i));
+            ArrayList<String> uriList = new ArrayList<String>();
+            for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+                uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
+                Log.e("gggg", "" + uriList.get(i));
             }
+            onUploadFile(uriList);
             //影片的uri
         }
 
@@ -263,9 +274,9 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-                case R.id.btnCaptureImage:
-                    openCameraIntent();
-                    break;
+            case R.id.btnCaptureImage:
+                openCameraIntent();
+                break;
 
             case R.id.btnRecordVideo:
                 openRecordVideoIntent();
@@ -278,18 +289,68 @@ public class MainActivity extends BaseActivity implements MainContract.View,View
             case R.id.btnGetVideoFromGallery:
                 pickVideoFromGallery();
                 break;
-            case R.id.btnGetFile:
-                pickFile();
+            case R.id.btn_device_edit:
+                Intent intent = new Intent(this, ChooseDeviceActivity.class);
+                startActivity(intent);
                 break;
         }
     }
 
-    private void onStartTeleportService(){
+    private void onStartTeleportService() {
         Intent intent = new Intent(this, TeleportService.class);
-        Bundle serviceBundle =new Bundle();
-        serviceBundle.putString("aa","成功");
+        Bundle serviceBundle = new Bundle();
+        serviceBundle.putString("aa", "成功");
         intent.putExtras(serviceBundle);
         this.startService(intent);
     }
 
+    //如果能改成用retrofit加rxjava最好，已經嘗試過三天的，可能有缺什麼，不過緊急所以先求功能
+    private void onUploadFile(final ArrayList<String> uriList) {
+        showProgressDialog(getResourceString(R.string.on_upload_image));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OkHttpClient client = new OkHttpClient().newBuilder()
+                        .build();
+                MediaType mediaType = MediaType.parse("text/plain");
+                MultipartBody.Builder buildernew = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("AuthorizedId", "1179cf63-9f4c-4060-a0f3-201f108b20c1")
+                        .addFormDataPart("CO", "1")
+                        .addFormDataPart("CONM", "台塑")
+                        .addFormDataPart("PMFCT", "A3")
+                        .addFormDataPart("PMFCTNM", "麥寮AN廠")
+                        .addFormDataPart("EQKD", "PU")
+                        .addFormDataPart("EQKDNM", "泵浦")
+                        .addFormDataPart("EQNO", "P-166")
+                        .addFormDataPart("EQNM", "工業用水泵浦")
+                        .addFormDataPart("RecordDate", "2020/04/06")
+                        .addFormDataPart("RecordSubject", "測試")
+                        .addFormDataPart("UploadEMP", "1")
+                        .addFormDataPart("UploadNM", "新人")
+                        .addFormDataPart("UploadDATETM", "");
+                for (String path : uriList) {
+                    File uploadFile = new File(path);
+                    buildernew.addFormDataPart("", uploadFile.getName(),
+                            RequestBody.create(MediaType.parse("application/octet-stream"),
+                                    uploadFile));
+                }
+                RequestBody body = buildernew.build();
+
+                Request request = new Request.Builder()
+                        .url("https://cloud.fpcetg.com.tw/FPC/API/MTN/API_MTN/MTN/Upload")
+                        .method("POST", body)
+                        .build();
+                try {
+                    Response response = client.newCall(request).execute();
+                    Log.e("response", response.body().string());
+                    dismissProgressDialog();
+//                        Log.e("isSuccess",json.get("IsSuccess").toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e("error", "" + e.getMessage());
+                }
+            }
+        }).start();
+    }
 }

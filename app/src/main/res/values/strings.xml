@@ -29,6 +29,8 @@
     <string name="browse">瀏覽</string>
     <string name="upload">上傳</string>
     <string name="upload_person">上傳人員:&#160;</string>
+    <string name="on_upload_image">照片上傳中</string>
+    <string name="on_upload_vedio">影片上傳中</string>
 
 
     <!--api使用部分-->

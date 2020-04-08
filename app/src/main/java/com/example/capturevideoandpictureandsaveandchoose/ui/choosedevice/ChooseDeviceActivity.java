@@ -2,6 +2,7 @@ package com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -27,7 +28,7 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
     private RecyclerView recyclerView;
     private Button btnBack;
     private ChooseDeviceComponent mChooseDeviceComponent;
-
+    public static final int ADD_DEVICE_NUMBER=2020;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +48,7 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
                 .chooseDeviceModule(new ChooseDeviceModule(this))
                 .baseComponent(((Application) getApplication()).getApplicationComponent())
                 .build();
+        mChooseDeviceComponent.inject(this);
         btnBack.setOnClickListener(this);
         btnDelete.setOnClickListener(this);
         btnAdd.setOnClickListener(this);
@@ -57,6 +59,7 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
         switch (view.getId()) {
             case R.id.btn_add:
                 Intent intent = new Intent(this, AddDeviceActivity.class);
+                startActivityForResult(intent, ADD_DEVICE_NUMBER);
                 startActivity(intent);
                 break;
             case R.id.btn_delete:
@@ -65,5 +68,13 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
                 finish();
                 break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==ADD_DEVICE_NUMBER && resultCode==RESULT_OK){
+            Log.e("gggg",""+data.getExtras().getString("a"));
+        }
+        String result = data.getExtras().getString("result");//得到新Activity 关闭后返回的数据
     }
 }

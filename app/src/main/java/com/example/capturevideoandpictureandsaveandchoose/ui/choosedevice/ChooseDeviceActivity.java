@@ -94,7 +94,10 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
         if(requestCode==ADD_DEVICE_NUMBER && resultCode==RESULT_OK){
             Log.e("gggg",""+data.getExtras().getString("a"));
         }
-        String result = data.getExtras().getString("result");//得到新Activity 关闭后返回的数据
+        String result = data.getExtras().getString("a");//得到新Activity 关闭后返回的数据
+        ChooseDeviceItemData mChooseDeviceItemData=new ChooseDeviceItemData();
+        mChooseDeviceItemData.setDeciceId(result);
+        chooseDeviceAdapter.addDataToDataList(mChooseDeviceItemData);
     }
 
     @Override

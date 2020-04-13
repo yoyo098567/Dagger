@@ -17,13 +17,15 @@ import java.util.ArrayList;
 public class ChooseDeviceAdapter extends RecyclerView.Adapter {
     private ArrayList<ChooseDeviceItemData> dataList;
     private int CurrentPosition=0;
-    public ChooseDeviceAdapter(){
-    }
     public void setDataList(ArrayList<ChooseDeviceItemData> dataList){
         this.dataList=dataList;
     }
     public int getCurrentPosition(){
         return CurrentPosition;
+    }
+    public void addDataToDataList(ChooseDeviceItemData mChooseDeviceItemData){
+        dataList.add(mChooseDeviceItemData);
+        notifyDataSetChanged();
     }
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {

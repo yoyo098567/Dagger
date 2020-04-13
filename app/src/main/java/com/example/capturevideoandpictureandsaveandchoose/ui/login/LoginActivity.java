@@ -1,10 +1,15 @@
 package com.example.capturevideoandpictureandsaveandchoose.ui.login;
 
+import android.Manifest;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.example.capturevideoandpictureandsaveandchoose.di.component.login.DaggerLoginComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.module.login.LoginModule;
@@ -27,12 +32,20 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
     LoginContract.Presenter<LoginContract.View> mPresenter;
 
     private LoginComponent mLoginActivityComponent;
-
+    private static final int REQUEST_PERMISSIONS_CODE=20200410;
+    private String[] permissions = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.CAMERA};
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         init();
+        requestPermissions(permissions, REQUEST_PERMISSIONS_CODE);
+
         mPresenter.onAttached(this);
     }
 
@@ -48,7 +61,6 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
                 .build();
         mLoginActivityComponent.inject(this);
     }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {

@@ -93,7 +93,7 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
                 break;
             case R.id.btn_upload:
                 Intent intent = new Intent();
-                intent.putExtra("a", "靠");
+                intent.putExtra("a", "new");
                 setResult(RESULT_OK, intent);
                 finish();
                 break;

@@ -222,7 +222,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             }
             Log.e("gggg", "1:" + data.getClipData().getItemCount());
             //照片的uri
-            onUploadFile(uriList);
+            onUploadFile(uriList,getResourceString(R.string.on_upload_image));
         }
 
         if (requestCode == PICK_VIDEO_FROM_GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
@@ -232,7 +232,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
                 Log.e("gggg", "" + uriList.get(i));
             }
-            onUploadFile(uriList);
+            onUploadFile(uriList,getResourceString(R.string.on_upload_vedio));
             //影片的uri
         }
 
@@ -305,8 +305,8 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     }
 
     //如果能改成用retrofit加rxjava最好，已經嘗試過三天的，可能有缺什麼，不過緊急所以先求功能
-    private void onUploadFile(final ArrayList<String> uriList) {
-        showProgressDialog(getResourceString(R.string.on_upload_image));
+    private void onUploadFile(final ArrayList<String> uriList,String type) {
+//        showProgressDialog(type);
         new Thread(new Runnable() {
             @Override
             public void run() {

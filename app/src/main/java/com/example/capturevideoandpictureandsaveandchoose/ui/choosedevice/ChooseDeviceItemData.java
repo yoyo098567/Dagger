@@ -1,16 +1,85 @@
 package com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice;
 
-public class ChooseDeviceItemData {
+import java.io.Serializable;
+
+public class ChooseDeviceItemData implements Serializable {
     private String recordDate="";
     private String maintenancePlant="";
-    private String plant="";
+    private String maintenancePlantCompanyId="";
+    private String maintenancePlantId="";
+    private String company="";
+    private String companyId="";
     private String productionPlant="";
+    private String productionPlantId="";
     private String deviceCategory="";
+    private String deviceCategryId="";
     private String deciceId="";
+    private String deciceName="";
     private String keynote="";
     private String filePath="";
     private String uploadEmployees="";
     private boolean backgroundChange=false;
+
+    public String getMaintenancePlantCompanyId() {
+        return maintenancePlantCompanyId;
+    }
+
+    public void setMaintenancePlantCompanyId(String maintenancePlantCompanyId) {
+        this.maintenancePlantCompanyId = maintenancePlantCompanyId;
+    }
+
+    public String getMaintenancePlantId() {
+        return maintenancePlantId;
+    }
+
+    public void setMaintenancePlantId(String maintenancePlantId) {
+        this.maintenancePlantId = maintenancePlantId;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
+    public String getProductionPlantId() {
+        return productionPlantId;
+    }
+
+    public void setProductionPlantId(String productionPlantId) {
+        this.productionPlantId = productionPlantId;
+    }
+
+    public String getDeviceCategryId() {
+        return deviceCategryId;
+    }
+
+    public void setDeviceCategryId(String deviceCategryId) {
+        this.deviceCategryId = deviceCategryId;
+    }
+
+    public String getDeciceName() {
+        return deciceName;
+    }
+
+    public void setDeciceName(String deciceName) {
+        this.deciceName = deciceName;
+    }
+
+    public boolean isBackgroundChange() {
+        return backgroundChange;
+    }
+
     public String getRecordDate() {
         return recordDate;
     }
@@ -25,14 +94,6 @@ public class ChooseDeviceItemData {
 
     public void setMaintenancePlant(String maintenancePlant) {
         this.maintenancePlant = maintenancePlant;
-    }
-
-    public String getPlant() {
-        return plant;
-    }
-
-    public void setPlant(String plant) {
-        this.plant = plant;
     }
 
     public String getProductionPlant() {

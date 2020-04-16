@@ -38,7 +38,6 @@ public class ChooseDeviceAdapter extends RecyclerView.Adapter {
             }
         });
         if (holder instanceof ChooseDeviceAdapterViewHolder) {
-            Log.e("gggg","wwwww");
             ((ChooseDeviceAdapterViewHolder) holder).getItemDevice().setText(dataList.get(position).getDeciceId());
             ((ChooseDeviceAdapterViewHolder) holder).getNumber().setText(""+position);
         }

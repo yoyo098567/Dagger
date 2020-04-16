@@ -49,7 +49,6 @@ public class TeleportService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         handler.post(periodicUpdate);
         String a=intent.getStringExtra("aa");
-        Log.e("ggggg",""+a);
         // TODO Auto-generated method stub
         return super.onStartCommand(intent, flags, startId);
     }

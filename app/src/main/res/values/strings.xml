@@ -31,7 +31,8 @@
     <string name="upload_person">上傳人員:&#160;</string>
     <string name="on_upload_image">照片上傳中</string>
     <string name="on_upload_vedio">影片上傳中</string>
-
+    <!--chooseDevice部分-->
+    <string name="add_device_error_on_choose_device_activity">新增失敗</string>
 
     <!--api使用部分-->
     <string name="api_base_url">https://cloud.fpcetg.com.tw/FPC/API/MTN/API_MTN/MTN/</string>
@@ -41,6 +42,21 @@
     <string name="api_on_getPMFCT">SearchPMFCT</string>
     <string name="api_on_getEQKD">SearchEQKD</string>
     <string name="api_on_getEQNO">SearchEQNO</string>
+    <!--addDevice部分-->
+    <string name="get_pmfct_error_no_data">保養廠無資料</string>
+    <string name="get_eqkd_error_no_data">設備類別查無資料</string>
+    <string name="get_eqno_error_no_data">設備編號查無資料</string>
+    <string name="add_device_no_maintenance_plant_error">請選擇保養廠</string>
+    <string name="add_device_no_company_error">請選擇公司</string>
+    <string name="add_device_no_production_plant_error">請選擇生產廠</string>
+    <string name="add_device_no_device_categry_error">請選擇生產廠</string>
+    <string name="add_device_no_data_maintenance_plant">保養廠還未填寫</string>
+    <string name="add_device_no_data_company">公司還未填寫</string>
+    <string name="add_device_no_data_production_plant">生產廠還未填寫</string>
+    <string name="add_device_no_data_device_categry">設備類別還未填寫</string>
+    <string name="add_device_no_data_device_id">設備編號還未填寫</string>
+    <string name="add_device_no_data_keynote">主旨說明還未填寫</string>
+    <string name="add_device_no_data_file">檔案還未選擇</string>
 
 
 </resources>

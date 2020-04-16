@@ -46,7 +46,6 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:screenOrientation="portrait" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

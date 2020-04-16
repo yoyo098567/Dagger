@@ -91,13 +91,14 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ChooseDeviceItemData mChooseDeviceItemData;
         if(requestCode==ADD_DEVICE_NUMBER && resultCode==RESULT_OK){
-            Log.e("gggg",""+data.getExtras().getString("a"));
+            mChooseDeviceItemData= (ChooseDeviceItemData) data.getSerializableExtra("device");
+            Log.e("wwww",""+mChooseDeviceItemData.getCompany());
+            chooseDeviceAdapter.addDataToDataList(mChooseDeviceItemData);
+        }else {
+            showDialogCaveatMessage(getResourceString(R.string.add_device_error_on_choose_device_activity));
         }
-        String result = data.getExtras().getString("a");//得到新Activity 关闭后返回的数据
-        ChooseDeviceItemData mChooseDeviceItemData=new ChooseDeviceItemData();
-        mChooseDeviceItemData.setDeciceId(result);
-        chooseDeviceAdapter.addDataToDataList(mChooseDeviceItemData);
     }
 
     @Override

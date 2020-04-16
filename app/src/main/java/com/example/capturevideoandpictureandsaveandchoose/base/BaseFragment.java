@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.capturevideoandpictureandsaveandchoose.utils.CommonUtils;
@@ -78,6 +79,13 @@ public abstract class BaseFragment extends Fragment implements BaseView {
     @Override
     public void showToast(String text) {
         ToastCreator.makeText(getActivity(), text, Toast.LENGTH_SHORT);
+    }
+    @Override
+    public void showItemDialog(List<String> list, DialogInterface.OnClickListener onClickListener) {
+        new AlertDialog.Builder(getActivity())
+                .setItems(list.toArray(new String[list.size()]), onClickListener)
+                .create()
+                .show();
     }
     @Override
     public String getPath(Uri uri) {

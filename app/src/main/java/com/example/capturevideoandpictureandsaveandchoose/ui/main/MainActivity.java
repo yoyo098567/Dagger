@@ -68,7 +68,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         setContentView(R.layout.activity_main);
         init();
         mPresenter.onAttached(this);
-        Log.e("ggggg", "" + sn);
 //        onStartTeleportService();
 //        mPresenter.onGetCOData("6c66fcbd-6dfe-45a2-ad6b-cbcda09b25bd", "N123456789");
 //        mPresenter.onGetMNTFCTData("345972b6-d20f-43d8-8688-d253477a6b26", "N123456789");

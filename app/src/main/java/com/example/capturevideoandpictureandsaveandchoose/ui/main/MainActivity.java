@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,6 +16,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.capturevideoandpictureandsaveandchoose.Application;
 import com.example.capturevideoandpictureandsaveandchoose.MagicFileChooser;
@@ -28,6 +30,8 @@ import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.sear
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqno.EQNORequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchpmfct.PMFCTRequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.service.TeleportService;
+import com.guoxiaoxing.phoenix.compress.video.VideoCompressor;
+import com.guoxiaoxing.phoenix.compress.video.format.MediaFormatStrategyPresets;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -61,6 +65,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     private File photoFile;
     private MainComponent mMainComponent;
     final String sn = android.os.Build.SERIAL;
+    int countFile = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,7 +226,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             }
             Log.e("gggg", "1:" + data.getClipData().getItemCount());
             //照片的uri
-            onUploadFile(uriList,getResourceString(R.string.on_upload_image));
+            onUploadFile(uriList, getResourceString(R.string.on_upload_image));
         }
 
         if (requestCode == PICK_VIDEO_FROM_GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
@@ -231,7 +236,14 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
                 Log.e("gggg", "" + uriList.get(i));
             }
-            onUploadFile(uriList,getResourceString(R.string.on_upload_vedio));
+            // TODO here====================
+            ArrayList<String> compressList = new ArrayList<>();
+            compressList.addAll(compressVideo(uriList));
+            countFile = 0;
+
+
+            //先註解測試影片壓縮功能
+            onUploadFile(compressList, getResourceString(R.string.on_upload_vedio));
             //影片的uri
         }
 
@@ -270,6 +282,73 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             startActivity(intent);
     }
 
+    private ArrayList compressVideo(ArrayList<String> uriList) {
+        final ArrayList<String> returnList = new ArrayList<>();
+        final ArrayList<File> inputFileList = new ArrayList<>();
+        final ArrayList<File> compressFileList = new ArrayList<>();
+        for (int i = 0; i < uriList.size(); i++) {
+            inputFileList.add(i, new File(uriList.get(i)));
+        }
+        int countNeedToCompress = 0;
+        for (int i = 0; i < uriList.size(); i++) {
+            try {
+                File compressCachePath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "phoenix");
+                compressCachePath.mkdir();
+                Log.e("input", inputFileList.get(i).length() + "");
+                if (inputFileList.get(i).length() / 1048576 >= 50) {
+                    compressFileList.add(countNeedToCompress, File.createTempFile("compress" + i, ".mp4", compressCachePath));
+                    countNeedToCompress++;
+
+                } else {
+                    returnList.add(uriList.get(i));
+                }
+            } catch (IOException e) {
+                Toast.makeText(this, "Failed to create temporary file.", Toast.LENGTH_LONG).show();
+                return null;
+            }
+        }
+
+
+        VideoCompressor.Listener listener = new VideoCompressor.Listener() {
+            @Override
+            public void onTranscodeProgress(double progress) {
+            }
+
+            @Override
+            public void onTranscodeCompleted() {
+                String compressPath = compressFileList.get(countFile).getAbsolutePath();
+                returnList.add(compressPath);
+                Log.e("afterCompress", "" + compressFileList.get(countFile).length());
+                Log.e("compressPath", "" + compressPath);
+                countFile++;
+
+            }
+
+            @Override
+            public void onTranscodeCanceled() {
+
+            }
+
+            @Override
+            public void onTranscodeFailed(Exception exception) {
+
+            }
+        };
+
+
+        for (int i = 0; i < compressFileList.size(); i++) {
+            try {
+                VideoCompressor.with().asyncTranscodeVideo(uriList.get(i), compressFileList.get(i).getAbsolutePath(),
+                        MediaFormatStrategyPresets.createAndroid480pFormatStrategy(), listener);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return returnList;
+
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -304,8 +383,8 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     }
 
     //如果能改成用retrofit加rxjava最好，已經嘗試過三天的，可能有缺什麼，不過緊急所以先求功能
-    private void onUploadFile(final ArrayList<String> uriList,String type) {
-//        showProgressDialog(type);
+    private void onUploadFile(final ArrayList<String> uriList, String type) {
+        showProgressDialog(type);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -347,6 +426,8 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 //                        Log.e("isSuccess",json.get("IsSuccess").toString());
                 } catch (IOException e) {
                     e.printStackTrace();
+                    dismissProgressDialog();
+                    showDialogCaveatMessage("上傳失敗");
                     Log.e("error", "" + e.getMessage());
                 }
             }

@@ -13,10 +13,11 @@ import javax.inject.Singleton;
 @Singleton
 public class LoginPreferences extends PreferencesHelper implements LoginPreferencesProvider {
     private final String SP_FiLE_NAME = LoginPreferences.class.getName();
-    private final String SP_ORG_ID = "SP_ORG_ID";
-    private final String SP_PERSON_ID = "SP_PERSON_ID";
-    private final String SP_PERSON_NAME = "SP_PERSON_NAME";
+    private final String PERSON_ID = "PERSON_ID";
+    private final String PERSON_NAME = "PERSON_NAME";
     private final String FACTORY_NUMBER="FACTORY_NUMBER";
+    private final String PERSON_PASSWORD="PERSON_PASSWORD";
+    private final String TOKEN="TOKEN";
     @Inject
     public LoginPreferences(Context context) {
         super(context);
@@ -28,18 +29,23 @@ public class LoginPreferences extends PreferencesHelper implements LoginPreferen
     }
 
     @Override
-    public void setOrgId(String mOrgId) {
-        save(Type.STRING, SP_ORG_ID, mOrgId);
+    public void setPersonPassword(String mPassword) {
+        save(Type.STRING, PERSON_PASSWORD, mPassword);
+    }
+
+    @Override
+    public void setToken(String token) {
+        save(Type.STRING, TOKEN, token);
     }
 
     @Override
     public void setPersonId(String mPersonId) {
-        save(Type.STRING, SP_PERSON_ID, mPersonId);
+        save(Type.STRING, PERSON_ID, mPersonId);
     }
 
     @Override
     public void setPersonName(String mName) {
-        save(Type.STRING, SP_PERSON_NAME, mName);
+        save(Type.STRING, PERSON_NAME, mName);
     }
 
     @Override
@@ -48,22 +54,25 @@ public class LoginPreferences extends PreferencesHelper implements LoginPreferen
     }
 
     @Override
-    public String getOrgId() {
-        return (String) get(Type.STRING, SP_ORG_ID);
-    }
-
-    @Override
     public String getPersonId() {
-        return (String) get(Type.STRING, SP_PERSON_ID);
+        return (String) get(Type.STRING, PERSON_ID);
     }
 
     @Override
     public String getPersonName() {
-        return (String) get(Type.STRING, SP_PERSON_NAME);
+        return (String) get(Type.STRING, PERSON_NAME);
     }
 
     @Override
     public String getFactoryNumber() {
         return (String) get(Type.STRING, FACTORY_NUMBER);
     }
+
+    @Override
+    public String getPersonPassword() {
+        return (String) get(Type.STRING, PERSON_PASSWORD);    }
+
+    @Override
+    public String getToken() {
+        return (String) get(Type.STRING, TOKEN);    }
 }

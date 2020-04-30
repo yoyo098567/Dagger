@@ -5,9 +5,10 @@ import com.example.capturevideoandpictureandsaveandchoose.base.BaseView;
 
 public interface LoginContract {
     interface View extends BaseView {
+        void onCompleteLogin();
     }
 
     interface Presenter<V extends View> extends BaseAttacher<V> {
-        void onLogin();
+        void onLogin(String account,String password);
     }
 }

@@ -1,6 +1,8 @@
 package com.example.capturevideoandpictureandsaveandchoose.utils.api;
 
 
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.login.LoginRequest;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.login.LoginResponse;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDRequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDResultList;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqno.EQNORequest;
@@ -28,4 +30,7 @@ public interface ApiService {
     Observable<EQKDResultList> getEQKD(@Url String url, @Body EQKDRequest mEQKDRequest);
     @POST
     Observable<EQNOResultList> getEQNO(@Url String url, @Body EQNORequest mEQNORequest);
+    @POST
+    Observable<LoginResponse> onLogin(@Url String url, @Body LoginRequest mLoginRequest);
+
 }

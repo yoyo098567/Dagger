@@ -25,8 +25,7 @@ import javax.inject.Inject;
 public class LoginActivity extends BaseActivity implements LoginContract.View,View.OnClickListener {
     EditText editAccount, editPassword;
     Button btnLogin;
-    @Inject
-    LoginPreferencesProvider mLoginPreferencesProvider;
+
 
     @Inject
     LoginContract.Presenter<LoginContract.View> mPresenter;
@@ -65,19 +64,25 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
-                mPresenter.onLogin();
-                onLogin();
+//                if(onCheckUserisEmpty()){
+                    mPresenter.onLogin(editAccount.getText().toString(),editPassword.getText().toString());
+//                }
                 break;
         }
     }
-
-    private void onLogin() {
+    private boolean onCheckUserisEmpty(){
         if ("".equals(editAccount.getText().toString())) {
             showDialogMessage(getResourceString(R.string.login_account_hint));
+            return false;
         }
         if ("".equals(editPassword.getText().toString())) {
             showDialogMessage(getResourceString(R.string.login_password_hint));
+            return false;
         }
+        return true;
+    }
+    @Override
+    public void onCompleteLogin() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }

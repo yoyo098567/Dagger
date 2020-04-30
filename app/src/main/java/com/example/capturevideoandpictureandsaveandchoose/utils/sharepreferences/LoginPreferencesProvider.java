@@ -6,7 +6,8 @@ package com.example.capturevideoandpictureandsaveandchoose.utils.sharepreference
 
 public interface LoginPreferencesProvider {
 
-    void setOrgId(String mOrgId);
+    void setPersonPassword(String mPassword);
+    void setToken(String token);
 
     void setPersonId(String mPersonId);
 
@@ -14,11 +15,13 @@ public interface LoginPreferencesProvider {
 
     void setFactoryNumber(String mNumber);
 
-    String getOrgId();
-
     String getPersonId();
 
     String getPersonName();
 
     String getFactoryNumber();
+
+    String getPersonPassword();
+
+    String getToken();
 }

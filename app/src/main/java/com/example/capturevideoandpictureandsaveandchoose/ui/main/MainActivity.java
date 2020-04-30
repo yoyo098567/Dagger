@@ -54,7 +54,6 @@ import okhttp3.Response;
 public class MainActivity extends BaseActivity implements MainContract.View, View.OnClickListener {
     @Inject
     MainContract.Presenter<MainContract.View> mPresenter;
-
     private static final int REQUEST_CAPTURE_IMAGE = 100;
     private static final int REQUEST_VIDEO_CAPTURE = 200;
     private static final int PICK_IMAGE_FROM_GALLERY_REQUEST_CODE = 300;

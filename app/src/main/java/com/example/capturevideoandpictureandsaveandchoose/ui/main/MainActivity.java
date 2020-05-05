@@ -3,7 +3,11 @@ package com.example.capturevideoandpictureandsaveandchoose.ui.main;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -16,6 +20,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.capturevideoandpictureandsaveandchoose.Application;
@@ -26,9 +31,12 @@ import com.example.capturevideoandpictureandsaveandchoose.di.component.main.Dagg
 import com.example.capturevideoandpictureandsaveandchoose.di.component.main.MainComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.module.main.MainModule;
 import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceActivity;
+import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceItemData;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDRequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqno.EQNORequest;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqno.EQNOResponse;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchpmfct.PMFCTRequest;
+import com.example.capturevideoandpictureandsaveandchoose.utils.service.NonInspectionService;
 import com.example.capturevideoandpictureandsaveandchoose.utils.service.TeleportService;
 import com.guoxiaoxing.phoenix.compress.video.VideoCompressor;
 import com.guoxiaoxing.phoenix.compress.video.format.MediaFormatStrategyPresets;
@@ -59,48 +67,73 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     private static final int PICK_IMAGE_FROM_GALLERY_REQUEST_CODE = 300;
     private static final int PICK_VIDEO_FROM_GALLERY_REQUEST_CODE = 400;
     private static final int PICK_FILE_REQUEST_CODE = 500;
+    private static final int GET_DEVICE_DATA=2021;
+    private ArrayList<ChooseDeviceItemData> deviceDataList;
+
     String imageFilePath;
-    private Button btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnDeviceEdit;
+    private Button btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnDeviceEdit, btnCentralCloud,btnChoseDevice;
+    private TextView textDeviceNumber;
     private File photoFile;
     private MainComponent mMainComponent;
     final String sn = android.os.Build.SERIAL;
     int countFile = 0;
-
+    private IntentFilter mIntentFilter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
         mPresenter.onAttached(this);
-//        onStartTeleportService();
-//        mPresenter.onGetCOData("6c66fcbd-6dfe-45a2-ad6b-cbcda09b25bd", "N123456789");
-//        mPresenter.onGetMNTFCTData("345972b6-d20f-43d8-8688-d253477a6b26", "N123456789");
-//        mPresenter.onGetPMFCTData(new PMFCTRequest("25d5cf12-a1aa-428b-8297-3dc042580e24", "N123456789", "1", "麥寮保養一廠"));
-//        mPresenter.onGetEQKDData(new EQKDRequest("378540a4-6d39-448d-ad34-1db12e61550a", "N123456789", "1", "A3"));
-//        mPresenter.onGetEQNOData(new EQNORequest("568c47b1-a332-49ee-929a-6f3cc7c7303c", "N123456789", "1", "A3", "CO"));
+        onStartTeleportService();
+        mPresenter.onGetDisposableToken(sn);
     }
 
     @Override
     public void init() {
+        btnCentralCloud = findViewById(R.id.btn_central_cloud);
         btnCapturePicture = findViewById(R.id.btnCaptureImage);
+        textDeviceNumber=findViewById(R.id.text_device_number_data);
         btnRecordVideo = findViewById(R.id.btnRecordVideo);
         btnGetImageFromGallery = findViewById(R.id.btnGetImageFromGallery);
         btnGetVideoFromGallery = findViewById(R.id.btnGetVideoFromGallery);
         btnDeviceEdit = findViewById(R.id.btn_device_edit);
-
+        btnChoseDevice=findViewById(R.id.btn_chose_device);
+        deviceDataList=new ArrayList<>();
         mMainComponent = DaggerMainComponent.builder()
                 .mainModule(new MainModule(this))
                 .baseComponent(((Application) getApplication()).getApplicationComponent())
                 .build();
         mMainComponent.inject(this);
+
+        Intent serviceIntent = new Intent(this, TeleportService.class);
+        startService(serviceIntent);
         btnCapturePicture.setOnClickListener(this);
         btnRecordVideo.setOnClickListener(this);
         btnGetImageFromGallery.setOnClickListener(this);
         btnGetVideoFromGallery.setOnClickListener(this);
         btnDeviceEdit.setOnClickListener(this);
-
-
+        btnCentralCloud.setOnClickListener(this);
+        btnChoseDevice.setOnClickListener(this);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerReceiver(mReceiver, mIntentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(mReceiver);
+        super.onPause();
+    }
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e("gggg", "getStringExtra:"+countFile+":" + intent.getStringExtra("Data"));
+        }
+    };
 
     private void pickImageFromGallery() {
 
@@ -135,7 +168,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 //        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         startActivityForResult(intent, PICK_FILE_REQUEST_CODE);
     }
-
 
     private void openCameraIntent() {
         Intent pictureIntent = new Intent(
@@ -255,6 +287,11 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             checkFileTypeAndOpen(filePath, selectedFile);
 
         }
+
+        if(requestCode == GET_DEVICE_DATA && resultCode == RESULT_OK){
+            deviceDataList= (ArrayList<ChooseDeviceItemData>) data.getSerializableExtra("NonInspectionWorkDevice");
+            Log.e("wwww",""+deviceDataList.get(0).getCompany());
+        }
     }
 
     //根據副檔名判斷用什麼應用程式開啟
@@ -347,7 +384,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         return returnList;
 
     }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -366,21 +402,50 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             case R.id.btnGetVideoFromGallery:
                 pickVideoFromGallery();
                 break;
+            case R.id.btn_central_cloud:
+                break;
             case R.id.btn_device_edit:
                 Intent intent = new Intent(this, ChooseDeviceActivity.class);
-                startActivity(intent);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("deviceDataList",deviceDataList);
+                intent.putExtras(bundle);
+                startActivityForResult(intent,GET_DEVICE_DATA);
+                break;
+            case R.id.btn_chose_device:
+                ArrayList<String> dialogString =new ArrayList<>();
+                for(ChooseDeviceItemData deviceData: deviceDataList){
+                        dialogString.add(deviceData.getDeciceId());
+                    }
+                showItemDialog(dialogString,onNonInspectionSelectDevice);
                 break;
         }
     }
-
     private void onStartTeleportService() {
         Intent intent = new Intent(this, TeleportService.class);
         Bundle serviceBundle = new Bundle();
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction("datatest");
         serviceBundle.putString("aa", "成功");
         intent.putExtras(serviceBundle);
         this.startService(intent);
     }
-
+    private void onStartNonInspectionService() {
+        //非巡檢時用 用來
+        Intent intent = new Intent(this, NonInspectionService.class);
+        Bundle serviceBundle = new Bundle();
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction("NonInspection");
+        serviceBundle.putSerializable("chooseDeviceData", deviceDataList);
+        intent.putExtras(serviceBundle);
+        this.startService(intent);
+    }
+    private DialogInterface.OnClickListener onNonInspectionSelectDevice = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            Log.e("gggg",""+deviceDataList.get(which).getDeciceId());
+            textDeviceNumber.setText(deviceDataList.get(which).getDeciceId());
+        }
+    };
     //如果能改成用retrofit加rxjava最好，已經嘗試過三天的，可能有缺什麼，不過緊急所以先求功能
     private void onUploadFile(final ArrayList<String> uriList, String type) {
         showProgressDialog(type);
@@ -432,4 +497,5 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             }
         }).start();
     }
+
 }

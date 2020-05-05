@@ -65,7 +65,8 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
         switch (view.getId()) {
             case R.id.btn_login:
 //                if(onCheckUserisEmpty()){
-                    mPresenter.onLogin(editAccount.getText().toString(),editPassword.getText().toString());
+//                    mPresenter.onLogin(editAccount.getText().toString(),editPassword.getText().toString());
+                onCompleteLogin();
 //                }
                 break;
         }

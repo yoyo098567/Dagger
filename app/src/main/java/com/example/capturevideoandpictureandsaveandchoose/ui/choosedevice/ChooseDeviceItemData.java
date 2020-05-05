@@ -19,7 +19,7 @@ public class ChooseDeviceItemData implements Serializable {
     private String filePath="";
     private String uploadEmployees="";
     private boolean backgroundChange=false;
-
+    private boolean checkEndItem=false;
     public String getMaintenancePlantCompanyId() {
         return maintenancePlantCompanyId;
     }
@@ -150,5 +150,13 @@ public class ChooseDeviceItemData implements Serializable {
 
     public void setBackgroundChange(boolean backgroundChange) {
         this.backgroundChange = backgroundChange;
+    }
+
+    public boolean isCheckEndItem() {
+        return checkEndItem;
+    }
+
+    public void setCheckEndItem(boolean checkEndItem) {
+        this.checkEndItem = checkEndItem;
     }
 }

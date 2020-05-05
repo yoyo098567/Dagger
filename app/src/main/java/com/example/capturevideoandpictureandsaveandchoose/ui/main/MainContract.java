@@ -12,11 +12,7 @@ public interface MainContract {
     }
 
     interface Presenter<V extends MainContract.View> extends BaseAttacher<V> {
-        void onGetCOData(String authorizedId,String idNo);
-        void onGetMNTFCTData(String authorizedId,String idNo);
-        void onGetPMFCTData(PMFCTRequest mPMFCTRequest);
-        void onGetEQKDData(EQKDRequest mEQKDRequest);
-        void onGetEQNOData(EQNORequest mEQNORequest);
+        void onGetDisposableToken(String DeviceId);
 
     }
 }

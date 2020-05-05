@@ -43,6 +43,7 @@
     <string name="api_on_getEQKD">SearchEQKD</string>
     <string name="api_on_getEQNO">SearchEQNO</string>
     <string name="api_on_Login">AccessToken</string>
+    <string name="api_on_DisposableToken">DisposableToken</string>
 
     <!--addDevice部分-->
     <string name="get_pmfct_error_no_data">保養廠無資料</string>
@@ -51,7 +52,7 @@
     <string name="add_device_no_maintenance_plant_error">請選擇保養廠</string>
     <string name="add_device_no_company_error">請選擇公司</string>
     <string name="add_device_no_production_plant_error">請選擇生產廠</string>
-    <string name="add_device_no_device_categry_error">請選擇生產廠</string>
+    <string name="add_device_no_device_categry_error">請選擇設備類別</string>
     <string name="add_device_no_data_maintenance_plant">保養廠還未填寫</string>
     <string name="add_device_no_data_company">公司還未填寫</string>
     <string name="add_device_no_data_production_plant">生產廠還未填寫</string>

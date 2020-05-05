@@ -63,6 +63,7 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
         textRecordDate = findViewById(R.id.text_record_date_data);
         textFile = findViewById(R.id.text_file_data);
         textUploadPerson = findViewById(R.id.text_upload_person_data);
+        editKeynote=findViewById(R.id.edit_keynote_data);
         btnBrowse = findViewById(R.id.btn_browse);
         btnUpload = findViewById(R.id.btn_upload);
         mAddDeviceComponent = DaggerAddDeviceComponent.builder()
@@ -225,6 +226,7 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
     };
 
     private void uploadDevice(){
+        mChooseDeviceItemData.setKeynote(editKeynote.getText().toString());
         if (mChooseDeviceItemData.getMaintenancePlantId().equals("")){
             showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_maintenance_plant));
         }else if(mChooseDeviceItemData.getCompanyId().equals("")){
@@ -237,9 +239,11 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
             showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_device_id));
         }else if(mChooseDeviceItemData.getKeynote().equals("")){
             showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_keynote));
-        }else if(mChooseDeviceItemData.getFilePath().equals("")){
-            showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_file));
-        }else{
+        }
+//        else if(mChooseDeviceItemData.getFilePath().equals("")){
+//            showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_file));
+//        }
+        else{
             Intent intent = new Intent();
             intent.putExtra("device",mChooseDeviceItemData);
             setResult(RESULT_OK, intent);

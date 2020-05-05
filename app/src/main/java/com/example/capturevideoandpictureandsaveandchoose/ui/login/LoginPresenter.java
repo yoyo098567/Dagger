@@ -41,12 +41,12 @@ public class LoginPresenter <V extends LoginContract.View> extends BasePresenter
                             getView().onCompleteLogin();
                         }else{
                             getView().showDialogCaveatMessage("登入失敗");
-                        }
+                    }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        getView().showDialogCaveatMessage("登入失敗");
                     }
 
                     @Override

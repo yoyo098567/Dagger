@@ -19,6 +19,8 @@ public class ChooseDeviceAdapter extends RecyclerView.Adapter {
     private int CurrentPosition=0;
     public void setDataList(ArrayList<ChooseDeviceItemData> dataList){
         this.dataList=dataList;
+        notifyDataSetChanged();
+
     }
     public int getCurrentPosition(){
         return CurrentPosition;

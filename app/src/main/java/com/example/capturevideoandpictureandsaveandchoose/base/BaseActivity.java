@@ -23,6 +23,7 @@ import com.example.capturevideoandpictureandsaveandchoose.utils.ToastCreator;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by 5*N on 2017/12/22
@@ -47,6 +48,13 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         mProgressDialog.show();
     }
 
+    @Override
+    public void showItemDialog(List<String> list, DialogInterface.OnClickListener onClickListener) {
+        new AlertDialog.Builder(this)
+                .setItems(list.toArray(new String[list.size()]), onClickListener)
+                .create()
+                .show();
+    }
     @Override
     public void showProgressDialog(String text) {
         dismissProgressDialog();

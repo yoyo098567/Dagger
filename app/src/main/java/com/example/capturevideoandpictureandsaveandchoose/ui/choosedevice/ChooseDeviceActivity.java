@@ -59,15 +59,12 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
         btnBack.setOnClickListener(this);
         btnDelete.setOnClickListener(this);
         btnAdd.setOnClickListener(this);
-        chooseDeviceItemDataList=new ArrayList<>();
+        Bundle bundle=getIntent().getExtras();
+
+        chooseDeviceItemDataList= (ArrayList<ChooseDeviceItemData>) bundle.getSerializable("deviceDataList");
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager); // 必須設置 LayoutManager
         chooseDeviceAdapter = new ChooseDeviceAdapter();
-        for (int i=0;i<3;i++){
-            ChooseDeviceItemData chooseDeviceItemData=new ChooseDeviceItemData();
-            chooseDeviceItemData.setDeciceId("aaaa"+i);
-            chooseDeviceItemDataList.add(chooseDeviceItemData);
-        }
         chooseDeviceAdapter.setDataList(chooseDeviceItemDataList);
         recyclerView.setAdapter(chooseDeviceAdapter);
     }
@@ -79,22 +76,41 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
                 startActivityForResult(intent, ADD_DEVICE_NUMBER);
                 break;
             case R.id.btn_delete:
-                Log.e("gggg",""+chooseDeviceAdapter.getCurrentPosition());
-                Log.e("gggg",""+chooseDeviceAdapter.getDataList().get(chooseDeviceAdapter.getCurrentPosition()).getBackgroundChange());
-
+                if (chooseDeviceItemDataList.size()>0){
+                    chooseDeviceItemDataList.remove(chooseDeviceAdapter.getCurrentPosition());
+                    chooseDeviceAdapter.setDataList(chooseDeviceItemDataList);
+                }
                 break;
             case R.id.btn_back:
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
+                setResult(RESULT_OK, resultIntent);
                 finish();
                 break;
         }
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent resultIntent = new Intent();
+        chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-2).setCheckEndItem(false);
+        chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-1).setCheckEndItem(true);
+        resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
+        setResult(RESULT_OK, resultIntent);
+        finish();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ChooseDeviceItemData mChooseDeviceItemData;
         if(requestCode==ADD_DEVICE_NUMBER && resultCode==RESULT_OK){
-            Log.e("gggg",""+data.getExtras().getString("a"));
+            mChooseDeviceItemData= (ChooseDeviceItemData) data.getSerializableExtra("device");
+            Log.e("wwww1",""+mChooseDeviceItemData.getCompany());
+            chooseDeviceAdapter.addDataToDataList(mChooseDeviceItemData);
+        }else {
+            showDialogCaveatMessage(getResourceString(R.string.add_device_error_on_choose_device_activity));
         }
-        String result = data.getExtras().getString("result");//得到新Activity 关闭后返回的数据
     }
 
     @Override

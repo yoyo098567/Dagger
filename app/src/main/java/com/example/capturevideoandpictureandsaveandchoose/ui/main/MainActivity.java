@@ -3,11 +3,16 @@ package com.example.capturevideoandpictureandsaveandchoose.ui.main;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,6 +20,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.capturevideoandpictureandsaveandchoose.Application;
 import com.example.capturevideoandpictureandsaveandchoose.MagicFileChooser;
@@ -24,10 +31,15 @@ import com.example.capturevideoandpictureandsaveandchoose.di.component.main.Dagg
 import com.example.capturevideoandpictureandsaveandchoose.di.component.main.MainComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.module.main.MainModule;
 import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceActivity;
+import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceItemData;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDRequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqno.EQNORequest;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqno.EQNOResponse;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchpmfct.PMFCTRequest;
+import com.example.capturevideoandpictureandsaveandchoose.utils.service.NonInspectionService;
 import com.example.capturevideoandpictureandsaveandchoose.utils.service.TeleportService;
+import com.guoxiaoxing.phoenix.compress.video.VideoCompressor;
+import com.guoxiaoxing.phoenix.compress.video.format.MediaFormatStrategyPresets;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,54 +62,78 @@ import okhttp3.Response;
 public class MainActivity extends BaseActivity implements MainContract.View, View.OnClickListener {
     @Inject
     MainContract.Presenter<MainContract.View> mPresenter;
-
     private static final int REQUEST_CAPTURE_IMAGE = 100;
     private static final int REQUEST_VIDEO_CAPTURE = 200;
     private static final int PICK_IMAGE_FROM_GALLERY_REQUEST_CODE = 300;
     private static final int PICK_VIDEO_FROM_GALLERY_REQUEST_CODE = 400;
     private static final int PICK_FILE_REQUEST_CODE = 500;
+    private static final int GET_DEVICE_DATA=2021;
+    private ArrayList<ChooseDeviceItemData> deviceDataList;
+
     String imageFilePath;
-    private Button btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnDeviceEdit;
+    private Button btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnDeviceEdit, btnCentralCloud,btnChoseDevice;
+    private TextView textDeviceNumber;
     private File photoFile;
     private MainComponent mMainComponent;
     final String sn = android.os.Build.SERIAL;
-
+    int countFile = 0;
+    private IntentFilter mIntentFilter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
         mPresenter.onAttached(this);
-        Log.e("ggggg", "" + sn);
-//        onStartTeleportService();
-//        mPresenter.onGetCOData("6c66fcbd-6dfe-45a2-ad6b-cbcda09b25bd", "N123456789");
-//        mPresenter.onGetMNTFCTData("345972b6-d20f-43d8-8688-d253477a6b26", "N123456789");
-//        mPresenter.onGetPMFCTData(new PMFCTRequest("25d5cf12-a1aa-428b-8297-3dc042580e24", "N123456789", "1", "麥寮保養一廠"));
-//        mPresenter.onGetEQKDData(new EQKDRequest("378540a4-6d39-448d-ad34-1db12e61550a", "N123456789", "1", "A3"));
-//        mPresenter.onGetEQNOData(new EQNORequest("568c47b1-a332-49ee-929a-6f3cc7c7303c", "N123456789", "1", "A3", "CO"));
+        onStartTeleportService();
+        mPresenter.onGetDisposableToken(sn);
     }
 
     @Override
     public void init() {
+        btnCentralCloud = findViewById(R.id.btn_central_cloud);
         btnCapturePicture = findViewById(R.id.btnCaptureImage);
+        textDeviceNumber=findViewById(R.id.text_device_number_data);
         btnRecordVideo = findViewById(R.id.btnRecordVideo);
         btnGetImageFromGallery = findViewById(R.id.btnGetImageFromGallery);
         btnGetVideoFromGallery = findViewById(R.id.btnGetVideoFromGallery);
         btnDeviceEdit = findViewById(R.id.btn_device_edit);
-
+        btnChoseDevice=findViewById(R.id.btn_chose_device);
+        deviceDataList=new ArrayList<>();
         mMainComponent = DaggerMainComponent.builder()
                 .mainModule(new MainModule(this))
                 .baseComponent(((Application) getApplication()).getApplicationComponent())
                 .build();
         mMainComponent.inject(this);
+
+        Intent serviceIntent = new Intent(this, TeleportService.class);
+        startService(serviceIntent);
         btnCapturePicture.setOnClickListener(this);
         btnRecordVideo.setOnClickListener(this);
         btnGetImageFromGallery.setOnClickListener(this);
         btnGetVideoFromGallery.setOnClickListener(this);
         btnDeviceEdit.setOnClickListener(this);
-
-
+        btnCentralCloud.setOnClickListener(this);
+        btnChoseDevice.setOnClickListener(this);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerReceiver(mReceiver, mIntentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(mReceiver);
+        super.onPause();
+    }
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e("gggg", "getStringExtra:"+countFile+":" + intent.getStringExtra("Data"));
+        }
+    };
 
     private void pickImageFromGallery() {
 
@@ -132,7 +168,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 //        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         startActivityForResult(intent, PICK_FILE_REQUEST_CODE);
     }
-
 
     private void openCameraIntent() {
         Intent pictureIntent = new Intent(
@@ -222,7 +257,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             }
             Log.e("gggg", "1:" + data.getClipData().getItemCount());
             //照片的uri
-            onUploadFile(uriList);
+            onUploadFile(uriList, getResourceString(R.string.on_upload_image));
         }
 
         if (requestCode == PICK_VIDEO_FROM_GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
@@ -232,7 +267,14 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
                 Log.e("gggg", "" + uriList.get(i));
             }
-            onUploadFile(uriList);
+            // TODO here====================
+            ArrayList<String> compressList = new ArrayList<>();
+            compressList.addAll(compressVideo(uriList));
+            countFile = 0;
+
+
+            //先註解測試影片壓縮功能
+            onUploadFile(compressList, getResourceString(R.string.on_upload_vedio));
             //影片的uri
         }
 
@@ -244,6 +286,11 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
             checkFileTypeAndOpen(filePath, selectedFile);
 
+        }
+
+        if(requestCode == GET_DEVICE_DATA && resultCode == RESULT_OK){
+            deviceDataList= (ArrayList<ChooseDeviceItemData>) data.getSerializableExtra("NonInspectionWorkDevice");
+            Log.e("wwww",""+deviceDataList.get(0).getCompany());
         }
     }
 
@@ -271,6 +318,72 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             startActivity(intent);
     }
 
+    private ArrayList compressVideo(ArrayList<String> uriList) {
+        final ArrayList<String> returnList = new ArrayList<>();
+        final ArrayList<File> inputFileList = new ArrayList<>();
+        final ArrayList<File> compressFileList = new ArrayList<>();
+        for (int i = 0; i < uriList.size(); i++) {
+            inputFileList.add(i, new File(uriList.get(i)));
+        }
+        int countNeedToCompress = 0;
+        for (int i = 0; i < uriList.size(); i++) {
+            try {
+                File compressCachePath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "phoenix");
+                compressCachePath.mkdir();
+                Log.e("input", inputFileList.get(i).length() + "");
+                if (inputFileList.get(i).length() / 1048576 >= 50) {
+                    compressFileList.add(countNeedToCompress, File.createTempFile("compress" + i, ".mp4", compressCachePath));
+                    countNeedToCompress++;
+
+                } else {
+                    returnList.add(uriList.get(i));
+                }
+            } catch (IOException e) {
+                Toast.makeText(this, "Failed to create temporary file.", Toast.LENGTH_LONG).show();
+                return null;
+            }
+        }
+
+
+        VideoCompressor.Listener listener = new VideoCompressor.Listener() {
+            @Override
+            public void onTranscodeProgress(double progress) {
+            }
+
+            @Override
+            public void onTranscodeCompleted() {
+                String compressPath = compressFileList.get(countFile).getAbsolutePath();
+                returnList.add(compressPath);
+                Log.e("afterCompress", "" + compressFileList.get(countFile).length());
+                Log.e("compressPath", "" + compressPath);
+                countFile++;
+
+            }
+
+            @Override
+            public void onTranscodeCanceled() {
+
+            }
+
+            @Override
+            public void onTranscodeFailed(Exception exception) {
+
+            }
+        };
+
+
+        for (int i = 0; i < compressFileList.size(); i++) {
+            try {
+                VideoCompressor.with().asyncTranscodeVideo(uriList.get(i), compressFileList.get(i).getAbsolutePath(),
+                        MediaFormatStrategyPresets.createAndroid480pFormatStrategy(), listener);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return returnList;
+
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -289,24 +402,53 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             case R.id.btnGetVideoFromGallery:
                 pickVideoFromGallery();
                 break;
+            case R.id.btn_central_cloud:
+                break;
             case R.id.btn_device_edit:
                 Intent intent = new Intent(this, ChooseDeviceActivity.class);
-                startActivity(intent);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("deviceDataList",deviceDataList);
+                intent.putExtras(bundle);
+                startActivityForResult(intent,GET_DEVICE_DATA);
+                break;
+            case R.id.btn_chose_device:
+                ArrayList<String> dialogString =new ArrayList<>();
+                for(ChooseDeviceItemData deviceData: deviceDataList){
+                        dialogString.add(deviceData.getDeciceId());
+                    }
+                showItemDialog(dialogString,onNonInspectionSelectDevice);
                 break;
         }
     }
-
     private void onStartTeleportService() {
         Intent intent = new Intent(this, TeleportService.class);
         Bundle serviceBundle = new Bundle();
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction("datatest");
         serviceBundle.putString("aa", "成功");
         intent.putExtras(serviceBundle);
         this.startService(intent);
     }
-
+    private void onStartNonInspectionService() {
+        //非巡檢時用 用來
+        Intent intent = new Intent(this, NonInspectionService.class);
+        Bundle serviceBundle = new Bundle();
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction("NonInspection");
+        serviceBundle.putSerializable("chooseDeviceData", deviceDataList);
+        intent.putExtras(serviceBundle);
+        this.startService(intent);
+    }
+    private DialogInterface.OnClickListener onNonInspectionSelectDevice = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            Log.e("gggg",""+deviceDataList.get(which).getDeciceId());
+            textDeviceNumber.setText(deviceDataList.get(which).getDeciceId());
+        }
+    };
     //如果能改成用retrofit加rxjava最好，已經嘗試過三天的，可能有缺什麼，不過緊急所以先求功能
-    private void onUploadFile(final ArrayList<String> uriList) {
-        showProgressDialog(getResourceString(R.string.on_upload_image));
+    private void onUploadFile(final ArrayList<String> uriList, String type) {
+        showProgressDialog(type);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -348,9 +490,12 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 //                        Log.e("isSuccess",json.get("IsSuccess").toString());
                 } catch (IOException e) {
                     e.printStackTrace();
+                    dismissProgressDialog();
+                    showDialogCaveatMessage("上傳失敗");
                     Log.e("error", "" + e.getMessage());
                 }
             }
         }).start();
     }
+
 }

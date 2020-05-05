@@ -6,12 +6,15 @@ import android.net.Uri;
 
 import androidx.annotation.StringRes;
 
+import java.util.List;
+
 /**
  * Created by 5*N on 2017/12/22
  */
 
 public interface BaseView {
     void init();
+    void showItemDialog(List<String> list, DialogInterface.OnClickListener onClickListener);
 
     void showProgressDialog(@StringRes int text);
     void showProgressDialog(String text);

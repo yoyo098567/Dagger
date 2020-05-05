@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.example.capturevideoandpictureandsaveandchoose"
-        minSdkVersion 19
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -47,4 +47,7 @@ dependencies {
     //    dagger2
     implementation 'com.google.dagger:dagger:2.13'
     annotationProcessor "com.google.dagger:dagger-compiler:2.13"
+
+    implementation 'com.github.guoxiaoxing:phoenix-compress-video:1.0.15'
+
 }

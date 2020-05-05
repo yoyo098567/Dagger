@@ -6,14 +6,13 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.example.capturevideoandpictureandsaveandchoose.R;
-import com.example.capturevideoandpictureandsaveandchoose.ui.main.MainActivity;
+import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceItemData;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.ApiService;
-import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchco.CORequest;
-import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchco.COResponse;
-import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchco.COResultList;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.addchkInfo.AddChkInfoRequest;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.addchkInfo.AddChkInfoResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -28,11 +27,13 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class TeleportService extends Service {
+public class NonInspectionService extends Service {
     private Retrofit retrofit;
     private Handler handler;
     private int useApiCount;
     private int deviceCount;
+    private ArrayList<AddChkInfoRequest> apiDataList;
+    private String AUTHORIZED_ID="e1569364-6066-48af-8f47-8f11bb4916dd";
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -50,7 +51,19 @@ public class TeleportService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         handler.post(periodicUpdate);
-        String a=intent.getStringExtra("aa");
+        apiDataList=new ArrayList<>();
+        ArrayList<ChooseDeviceItemData> chooseDeviceItemDataList = (ArrayList<ChooseDeviceItemData>) intent.getSerializableExtra("chooseDeviceData");
+        for(ChooseDeviceItemData chooseDeviceItemData:chooseDeviceItemDataList){
+            AddChkInfoRequest mData=new AddChkInfoRequest();
+            mData.setmCO(chooseDeviceItemData.getCompanyId());
+            mData.setmCONM(chooseDeviceItemData.getCompany());
+            mData.setmPMFCT(chooseDeviceItemData.getProductionPlant());
+            mData.setmPMFCTNM(chooseDeviceItemData.getProductionPlantId());
+            mData.setmEQNO(chooseDeviceItemData.getDeciceId());
+            //要取巡檢APP資料的 暫時代替
+            mData.setmOPCO(chooseDeviceItemData.getCompanyId());
+            mData.setmOPPLD(chooseDeviceItemData.getCompanyId());
+        }
         deviceCount=0;
         // TODO Auto-generated method stub
         return super.onStartCommand(intent, flags, startId);
@@ -104,39 +117,31 @@ public class TeleportService extends Service {
             broadcastIntent.setAction("datatest");
             broadcastIntent.putExtra("Data", "Broadcast Data");
             sendBroadcast(broadcastIntent);
-
             ApiService apiService=retrofit.create(ApiService.class);
-//            final CORequest mCORequest = new CORequest("6c66fcbd-6dfe-45a2-ad6b-cbcda09b25bd","N123456789");
-//            CompositeDisposable compositeDisposable=new CompositeDisposable();
-//            compositeDisposable.add(apiService.getCO("SearchCO", mCORequest)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribeWith(new DisposableObserver<COResultList>() {
-//
-//                        @Override
-//                        public void onNext(COResultList mCOResultList) {
-//                            for(COResponse mCOResponse :mCOResultList.getcOResponseList()){
-//                                Log.e("wwwww","getcO:"+mCOResponse.getcO());
-//                                Log.e("wwwww","getcONM:"+mCOResponse.getcONM());
-//                            }
-//                            useApiCount++;
-//                            Log.e("wwwww","getcONM:"+useApiCount);
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable e) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onComplete() {
-//                            if(useApiCount>1){
-//                                handler.removeCallbacks(periodicUpdate);
-//                                stopSelf();
-//                            }
-//                        }
-//                    })
-//            );
+            AddChkInfoRequest mAddChkInfoRequest=new AddChkInfoRequest();
+            CompositeDisposable compositeDisposable=new CompositeDisposable();
+            compositeDisposable.add(apiService.onAddChkInfo("AddChkInfo", mAddChkInfoRequest)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableObserver<AddChkInfoResponse>() {
+
+                        @Override
+                        public void onNext(AddChkInfoResponse addChkInfoResponse) {
+                            Log.e("ggggg",""+addChkInfoResponse.getMessage());
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    })
+            );
+
         }
     };
 }

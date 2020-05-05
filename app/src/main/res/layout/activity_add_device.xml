@@ -59,6 +59,8 @@
         android:id="@+id/text_record_date_data"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:textSize="15sp"
+        android:gravity="center_vertical"
         android:background="@drawable/bg_add_device_rectangle"
         app:layout_constraintBottom_toBottomOf="@id/text_record_date"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
@@ -80,10 +82,12 @@
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"
         app:layout_constraintTop_toBottomOf="@id/text_record_date" />
 
-    <Spinner
-        android:id="@+id/spinner_maintenance_plant"
+    <TextView
+        android:id="@+id/text_value_maintenance_plant"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:textSize="15sp"
+        android:gravity="center_vertical"
         android:background="@drawable/bg_add_device_rectangle"
         app:layout_constraintBottom_toBottomOf="@id/text_maintenance_plant"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
@@ -97,7 +101,7 @@
         android:layout_marginEnd="10dp"
         android:src="@drawable/spinner_down_arrow"
         app:layout_constraintBottom_toBottomOf="@id/text_maintenance_plant"
-        app:layout_constraintEnd_toEndOf="@id/spinner_maintenance_plant"
+        app:layout_constraintEnd_toEndOf="@id/text_value_maintenance_plant"
         app:layout_constraintHeight_percent="0.05"
         app:layout_constraintTop_toTopOf="@id/text_maintenance_plant"
         app:layout_constraintWidth_percent="0.05" />
@@ -116,10 +120,12 @@
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"
         app:layout_constraintTop_toBottomOf="@id/text_maintenance_plant" />
 
-    <Spinner
-        android:id="@+id/spinner_company"
+    <TextView
+        android:id="@+id/text_value_company"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:textSize="15sp"
+        android:gravity="center_vertical"
         android:background="@drawable/bg_add_device_rectangle"
         app:layout_constraintBottom_toBottomOf="@id/text_company"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
@@ -132,10 +138,10 @@
         android:layout_height="0dp"
         android:layout_marginEnd="10dp"
         android:src="@drawable/spinner_down_arrow"
-        app:layout_constraintBottom_toBottomOf="@id/spinner_company"
-        app:layout_constraintEnd_toEndOf="@id/spinner_company"
+        app:layout_constraintBottom_toBottomOf="@id/text_value_company"
+        app:layout_constraintEnd_toEndOf="@id/text_value_company"
         app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintTop_toTopOf="@id/spinner_company"
+        app:layout_constraintTop_toTopOf="@id/text_value_company"
         app:layout_constraintWidth_percent="0.05" />
 
     <!--  生產廠  -->
@@ -151,10 +157,12 @@
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"
         app:layout_constraintTop_toBottomOf="@id/text_company" />
 
-    <Spinner
-        android:id="@+id/spinner_production_plant"
+    <TextView
+        android:id="@+id/text_value_production_plant"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:textSize="15sp"
+        android:gravity="center_vertical"
         android:background="@drawable/bg_add_device_rectangle"
         app:layout_constraintBottom_toBottomOf="@id/text_production_plant"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
@@ -167,10 +175,10 @@
         android:layout_height="0dp"
         android:layout_marginEnd="10dp"
         android:src="@drawable/spinner_down_arrow"
-        app:layout_constraintBottom_toBottomOf="@id/spinner_production_plant"
-        app:layout_constraintEnd_toEndOf="@id/spinner_production_plant"
+        app:layout_constraintBottom_toBottomOf="@id/text_value_production_plant"
+        app:layout_constraintEnd_toEndOf="@id/text_value_production_plant"
         app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintTop_toTopOf="@id/spinner_production_plant"
+        app:layout_constraintTop_toTopOf="@id/text_value_production_plant"
         app:layout_constraintWidth_percent="0.05" />
 
     <!--  設備類別  -->
@@ -186,10 +194,12 @@
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"
         app:layout_constraintTop_toBottomOf="@id/text_production_plant" />
 
-    <Spinner
-        android:id="@+id/spinner_device_category"
+    <TextView
+        android:id="@+id/text_value_device_category"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:textSize="15sp"
+        android:gravity="center_vertical"
         android:background="@drawable/bg_add_device_rectangle"
         app:layout_constraintBottom_toBottomOf="@id/text_device_category"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
@@ -202,10 +212,10 @@
         android:layout_height="0dp"
         android:layout_marginEnd="10dp"
         android:src="@drawable/spinner_down_arrow"
-        app:layout_constraintBottom_toBottomOf="@id/spinner_device_category"
-        app:layout_constraintEnd_toEndOf="@id/spinner_device_category"
+        app:layout_constraintBottom_toBottomOf="@id/text_value_device_category"
+        app:layout_constraintEnd_toEndOf="@id/text_value_device_category"
         app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintTop_toTopOf="@id/spinner_device_category"
+        app:layout_constraintTop_toTopOf="@id/text_value_device_category"
         app:layout_constraintWidth_percent="0.05" />
 
     <!--  設備編號  -->
@@ -221,10 +231,12 @@
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"
         app:layout_constraintTop_toBottomOf="@id/text_device_category" />
 
-    <Spinner
-        android:id="@+id/spinner_device_number"
+    <TextView
+        android:id="@+id/text_value_device_number"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:textSize="15sp"
+        android:gravity="center_vertical"
         android:background="@drawable/bg_add_device_rectangle"
         app:layout_constraintBottom_toBottomOf="@id/text_device_number"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
@@ -237,10 +249,10 @@
         android:layout_height="0dp"
         android:layout_marginEnd="10dp"
         android:src="@drawable/spinner_down_arrow"
-        app:layout_constraintBottom_toBottomOf="@id/spinner_device_number"
-        app:layout_constraintEnd_toEndOf="@id/spinner_device_number"
+        app:layout_constraintBottom_toBottomOf="@id/text_value_device_number"
+        app:layout_constraintEnd_toEndOf="@id/text_value_device_number"
         app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintTop_toTopOf="@id/spinner_device_number"
+        app:layout_constraintTop_toTopOf="@id/text_value_device_number"
         app:layout_constraintWidth_percent="0.05" />
 
     <!--  主旨說明  -->
@@ -257,10 +269,12 @@
         app:layout_constraintTop_toBottomOf="@id/text_device_number" />
 
     <EditText
-        android:id="@+id/text_keynote_data"
+        android:id="@+id/edit_keynote_data"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:maxLines="1"
+        android:textSize="15sp"
+        android:gravity="center_vertical"
         android:background="@drawable/bg_add_device_rectangle"
         app:layout_constraintBottom_toBottomOf="@id/text_keynote"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
@@ -287,6 +301,8 @@
         android:id="@+id/text_file_data"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:textSize="15sp"
+        android:gravity="center_vertical"
         android:background="@drawable/bg_add_device_rectangle"
         app:layout_constraintBottom_toBottomOf="@id/text_file"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
@@ -324,6 +340,8 @@
         android:id="@+id/text_upload_person_data"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:textSize="15sp"
+        android:gravity="center_vertical"
         android:background="@drawable/bg_add_device_rectangle"
         app:layout_constraintBottom_toBottomOf="@id/text_upload_person"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"

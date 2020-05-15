@@ -94,11 +94,20 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
     public void onBackPressed() {
         super.onBackPressed();
         Intent resultIntent = new Intent();
-        chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-2).setCheckEndItem(false);
-        chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-1).setCheckEndItem(true);
-        resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
-        setResult(RESULT_OK, resultIntent);
-        finish();
+        if(chooseDeviceItemDataList.size()>0){
+            if(chooseDeviceItemDataList.size()>1){
+                chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-2).setCheckEndItem(false);
+                chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-1).setCheckEndItem(true);
+                resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
+            }else{
+                chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-1).setCheckEndItem(true);
+                resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
+            }
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        }else {
+            fileList();
+        }
     }
 
     @Override

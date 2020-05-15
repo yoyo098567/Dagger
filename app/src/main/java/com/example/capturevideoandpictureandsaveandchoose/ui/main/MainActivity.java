@@ -67,17 +67,18 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     private static final int PICK_IMAGE_FROM_GALLERY_REQUEST_CODE = 300;
     private static final int PICK_VIDEO_FROM_GALLERY_REQUEST_CODE = 400;
     private static final int PICK_FILE_REQUEST_CODE = 500;
-    private static final int GET_DEVICE_DATA=2021;
+    private static final int GET_DEVICE_DATA = 2021;
     private ArrayList<ChooseDeviceItemData> deviceDataList;
 
     String imageFilePath;
-    private Button btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnDeviceEdit, btnCentralCloud,btnChoseDevice;
+    private Button btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnDeviceEdit, btnCentralCloud, btnChoseDevice;
     private TextView textDeviceNumber;
     private File photoFile;
     private MainComponent mMainComponent;
     final String sn = android.os.Build.SERIAL;
     int countFile = 0;
     private IntentFilter mIntentFilter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,13 +93,13 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     public void init() {
         btnCentralCloud = findViewById(R.id.btn_central_cloud);
         btnCapturePicture = findViewById(R.id.btnCaptureImage);
-        textDeviceNumber=findViewById(R.id.text_device_number_data);
+        textDeviceNumber = findViewById(R.id.text_device_number_data);
         btnRecordVideo = findViewById(R.id.btnRecordVideo);
         btnGetImageFromGallery = findViewById(R.id.btnGetImageFromGallery);
         btnGetVideoFromGallery = findViewById(R.id.btnGetVideoFromGallery);
         btnDeviceEdit = findViewById(R.id.btn_device_edit);
-        btnChoseDevice=findViewById(R.id.btn_chose_device);
-        deviceDataList=new ArrayList<>();
+        btnChoseDevice = findViewById(R.id.btn_chose_device);
+        deviceDataList = new ArrayList<>();
         mMainComponent = DaggerMainComponent.builder()
                 .mainModule(new MainModule(this))
                 .baseComponent(((Application) getApplication()).getApplicationComponent())
@@ -131,7 +132,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.e("gggg", "getStringExtra:"+countFile+":" + intent.getStringExtra("Data"));
+            Log.e("gggg", "getStringExtra:" + countFile + ":" + intent.getStringExtra("Data"));
         }
     };
 
@@ -288,9 +289,8 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
         }
 
-        if(requestCode == GET_DEVICE_DATA && resultCode == RESULT_OK){
-            deviceDataList= (ArrayList<ChooseDeviceItemData>) data.getSerializableExtra("NonInspectionWorkDevice");
-            Log.e("wwww",""+deviceDataList.get(0).getCompany());
+        if (requestCode == GET_DEVICE_DATA && resultCode == RESULT_OK) {
+            deviceDataList = (ArrayList<ChooseDeviceItemData>) data.getSerializableExtra("NonInspectionWorkDevice");
         }
     }
 
@@ -384,6 +384,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         return returnList;
 
     }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -406,20 +407,21 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 break;
             case R.id.btn_device_edit:
                 Intent intent = new Intent(this, ChooseDeviceActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putSerializable("deviceDataList",deviceDataList);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("deviceDataList", deviceDataList);
                 intent.putExtras(bundle);
-                startActivityForResult(intent,GET_DEVICE_DATA);
+                startActivityForResult(intent, GET_DEVICE_DATA);
                 break;
             case R.id.btn_chose_device:
-                ArrayList<String> dialogString =new ArrayList<>();
-                for(ChooseDeviceItemData deviceData: deviceDataList){
-                        dialogString.add(deviceData.getDeciceId());
-                    }
-                showItemDialog(dialogString,onNonInspectionSelectDevice);
+                ArrayList<String> dialogDeviceIDString = new ArrayList<>();
+                for (ChooseDeviceItemData deviceData : deviceDataList) {
+                    dialogDeviceIDString.add(deviceData.getDeciceId());
+                }
+                showItemDialog(dialogDeviceIDString, onNonInspectionSelectDevice);
                 break;
         }
     }
+
     private void onStartTeleportService() {
         Intent intent = new Intent(this, TeleportService.class);
         Bundle serviceBundle = new Bundle();
@@ -429,6 +431,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         intent.putExtras(serviceBundle);
         this.startService(intent);
     }
+
     private void onStartNonInspectionService() {
         //非巡檢時用 用來
         Intent intent = new Intent(this, NonInspectionService.class);
@@ -439,13 +442,15 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         intent.putExtras(serviceBundle);
         this.startService(intent);
     }
+
     private DialogInterface.OnClickListener onNonInspectionSelectDevice = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            Log.e("gggg",""+deviceDataList.get(which).getDeciceId());
+            Log.e("gggg", "" + deviceDataList.get(which).getDeciceId());
             textDeviceNumber.setText(deviceDataList.get(which).getDeciceId());
         }
     };
+
     //如果能改成用retrofit加rxjava最好，已經嘗試過三天的，可能有缺什麼，不過緊急所以先求功能
     private void onUploadFile(final ArrayList<String> uriList, String type) {
         showProgressDialog(type);

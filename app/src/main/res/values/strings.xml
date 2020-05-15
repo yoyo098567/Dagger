@@ -61,5 +61,5 @@
     <string name="add_device_no_data_keynote">主旨說明還未填寫</string>
     <string name="add_device_no_data_file">檔案還未選擇</string>
 
-
+    <string name="add_device_error">查詢資料失敗，請重試或檢查網路狀態，或檢查資料是否正確</string>
 </resources>

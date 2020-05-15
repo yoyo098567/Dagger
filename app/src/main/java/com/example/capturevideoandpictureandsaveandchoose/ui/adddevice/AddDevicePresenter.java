@@ -59,6 +59,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
 
                     @Override
                     public void onError(Throwable e) {
+                        getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
 
                     }
 
@@ -86,6 +87,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
 
                     @Override
                     public void onError(Throwable e) {
+                        getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
 
                     }
 
@@ -118,6 +120,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
 
                     @Override
                     public void onError(Throwable e) {
+                        getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
 
                     }
 
@@ -149,6 +152,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
 
                     @Override
                     public void onError(Throwable e) {
+                        getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
 
                     }
 
@@ -173,7 +177,6 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
                     public void onNext(EQNOResultList mEQNOResultList) {
                         if (mEQNOResultList.getmEQNOResponseList().size() < 1) {
                             getView().showDialogCaveatMessage(getView().getResourceString(R.string.get_eqno_error_no_data));
-
                         }else{
                             getView().setEQNOData(mEQNOResultList.getmEQNOResponseList());
                         }
@@ -181,7 +184,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
 
                     @Override
                     public void onError(Throwable e) {
-
+                        getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
                     }
 
                     @Override

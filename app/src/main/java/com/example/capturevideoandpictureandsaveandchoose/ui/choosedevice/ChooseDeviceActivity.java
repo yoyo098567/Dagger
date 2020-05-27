@@ -93,21 +93,24 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        //Intent resultIntent = new Intent();
+        //if(chooseDeviceItemDataList.size()>0){
+        //    if(chooseDeviceItemDataList.size()>1){
+        //        chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-2).setCheckEndItem(false);
+        //        chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-1).setCheckEndItem(true);
+        //        resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
+        //    }else{
+        //        chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-1).setCheckEndItem(true);
+        //        resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
+        //    }
+        //    setResult(RESULT_OK, resultIntent);
+        //    finish();
+        //}else {
+        //    fileList();
+        //}
         Intent resultIntent = new Intent();
-        if(chooseDeviceItemDataList.size()>0){
-            if(chooseDeviceItemDataList.size()>1){
-                chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-2).setCheckEndItem(false);
-                chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-1).setCheckEndItem(true);
-                resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
-            }else{
-                chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-1).setCheckEndItem(true);
-                resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
-            }
-            setResult(RESULT_OK, resultIntent);
-            finish();
-        }else {
-            fileList();
-        }
+        resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
+        setResult(RESULT_OK, resultIntent);
     }
 
     @Override

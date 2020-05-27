@@ -16,6 +16,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +33,7 @@ import com.example.capturevideoandpictureandsaveandchoose.di.component.main.Main
 import com.example.capturevideoandpictureandsaveandchoose.di.module.main.MainModule;
 import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceActivity;
 import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceItemData;
+import com.example.capturevideoandpictureandsaveandchoose.ui.deviceinformation.DeviceInformationActivity;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqkd.EQKDRequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqno.EQNORequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqno.EQNOResponse;
@@ -67,16 +69,21 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     private static final int PICK_IMAGE_FROM_GALLERY_REQUEST_CODE = 300;
     private static final int PICK_VIDEO_FROM_GALLERY_REQUEST_CODE = 400;
     private static final int PICK_FILE_REQUEST_CODE = 500;
+    private static final int DEVICE_INFORMATION = 600;
     private static final int GET_DEVICE_DATA = 2021;
     private ArrayList<ChooseDeviceItemData> deviceDataList;
 
+
+    Handler handler = new Handler();
+
     String imageFilePath;
-    private Button btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnDeviceEdit, btnCentralCloud, btnChoseDevice;
+    private Button btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnDeviceEdit, btnCentralCloud, btnChoseDevice,btnBasicInformation;
     private TextView textDeviceNumber;
     private File photoFile;
     private MainComponent mMainComponent;
     final String sn = android.os.Build.SERIAL;
     int countFile = 0;
+    int deviceDataPosition;
     private IntentFilter mIntentFilter;
 
     @Override
@@ -99,6 +106,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         btnGetVideoFromGallery = findViewById(R.id.btnGetVideoFromGallery);
         btnDeviceEdit = findViewById(R.id.btn_device_edit);
         btnChoseDevice = findViewById(R.id.btn_chose_device);
+        btnBasicInformation = findViewById(R.id.btn_basic_information);
         deviceDataList = new ArrayList<>();
         mMainComponent = DaggerMainComponent.builder()
                 .mainModule(new MainModule(this))
@@ -115,6 +123,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         btnDeviceEdit.setOnClickListener(this);
         btnCentralCloud.setOnClickListener(this);
         btnChoseDevice.setOnClickListener(this);
+        btnBasicInformation.setOnClickListener(this);
     }
 
     @Override
@@ -201,6 +210,17 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
         }
+    }
+
+    private void deviceInformation() {
+        Intent it = new Intent(this, DeviceInformationActivity.class);
+        if(deviceDataList.size() != 0 && !textDeviceNumber.getText().equals("")) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("device", deviceDataList.get(deviceDataPosition));
+            it.putExtra("NonInspectionWorkDevice",deviceDataList);
+            it.putExtra("device", deviceDataList.get(deviceDataPosition));
+        }
+        startActivityForResult(it, DEVICE_INFORMATION);
     }
 
     private File createImageFile() throws IOException {
@@ -290,6 +310,10 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         }
 
         if (requestCode == GET_DEVICE_DATA && resultCode == RESULT_OK) {
+            deviceDataList = (ArrayList<ChooseDeviceItemData>) data.getSerializableExtra("NonInspectionWorkDevice");
+        }
+
+        if (requestCode == DEVICE_INFORMATION && resultCode == RESULT_OK) {
             deviceDataList = (ArrayList<ChooseDeviceItemData>) data.getSerializableExtra("NonInspectionWorkDevice");
         }
     }
@@ -388,6 +412,10 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.btn_basic_information:
+                deviceInformation();
+                break;
+
             case R.id.btnCaptureImage:
                 openCameraIntent();
                 break;
@@ -404,6 +432,10 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 pickVideoFromGallery();
                 break;
             case R.id.btn_central_cloud:
+                Intent intentCentralCloud = new Intent();
+                intentCentralCloud.setAction(Intent.ACTION_VIEW);
+                intentCentralCloud.setData(Uri.parse("https://www.google.com/"));
+                startActivity(intentCentralCloud);
                 break;
             case R.id.btn_device_edit:
                 Intent intent = new Intent(this, ChooseDeviceActivity.class);
@@ -442,12 +474,66 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         intent.putExtras(serviceBundle);
         this.startService(intent);
     }
+    int runStatus = 0;
+    int lastPosition = 0;
+    int insert = 0;
 
     private DialogInterface.OnClickListener onNonInspectionSelectDevice = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
+            handler.removeCallbacks(updateDevice);
+            handler.removeCallbacks(endDevice);
+            if(runStatus == 1){
+                lastPosition = deviceDataPosition;
+                deviceDataPosition = which;
+                handler.postDelayed(insertDevice, 3000);
+            }else{
+                deviceDataPosition = which;
+                handler.postDelayed(updateDevice, 100);
+            }
             Log.e("gggg", "" + deviceDataList.get(which).getDeciceId());
-            textDeviceNumber.setText(deviceDataList.get(which).getDeciceId());
+//            textDeviceNumber.setText(deviceDataList.get(which).getDeciceId());
+        }
+    };
+
+    private Runnable updateDevice = new Runnable() {
+        public void run() {
+            handler.removeCallbacks(insertDevice);
+            runStatus = 1;
+            if(deviceDataPosition == deviceDataList.size()-1){
+                Log.v("777777777","1111111111111111" + deviceDataPosition);
+                textDeviceNumber.setText(deviceDataList.get(deviceDataPosition).getDeciceId());
+                handler.postDelayed(endDevice, 5000);
+            }else{
+                Log.v("777777777","1111111111111111" + deviceDataPosition);
+                textDeviceNumber.setText(deviceDataList.get(deviceDataPosition).getDeciceId());
+                handler.postDelayed(this, 3000);
+                deviceDataPosition++;
+            }
+        }
+    };
+
+    private Runnable endDevice = new Runnable() {
+        public void run() {
+            Log.v("777777777","1111111111111111" + "2323");
+            textDeviceNumber.setText("stop");
+            runStatus = 0;
+            handler.removeCallbacks(updateDevice);
+            handler.removeCallbacks(endDevice);
+        }
+    };
+
+    private Runnable insertDevice = new Runnable() {
+        public void run() {
+            if(deviceDataPosition == deviceDataList.size()-1){
+                Log.v("777777777","1111111111111111" + deviceDataPosition);
+                textDeviceNumber.setText(deviceDataList.get(deviceDataPosition).getDeciceId());
+            }else{
+                Log.v("777777777","1111111111111111" + deviceDataPosition);
+                textDeviceNumber.setText(deviceDataList.get(deviceDataPosition).getDeciceId());
+            }
+            deviceDataPosition = lastPosition;
+            handler.postDelayed(updateDevice, 3000);
         }
     };
 

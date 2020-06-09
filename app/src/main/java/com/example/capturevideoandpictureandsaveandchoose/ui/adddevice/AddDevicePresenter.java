@@ -3,6 +3,7 @@ package com.example.capturevideoandpictureandsaveandchoose.ui.adddevice;
 import android.util.Log;
 
 import com.example.capturevideoandpictureandsaveandchoose.R;
+import com.example.capturevideoandpictureandsaveandchoose.base.BaseActivity;
 import com.example.capturevideoandpictureandsaveandchoose.base.BasePresenter;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.ApiService;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.ErpAPI;
@@ -45,6 +46,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
 
     @Override
     public void onGetCOData() {
+        getView().showProgressDialog("讀取中");
         String url = getView().getResourceString(R.string.api_on_getCO);
         final CORequest mCORequest = new CORequest(KEY_SEARCH_CO, USER_ID);
         getCompositeDisposable().add(getApiService().getCO(url, mCORequest)
@@ -55,10 +57,12 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
                     @Override
                     public void onNext(COResultList mCOResultList) {
                         getView().setCOData(mCOResultList.getcOResponseList());
+                        getView().dismissProgressDialog();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        getView().dismissProgressDialog();
                         getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
 
                     }
@@ -73,6 +77,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
 
     @Override
     public void onGetMNTFCTData() {
+        getView().showProgressDialog("讀取中");
         String url = getView().getResourceString(R.string.api_on_getMNTFCT);
         MNTFCTRequest mMNTFCTRequest = new MNTFCTRequest(KEY_SEARCH_MNTFCT, USER_ID);
         getCompositeDisposable().add(getApiService().getMNTFCT(url, mMNTFCTRequest)
@@ -83,10 +88,12 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
                     @Override
                     public void onNext(MNTFCTResultList mMNTFCTResultList) {
                         getView().setMNTFCTData(mMNTFCTResultList.getmNTFCTResponse());
+                        getView().dismissProgressDialog();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        getView().dismissProgressDialog();
                         getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
 
                     }
@@ -101,7 +108,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
 
     @Override
     public void onGetPMFCTData(String MNTCO, String MNTFCT) {
-
+        getView().showProgressDialog("讀取中");
         PMFCTRequest mPMFCTRequest = new PMFCTRequest(KEY_SEARCH_PMFCT, USER_ID, MNTCO, MNTFCT);
         String url = getView().getResourceString(R.string.api_on_getPMFCT);
         getCompositeDisposable().add(getApiService().getPMFCT(url, mPMFCTRequest)
@@ -111,6 +118,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
 
                     @Override
                     public void onNext(PMFCTResultList mPMFCTResultList) {
+                        getView().dismissProgressDialog();
                         if (mPMFCTResultList.getmPMFCTResponseList().size() < 1) {
                             getView().showDialogCaveatMessage(getView().getResourceString(R.string.get_pmfct_error_no_data));
                         }else{
@@ -120,6 +128,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
 
                     @Override
                     public void onError(Throwable e) {
+                        getView().dismissProgressDialog();
                         getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
 
                     }
@@ -134,6 +143,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
 
     @Override
     public void onGetEQKDData(String CO,String PMFCT) {
+        getView().showProgressDialog("讀取中");
         EQKDRequest mEQKDRequest = new EQKDRequest(KEY_SEARCH_EQKD, USER_ID, CO, PMFCT);
         String url = getView().getResourceString(R.string.api_on_getEQKD);
         getCompositeDisposable().add(getApiService().getEQKD(url, mEQKDRequest)
@@ -143,6 +153,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
 
                     @Override
                     public void onNext(EQKDResultList mEQKDResultList) {
+                        getView().dismissProgressDialog();
                         if (mEQKDResultList.getmEQKDResponseList().size() < 1) {
                             getView().showDialogCaveatMessage(getView().getResourceString(R.string.get_eqkd_error_no_data));
                         }else{
@@ -152,6 +163,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
 
                     @Override
                     public void onError(Throwable e) {
+                        getView().dismissProgressDialog();
                         getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
 
                     }
@@ -166,6 +178,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
 
     @Override
     public void onGetEQNOData(String CO,String PMFCT,String EQKD) {
+        getView().showProgressDialog("讀取中");
         EQNORequest mEQNORequest=new EQNORequest(KEY_SEARCH_EQNO, USER_ID, CO, PMFCT, EQKD);
         String url = getView().getResourceString(R.string.api_on_getEQNO);
         getCompositeDisposable().add(getApiService().getEQNO(url, mEQNORequest)
@@ -175,6 +188,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
 
                     @Override
                     public void onNext(EQNOResultList mEQNOResultList) {
+                        getView().dismissProgressDialog();
                         if (mEQNOResultList.getmEQNOResponseList().size() < 1) {
                             getView().showDialogCaveatMessage(getView().getResourceString(R.string.get_eqno_error_no_data));
                         }else{
@@ -184,6 +198,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
 
                     @Override
                     public void onError(Throwable e) {
+                        getView().dismissProgressDialog();
                         getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
                     }
 

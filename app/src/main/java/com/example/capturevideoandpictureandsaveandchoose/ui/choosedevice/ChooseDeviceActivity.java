@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -34,6 +33,7 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
     private ChooseDeviceComponent mChooseDeviceComponent;
     private ArrayList<ChooseDeviceItemData> chooseDeviceItemDataList;
     private ChooseDeviceAdapter chooseDeviceAdapter;
+    String account;
     public static final int ADD_DEVICE_NUMBER=2020;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,7 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
         Bundle bundle=getIntent().getExtras();
 
         chooseDeviceItemDataList= (ArrayList<ChooseDeviceItemData>) bundle.getSerializable("deviceDataList");
+        account= bundle.getString("account");
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager); // 必須設置 LayoutManager
         chooseDeviceAdapter = new ChooseDeviceAdapter();
@@ -73,6 +74,7 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
         switch (view.getId()) {
             case R.id.btn_add:
                 Intent intent = new Intent(this, AddDeviceActivity.class);
+                intent.putExtra("account","N000054949");
                 startActivityForResult(intent, ADD_DEVICE_NUMBER);
                 break;
             case R.id.btn_delete:
@@ -117,8 +119,8 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         ChooseDeviceItemData mChooseDeviceItemData;
         if(requestCode==ADD_DEVICE_NUMBER && resultCode==RESULT_OK){
-            mChooseDeviceItemData= (ChooseDeviceItemData) data.getSerializableExtra("device");
-            Log.e("wwww1",""+mChooseDeviceItemData.getCompany());
+            mChooseDeviceItemData = (ChooseDeviceItemData) data.getSerializableExtra("device");
+            Log.e("wwww1",""+ mChooseDeviceItemData.getCONM());
             chooseDeviceAdapter.addDataToDataList(mChooseDeviceItemData);
         }else {
             showDialogCaveatMessage(getResourceString(R.string.add_device_error_on_choose_device_activity));

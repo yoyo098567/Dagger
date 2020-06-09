@@ -1,13 +1,10 @@
 package com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.capturevideoandpictureandsaveandchoose.R;
@@ -35,12 +32,12 @@ public class ChooseDeviceAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View view) {
                 CurrentPosition=position;
-                dataList.get(position).setBackgroundChange(!dataList.get(position).getBackgroundChange());
+                dataList.get(position).setBackgroundChange(!dataList.get(position).isBackgroundChange());
 //                notifyDataSetChanged();
             }
         });
         if (holder instanceof ChooseDeviceAdapterViewHolder) {
-            ((ChooseDeviceAdapterViewHolder) holder).getItemDevice().setText(dataList.get(position).getDeciceId());
+            ((ChooseDeviceAdapterViewHolder) holder).getItemDevice().setText(dataList.get(position).getEQNO());
             ((ChooseDeviceAdapterViewHolder) holder).getNumber().setText(""+position);
         }
     }

@@ -33,6 +33,7 @@ import io.reactivex.observers.DisposableObserver;
 public class MainPresenter<V extends MainContract.View> extends BasePresenter<V> implements MainContract.Presenter<V> {
     @Inject
     LoginPreferencesProvider mLoginPreferencesProvider;
+    private String disposableToken;
 
     @Inject
     public MainPresenter(ApiService api, ErpAPI erpAPI, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable) {
@@ -54,11 +55,12 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                         Log.e("wwwww","getmResult:"+disposableTokenResponse.getmResult());
                         Log.e("wwwww","getmErrMsg:"+disposableTokenResponse.getmErrMsg());
                         Log.e("wwwww","getmDisposableToken:"+disposableTokenResponse.getmDisposableToken());
-
+                        disposableToken = disposableTokenResponse.getmDisposableToken();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.e("wwwww","ERROR：" + e);
 
                     }
 
@@ -68,5 +70,41 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                     }
                 })
         );
+    }
+
+
+
+    public void onInsInfo(String DeviceId) {
+        String authorizedId ="fec40e7e-48c2-4226-81ca-5044b72a8e1f";
+        String url = getView().getResourceString(R.string.api_on_InsInfo);
+        DisposableTokenRequest mDisposableTokenRequest=new DisposableTokenRequest(authorizedId,mLoginPreferencesProvider.getToken(),DeviceId);
+        getCompositeDisposable().add(getApiService().onDisposableToken(url, mDisposableTokenRequest)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<DisposableTokenResponse>() {
+                    @Override
+                    public void onNext(DisposableTokenResponse disposableTokenResponse) {
+                        Log.e("wwwww","getmResult:"+disposableTokenResponse.getmResult());
+                        Log.e("wwwww","getmErrMsg:"+disposableTokenResponse.getmErrMsg());
+                        Log.e("wwwww","getmDisposableToken:"+disposableTokenResponse.getmDisposableToken());
+                        disposableToken = disposableTokenResponse.getmDisposableToken();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("wwwww","ERROR：" + e);
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                })
+        );
+    }
+
+    public String getDisposableToken(){
+        return disposableToken;
     }
 }

@@ -20,6 +20,7 @@ public class LoginPresenter <V extends LoginContract.View> extends BasePresenter
     @Inject
     LoginPreferencesProvider mLoginPreferencesProvider;
     private String LOGIN_AUTHORIZED_ID="acd9be92-46bf-4185-8721-5b60c67f0742";
+    private String AccessToken = "";
     @Inject
     public LoginPresenter(ApiService api, ErpAPI erpAPI, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable) {
         super(api, erpAPI, schedulerProvider, compositeDisposable);
@@ -27,8 +28,11 @@ public class LoginPresenter <V extends LoginContract.View> extends BasePresenter
 
     @Override
     public void onLogin(String account,String password) {
+        getView().showProgressDialog("登入中");
         String url = getView().getResourceString(R.string.api_on_Login);
-        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,"N000054949","1203-Y");
+        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,"N000054949","1203-Z");
+//        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,"N000135056","1203-Z");
+//        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,account,password);
         getCompositeDisposable().add(getApiService().onLogin(url, mLoginRequest)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -37,15 +41,24 @@ public class LoginPresenter <V extends LoginContract.View> extends BasePresenter
                     @Override
                     public void onNext(LoginResponse loginResponse) {
                         if("true".equals(loginResponse.getmResult())){
+                            AccessToken = loginResponse.getmToken();
                             mLoginPreferencesProvider.setToken(loginResponse.getmToken());
+                            getView().dismissProgressDialog();
                             getView().onCompleteLogin();
                         }else{
+                            Log.v("LoginResponse","登入失敗");
                             getView().showDialogCaveatMessage("登入失敗");
+                            getView().dismissProgressDialog();
+                            getView().onCompleteLogin();
                     }
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.v("LoginResponse","登入失敗");
+                        Log.v("LoginResponse","" + e);
+                        getView().dismissProgressDialog();
+
                         getView().showDialogCaveatMessage("登入失敗");
                     }
 
@@ -55,5 +68,9 @@ public class LoginPresenter <V extends LoginContract.View> extends BasePresenter
                     }
                 })
         );
+    }
+
+    public String getAccessToken(){
+        return AccessToken;
     }
 }

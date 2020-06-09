@@ -20,6 +20,7 @@ public class DeviceInformationActivity extends BaseActivity implements View.OnCl
     private Button btnBack;
     private ChooseDeviceItemData chooseDeviceItemData;
     private ArrayList<ChooseDeviceItemData> deviceDataList;
+    boolean fileExist = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,16 +45,17 @@ public class DeviceInformationActivity extends BaseActivity implements View.OnCl
 
 
         if(getIntent().getExtras() != null){
+            fileExist = true;
             chooseDeviceItemData =(ChooseDeviceItemData) getIntent().getExtras().getSerializable("device");
             deviceDataList = (ArrayList<ChooseDeviceItemData>) getIntent().getExtras().getSerializable("NonInspectionWorkDevic");
-            textCompanyData.setText(chooseDeviceItemData.getCompany());
-            textJobSiteData.setText(chooseDeviceItemData.getMaintenancePlant());
-            textProductionPlantData.setText(chooseDeviceItemData.getMaintenancePlant());
-            textRouteCodeData.setText("123");
-            textRouteNameData.setText("123");
-            textDeviceCategoryData.setText(chooseDeviceItemData.getDeviceCategory());
-            textDeviceNumberData.setText(chooseDeviceItemData.getProductionPlantId());
-            textDeviceNameData.setText(chooseDeviceItemData.getProductionPlant());
+            textCompanyData.setText(chooseDeviceItemData.getCONM()); //公司
+            textJobSiteData.setText(chooseDeviceItemData.getMNTFCTNM()); //作業廠處
+            textProductionPlantData.setText(chooseDeviceItemData.getPMFCTNM()); //生產廠
+            textRouteCodeData.setText(chooseDeviceItemData.getWAYID()); //路線代號
+            textRouteNameData.setText(chooseDeviceItemData.getWAYNM()); //路線名稱
+            textDeviceCategoryData.setText(chooseDeviceItemData.getEQKDNM()); //設備類別
+            textDeviceNumberData.setText(chooseDeviceItemData.getEQNO()); //設備編號
+            textDeviceNameData.setText(chooseDeviceItemData.getEQKD()); //設備名稱
         }
 
 
@@ -79,7 +81,9 @@ public class DeviceInformationActivity extends BaseActivity implements View.OnCl
     public void onBackPressed() {
         super.onBackPressed();
         Intent it = new Intent(this, MainActivity.class);
-        it.putExtra("NonInspectionWorkDevice",deviceDataList);
+        if(fileExist){
+            it.putExtra("NonInspectionWorkDevice",deviceDataList);
+        }
         setResult(RESULT_OK, it);
     }
 }

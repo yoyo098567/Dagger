@@ -20,7 +20,9 @@ import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.sear
 
 import io.reactivex.Observable;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface ApiService {
@@ -40,5 +42,4 @@ public interface ApiService {
     Observable<DisposableTokenResponse> onDisposableToken(@Url String url, @Body DisposableTokenRequest mDisposableTokenRequest);
     @POST
     Observable<AddChkInfoResponse> onAddChkInfo(@Url String url, @Body AddChkInfoRequest mAddChkInfoRequest);
-
 }

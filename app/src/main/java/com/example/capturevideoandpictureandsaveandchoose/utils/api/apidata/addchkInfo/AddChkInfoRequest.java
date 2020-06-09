@@ -44,6 +44,23 @@ public class AddChkInfoRequest {
     @Expose
     private String mChkDATETM;
 
+    public AddChkInfoRequest(String authorizedId, String OPCO, String OPPLD, String WAYID, String WAYNM, String CO, String CONM, String PMFCT, String PMFCTNM,
+                             String EQNO, String ChkEMP, String ChkNM,String ChkDATETM) {
+        this.authorizedId=authorizedId;
+        this.mOPCO = OPCO;
+        this.mOPPLD = OPPLD;
+        this.mWAYID = WAYID;
+        this.mWAYNM = WAYNM;
+        this.mCO = CO;
+        this.mCONM = CONM;
+        this.mPMFCT = PMFCT;
+        this.mPMFCTNM = PMFCTNM;
+        this.mEQNO = EQNO;
+        this.mChkEMP = ChkEMP;
+        this.mChkNM = ChkNM;
+        this.mChkDATETM = ChkDATETM;
+    }
+
     public String getAuthorizedId() {
         return authorizedId;
     }

@@ -5,9 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -43,10 +41,14 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
     private Button btnBrowse, btnUpload;
     private AddDeviceComponent mAddDeviceComponent;
     private ArrayList<String> dialogString;
+    String account;
+    CharSequence date;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_device);
+        Intent intent = this.getIntent();
+        account = intent.getStringExtra("account");
         init();
         mPresenter.onAttached(this);
     }
@@ -54,7 +56,7 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void init() {
         Calendar mCal = Calendar.getInstance();
-        CharSequence date = DateFormat.format("yyyy/MM/dd", mCal.getTime());
+        date = DateFormat.format("yyyy/MM/dd", mCal.getTime());
         textMaintenancePlant = findViewById(R.id.text_value_maintenance_plant);
         textCompany = findViewById(R.id.text_value_company);
         textProductionPlant = findViewById(R.id.text_value_production_plant);
@@ -74,6 +76,7 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
         dialogString=new ArrayList<>();
         mAddDeviceData=new AddDeviceData();
         mChooseDeviceItemData=new ChooseDeviceItemData();
+        mChooseDeviceItemData =new ChooseDeviceItemData();
         textRecordDate.setText(date);
         btnUpload.setOnClickListener(this);
         btnBrowse.setOnClickListener(this);
@@ -97,31 +100,31 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
                 mPresenter.onGetMNTFCTData();
                 break;
             case R.id.text_value_production_plant:
-                if (mChooseDeviceItemData.getMaintenancePlantCompanyId().equals("")||mChooseDeviceItemData.getMaintenancePlantId().equals("")){
+                if (mChooseDeviceItemData.getMNTFCTNM().equals("")|| mChooseDeviceItemData.getMNTFCT().equals("")){
                     showDialogCaveatMessage(getResourceString(R.string.add_device_no_maintenance_plant_error));
                 }
-                mPresenter.onGetPMFCTData(mChooseDeviceItemData.getMaintenancePlantCompanyId(),mChooseDeviceItemData.getMaintenancePlantId());
+                mPresenter.onGetPMFCTData(mChooseDeviceItemData.getMNTCO(), mChooseDeviceItemData.getMNTFCT());
                 break;
             case R.id.text_value_device_number:
-                if (mChooseDeviceItemData.getCompanyId().equals("")){
+                if (mChooseDeviceItemData.getCO().equals("")){
                     showDialogCaveatMessage(getResourceString(R.string.add_device_no_company_error));
                 }
-                if (mChooseDeviceItemData.getProductionPlantId().equals("")){
+                if (mChooseDeviceItemData.getPMFCT().equals("")){
                     showDialogCaveatMessage(getResourceString(R.string.add_device_no_production_plant_error));
                 }
-                if (mChooseDeviceItemData.getDeviceCategryId().equals("")){
+                if (mChooseDeviceItemData.getEQKD().equals("")){
                     showDialogCaveatMessage(getResourceString(R.string.add_device_no_device_categry_error));
                 }
-                mPresenter.onGetEQNOData(mChooseDeviceItemData.getCompanyId(),mChooseDeviceItemData.getProductionPlantId(),mChooseDeviceItemData.getDeviceCategryId());
+                mPresenter.onGetEQNOData(mChooseDeviceItemData.getCO(), mChooseDeviceItemData.getPMFCT(), mChooseDeviceItemData.getEQKD());
                 break;
             case R.id.text_value_device_category:
-                if (mChooseDeviceItemData.getCompanyId().equals("")){
+                if (mChooseDeviceItemData.getCO().equals("")){
                     showDialogCaveatMessage(getResourceString(R.string.add_device_no_company_error));
                 }
-                if (mChooseDeviceItemData.getProductionPlantId().equals("")){
+                if (mChooseDeviceItemData.getPMFCT().equals("")){
                     showDialogCaveatMessage(getResourceString(R.string.add_device_no_production_plant_error));
                 }
-                mPresenter.onGetEQKDData(mChooseDeviceItemData.getCompanyId(),mChooseDeviceItemData.getProductionPlantId());
+                mPresenter.onGetEQKDData(mChooseDeviceItemData.getCO(), mChooseDeviceItemData.getPMFCT());
                 break;
             case R.id.text_value_company:
                 mPresenter.onGetCOData();
@@ -186,17 +189,17 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
         @Override
         public void onClick(DialogInterface dialog, int which) {
             textCompany.setText(mAddDeviceData.getmCODataList().get(which).getcONM());
-            mChooseDeviceItemData.setCompany(mAddDeviceData.getmCODataList().get(which).getcONM());
-            mChooseDeviceItemData.setCompanyId(mAddDeviceData.getmCODataList().get(which).getcO());
+            mChooseDeviceItemData.setCONM(mAddDeviceData.getmCODataList().get(which).getcONM());
+            mChooseDeviceItemData.setCO(mAddDeviceData.getmCODataList().get(which).getcO());
         }
     };
     private DialogInterface.OnClickListener onMaintenanceDialogItemClick = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             textMaintenancePlant.setText(mAddDeviceData.getmMNTFCTDataList().get(which).getmNTFCTNM());
-            mChooseDeviceItemData.setMaintenancePlant(mAddDeviceData.getmMNTFCTDataList().get(which).getmNTFCTNM());
-            mChooseDeviceItemData.setMaintenancePlantCompanyId(mAddDeviceData.getmMNTFCTDataList().get(which).getmNTCO());
-            mChooseDeviceItemData.setMaintenancePlantId(mAddDeviceData.getmMNTFCTDataList().get(which).getmNTFCT());
+            mChooseDeviceItemData.setMNTFCTNM(mAddDeviceData.getmMNTFCTDataList().get(which).getmNTFCTNM());
+            mChooseDeviceItemData.setMNTCO(mAddDeviceData.getmMNTFCTDataList().get(which).getmNTCO());
+            mChooseDeviceItemData.setMNTFCT(mAddDeviceData.getmMNTFCTDataList().get(which).getmNTFCT());
 
         }
     };
@@ -204,48 +207,51 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
         @Override
         public void onClick(DialogInterface dialog, int which) {
             textProductionPlant.setText(mAddDeviceData.getmPMFCTDataList().get(which).getmPMFCTNM());
-            mChooseDeviceItemData.setProductionPlant(mAddDeviceData.getmPMFCTDataList().get(which).getmPMFCTNM());
-            mChooseDeviceItemData.setProductionPlantId(mAddDeviceData.getmPMFCTDataList().get(which).getmPMFCT());
+            mChooseDeviceItemData.setPMFCTNM(mAddDeviceData.getmPMFCTDataList().get(which).getmPMFCTNM());
+            mChooseDeviceItemData.setPMFCT(mAddDeviceData.getmPMFCTDataList().get(which).getmPMFCT());
         }
     };
     private DialogInterface.OnClickListener onDeviceCategoryDialogItemClick = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             textDeviceCategory.setText(mAddDeviceData.getmEQKDDataList().get(which).getmEQKDNM());
-            mChooseDeviceItemData.setDeviceCategory(mAddDeviceData.getmEQKDDataList().get(which).getmEQKDNM());
-            mChooseDeviceItemData.setDeviceCategryId(mAddDeviceData.getmEQKDDataList().get(which).getmEQKD());
+            mChooseDeviceItemData.setEQKDNM(mAddDeviceData.getmEQKDDataList().get(which).getmEQKDNM());
+            mChooseDeviceItemData.setEQKD(mAddDeviceData.getmEQKDDataList().get(which).getmEQKD());
         }
     };
     private DialogInterface.OnClickListener onDeciceDialogItemClick = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             textDeviceNumber.setText(mAddDeviceData.getmEQNODataList().get(which).getmEQNM());
-            mChooseDeviceItemData.setDeciceId(mAddDeviceData.getmEQNODataList().get(which).getmEQNO());
-            mChooseDeviceItemData.setDeciceName(mAddDeviceData.getmEQNODataList().get(which).getmEQNM());
+            mChooseDeviceItemData.setEQNO(mAddDeviceData.getmEQNODataList().get(which).getmEQNO());
+            mChooseDeviceItemData.setEQNM(mAddDeviceData.getmEQNODataList().get(which).getmEQNM());
         }
     };
 
     private void uploadDevice(){
-        mChooseDeviceItemData.setKeynote(editKeynote.getText().toString());
-        if (mChooseDeviceItemData.getMaintenancePlantId().equals("")){
+        mChooseDeviceItemData.setRecordSubject(editKeynote.getText().toString());
+        if (mChooseDeviceItemData.getMNTFCT().equals("")){
             showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_maintenance_plant));
-        }else if(mChooseDeviceItemData.getCompanyId().equals("")){
+        }else if(mChooseDeviceItemData.getCO().equals("")){
             showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_company));
-        }else if(mChooseDeviceItemData.getProductionPlantId().equals("")){
+        }else if(mChooseDeviceItemData.getPMFCT().equals("")){
             showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_production_plant));
-        }else if(mChooseDeviceItemData.getDeviceCategryId().equals("")){
+        }else if(mChooseDeviceItemData.getEQKD().equals("")){
             showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_device_categry));
-        }else if(mChooseDeviceItemData.getDeciceId().equals("")){
+        }else if(mChooseDeviceItemData.getEQNO().equals("")){
             showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_device_id));
-        }else if(mChooseDeviceItemData.getKeynote().equals("")){
+        }else if(mChooseDeviceItemData.getRecordSubject().equals("")){
             showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_keynote));
         }
 //        else if(mChooseDeviceItemData.getFilePath().equals("")){
 //            showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_file));
 //        }
         else{
+            mChooseDeviceItemData.setUploadEMP(account);
+            mChooseDeviceItemData.setUploadNM("王小明");
+            mChooseDeviceItemData.setUploadDATETM(date.toString());
             Intent intent = new Intent();
-            intent.putExtra("device",mChooseDeviceItemData);
+            intent.putExtra("device", mChooseDeviceItemData);
             setResult(RESULT_OK, intent);
             finish();
         }

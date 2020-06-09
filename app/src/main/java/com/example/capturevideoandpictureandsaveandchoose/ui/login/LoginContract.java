@@ -10,5 +10,6 @@ public interface LoginContract {
 
     interface Presenter<V extends View> extends BaseAttacher<V> {
         void onLogin(String account,String password);
+        String getAccessToken();
     }
 }

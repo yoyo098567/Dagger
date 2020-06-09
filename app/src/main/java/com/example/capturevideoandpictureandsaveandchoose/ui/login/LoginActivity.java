@@ -2,8 +2,11 @@ package com.example.capturevideoandpictureandsaveandchoose.ui.login;
 
 import android.Manifest;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,12 +28,15 @@ import javax.inject.Inject;
 public class LoginActivity extends BaseActivity implements LoginContract.View,View.OnClickListener {
     EditText editAccount, editPassword;
     Button btnLogin;
+    String  account = "";
+    String  pwd = "";
 
 
     @Inject
     LoginContract.Presenter<LoginContract.View> mPresenter;
 
     private LoginComponent mLoginActivityComponent;
+    public static int loginStatus = 0;
     private static final int REQUEST_PERMISSIONS_CODE=20200410;
     private String[] permissions = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -44,6 +50,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
         setContentView(R.layout.activity_login);
         init();
         requestPermissions(permissions, REQUEST_PERMISSIONS_CODE);
+        getAccount();
 
         mPresenter.onAttached(this);
     }
@@ -64,10 +71,15 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
+                if(!account.equals("") && !pwd.equals("")){
+                    mPresenter.onLogin(account,pwd);
+                    loginStatus = 1;
+                }else{
 //                if(onCheckUserisEmpty()){
-//                    mPresenter.onLogin(editAccount.getText().toString(),editPassword.getText().toString());
-                onCompleteLogin();
+                    mPresenter.onLogin(editAccount.getText().toString(),editPassword.getText().toString());
 //                }
+                }
+
                 break;
         }
     }
@@ -85,6 +97,31 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
     @Override
     public void onCompleteLogin() {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("AccessToken",mPresenter.getAccessToken());
+        intent.putExtra("account","N000054949");
         startActivity(intent);
+    }
+
+    public void getAccount() {
+        String CONTENT_STRING = "content://tw.com.efpg.processe_equip.provider.ShareCloud/ShareCloud";
+        Uri uri = Uri.parse(CONTENT_STRING);
+
+        Cursor cursor = this.getContentResolver().query(
+                uri,
+                null,
+                "LoginStatus",
+                null, null
+        );
+
+        while (cursor.moveToNext()) {
+            String  isSuccess = cursor.getString(cursor.getColumnIndexOrThrow("IsSuccess"));
+            String  message = cursor.getString(cursor.getColumnIndexOrThrow("Message"));
+            account = cursor.getString(cursor.getColumnIndexOrThrow("Account"));
+            pwd = cursor.getString(cursor.getColumnIndexOrThrow("PWD"));
+            Log.v("LoginStatus","isSuccess:" + isSuccess);
+            Log.v("LoginStatus","message:" + message);
+            Log.v("LoginStatus","account:" + account);
+            Log.v("LoginStatus","account:" + pwd);
+        }
     }
 }

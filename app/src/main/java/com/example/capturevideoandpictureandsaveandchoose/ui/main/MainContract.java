@@ -13,6 +13,6 @@ public interface MainContract {
 
     interface Presenter<V extends MainContract.View> extends BaseAttacher<V> {
         void onGetDisposableToken(String DeviceId);
-
+        String getDisposableToken();
     }
 }

@@ -3,81 +3,151 @@ package com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice;
 import java.io.Serializable;
 
 public class ChooseDeviceItemData implements Serializable {
-    private String recordDate="";
-    private String maintenancePlant="";
-    private String maintenancePlantCompanyId="";
-    private String maintenancePlantId="";
-    private String company="";
-    private String companyId="";
-    private String productionPlant="";
-    private String productionPlantId="";
-    private String deviceCategory="";
-    private String deviceCategryId="";
-    private String deciceId="";
-    private String deciceName="";
-    private String keynote="";
-    private String filePath="";
-    private String uploadEmployees="";
+
+
+    private String OPCO=""; //作業公司
+    private String OPPLD=""; //作業廠處
+    private String WAYID =""; //路線代碼
+    private String WAYNM =""; //路線名稱
+    private String MNTCO=""; //保養公司代碼
+    private String MNTFCT=""; //保養廠代碼
+    private String MNTFCTNM=""; //保養廠名稱
+    private String CONM=""; //公司名稱
+    private String CO=""; //公司代碼
+    private String PMFCT=""; //生產廠代碼
+    private String PMFCTNM=""; //生產廠名稱
+    private String EQKD=""; //設備類別代碼
+    private String EQKDNM=""; //設備類別名稱
+    private String EQNO=""; //設備編號
+    private String EQNM=""; //設備名稱
+    private String recordDate="";  //紀錄日期
+    private String recordSubject=""; //主旨說明 //keynote
+    private String filePath=""; //檔案
+    private String uploadEMP = ""; //上傳人員代號 //uploadEmployees
+    private String UploadNM = ""; //上傳人員姓名
+    private String UploadDATETM = ""; //上傳日期時間
     private boolean backgroundChange=false;
     private boolean checkEndItem=false;
-    public String getMaintenancePlantCompanyId() {
-        return maintenancePlantCompanyId;
+    private int progress;
+
+    public String getOPCO() {
+        return OPCO;
     }
 
-    public void setMaintenancePlantCompanyId(String maintenancePlantCompanyId) {
-        this.maintenancePlantCompanyId = maintenancePlantCompanyId;
+    public void setOPCO(String OPCO) {
+        this.OPCO = OPCO;
     }
 
-    public String getMaintenancePlantId() {
-        return maintenancePlantId;
+    public String getOPPLD() {
+        return OPPLD;
     }
 
-    public void setMaintenancePlantId(String maintenancePlantId) {
-        this.maintenancePlantId = maintenancePlantId;
+    public void setOPPLD(String OPPLD) {
+        this.OPPLD = OPPLD;
     }
 
-    public String getCompany() {
-        return company;
+    public String getWAYID() {
+        return WAYID;
     }
 
-    public void setCompany(String company) {
-        this.company = company;
+    public void setWAYID(String WAYID) {
+        this.WAYID = WAYID;
     }
 
-    public String getCompanyId() {
-        return companyId;
+    public String getWAYNM() {
+        return WAYNM;
     }
 
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
+    public void setWAYNM(String WAYNM) {
+        this.WAYNM = WAYNM;
     }
 
-    public String getProductionPlantId() {
-        return productionPlantId;
+    public String getMNTCO() {
+        return MNTCO;
     }
 
-    public void setProductionPlantId(String productionPlantId) {
-        this.productionPlantId = productionPlantId;
+    public void setMNTCO(String MNTCO) {
+        this.MNTCO = MNTCO;
     }
 
-    public String getDeviceCategryId() {
-        return deviceCategryId;
+    public String getMNTFCT() {
+        return MNTFCT;
     }
 
-    public void setDeviceCategryId(String deviceCategryId) {
-        this.deviceCategryId = deviceCategryId;
+    public void setMNTFCT(String MNTFCT) {
+        this.MNTFCT = MNTFCT;
     }
 
-    public String getDeciceName() {
-        return deciceName;
+    public String getMNTFCTNM() {
+        return MNTFCTNM;
     }
 
-    public void setDeciceName(String deciceName) {
-        this.deciceName = deciceName;
+    public void setMNTFCTNM(String MNTFCTNM) {
+        this.MNTFCTNM = MNTFCTNM;
     }
 
-    public boolean isBackgroundChange() {
-        return backgroundChange;
+    public String getCONM() {
+        return CONM;
+    }
+
+    public void setCONM(String CONM) {
+        this.CONM = CONM;
+    }
+
+    public String getCO() {
+        return CO;
+    }
+
+    public void setCO(String CO) {
+        this.CO = CO;
+    }
+
+    public String getPMFCT() {
+        return PMFCT;
+    }
+
+    public void setPMFCT(String PMFCT) {
+        this.PMFCT = PMFCT;
+    }
+
+    public String getPMFCTNM() {
+        return PMFCTNM;
+    }
+
+    public void setPMFCTNM(String PMFCTNM) {
+        this.PMFCTNM = PMFCTNM;
+    }
+
+    public String getEQKD() {
+        return EQKD;
+    }
+
+    public void setEQKD(String EQKD) {
+        this.EQKD = EQKD;
+    }
+
+    public String getEQKDNM() {
+        return EQKDNM;
+    }
+
+    public void setEQKDNM(String EQKDNM) {
+        this.EQKDNM = EQKDNM;
+    }
+
+    public String getEQNO() {
+        return EQNO;
+    }
+
+    public void setEQNO(String EQNO) {
+        this.EQNO = EQNO;
+    }
+
+    public String getEQNM() {
+        return EQNM;
+    }
+
+    public void setEQNM(String EQNM) {
+        this.EQNM = EQNM;
     }
 
     public String getRecordDate() {
@@ -88,44 +158,12 @@ public class ChooseDeviceItemData implements Serializable {
         this.recordDate = recordDate;
     }
 
-    public String getMaintenancePlant() {
-        return maintenancePlant;
+    public String getRecordSubject() {
+        return recordSubject;
     }
 
-    public void setMaintenancePlant(String maintenancePlant) {
-        this.maintenancePlant = maintenancePlant;
-    }
-
-    public String getProductionPlant() {
-        return productionPlant;
-    }
-
-    public void setProductionPlant(String productionPlant) {
-        this.productionPlant = productionPlant;
-    }
-
-    public String getDeviceCategory() {
-        return deviceCategory;
-    }
-
-    public void setDeviceCategory(String deviceCategory) {
-        this.deviceCategory = deviceCategory;
-    }
-
-    public String getDeciceId() {
-        return deciceId;
-    }
-
-    public void setDeciceId(String deciceId) {
-        this.deciceId = deciceId;
-    }
-
-    public String getKeynote() {
-        return keynote;
-    }
-
-    public void setKeynote(String keynote) {
-        this.keynote = keynote;
+    public void setRecordSubject(String recordSubject) {
+        this.recordSubject = recordSubject;
     }
 
     public String getFilePath() {
@@ -136,15 +174,31 @@ public class ChooseDeviceItemData implements Serializable {
         this.filePath = filePath;
     }
 
-    public String getUploadEmployees() {
-        return uploadEmployees;
+    public String getUploadEMP() {
+        return uploadEMP;
     }
 
-    public void setUploadEmployees(String uploadEmployees) {
-        this.uploadEmployees = uploadEmployees;
+    public void setUploadEMP(String uploadEMP) {
+        this.uploadEMP = uploadEMP;
     }
 
-    public boolean getBackgroundChange() {
+    public String getUploadNM() {
+        return UploadNM;
+    }
+
+    public void setUploadNM(String uploadNM) {
+        UploadNM = uploadNM;
+    }
+
+    public String getUploadDATETM() {
+        return UploadDATETM;
+    }
+
+    public void setUploadDATETM(String uploadDATETM) {
+        UploadDATETM = uploadDATETM;
+    }
+
+    public boolean isBackgroundChange() {
         return backgroundChange;
     }
 
@@ -158,5 +212,13 @@ public class ChooseDeviceItemData implements Serializable {
 
     public void setCheckEndItem(boolean checkEndItem) {
         this.checkEndItem = checkEndItem;
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
     }
 }

@@ -50,7 +50,7 @@ public class TeleportService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         handler.post(periodicUpdate);
-        String a=intent.getStringExtra("aa");
+//        String a=intent.getStringExtra("aa");
         deviceCount=0;
         // TODO Auto-generated method stub
         return super.onStartCommand(intent, flags, startId);
@@ -106,37 +106,37 @@ public class TeleportService extends Service {
             sendBroadcast(broadcastIntent);
 
             ApiService apiService=retrofit.create(ApiService.class);
-//            final CORequest mCORequest = new CORequest("6c66fcbd-6dfe-45a2-ad6b-cbcda09b25bd","N123456789");
-//            CompositeDisposable compositeDisposable=new CompositeDisposable();
-//            compositeDisposable.add(apiService.getCO("SearchCO", mCORequest)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribeWith(new DisposableObserver<COResultList>() {
-//
-//                        @Override
-//                        public void onNext(COResultList mCOResultList) {
-//                            for(COResponse mCOResponse :mCOResultList.getcOResponseList()){
-//                                Log.e("wwwww","getcO:"+mCOResponse.getcO());
-//                                Log.e("wwwww","getcONM:"+mCOResponse.getcONM());
-//                            }
-//                            useApiCount++;
-//                            Log.e("wwwww","getcONM:"+useApiCount);
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable e) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onComplete() {
-//                            if(useApiCount>1){
-//                                handler.removeCallbacks(periodicUpdate);
-//                                stopSelf();
-//                            }
-//                        }
-//                    })
-//            );
+            final CORequest mCORequest = new CORequest("6c66fcbd-6dfe-45a2-ad6b-cbcda09b25bd","N123456789");
+            CompositeDisposable compositeDisposable=new CompositeDisposable();
+            compositeDisposable.add(apiService.getCO("SearchCO", mCORequest)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableObserver<COResultList>() {
+
+                        @Override
+                        public void onNext(COResultList mCOResultList) {
+                            for(COResponse mCOResponse :mCOResultList.getcOResponseList()){
+                                Log.e("wwwww","getCO:"+mCOResponse.getcO());
+                                Log.e("wwwww","getCONM:"+mCOResponse.getcONM());
+                            }
+                            useApiCount++;
+                            Log.e("wwwww","getCONM:"+useApiCount);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if(useApiCount>1){
+                                handler.removeCallbacks(periodicUpdate);
+                                stopSelf();
+                            }
+                        }
+                    })
+            );
         }
     };
 }

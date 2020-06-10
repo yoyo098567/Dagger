@@ -49,13 +49,13 @@ public class DeviceInformationActivity extends BaseActivity implements View.OnCl
             chooseDeviceItemData =(ChooseDeviceItemData) getIntent().getExtras().getSerializable("device");
             deviceDataList = (ArrayList<ChooseDeviceItemData>) getIntent().getExtras().getSerializable("NonInspectionWorkDevic");
             textCompanyData.setText(chooseDeviceItemData.getCONM()); //公司
-            textJobSiteData.setText(chooseDeviceItemData.getMNTFCTNM()); //作業廠處
+            textJobSiteData.setText(chooseDeviceItemData.getPMFCTNM()); //作業廠處
             textProductionPlantData.setText(chooseDeviceItemData.getPMFCTNM()); //生產廠
             textRouteCodeData.setText(chooseDeviceItemData.getWAYID()); //路線代號
             textRouteNameData.setText(chooseDeviceItemData.getWAYNM()); //路線名稱
-            textDeviceCategoryData.setText(chooseDeviceItemData.getEQKDNM()); //設備類別
+            textDeviceCategoryData.setText(chooseDeviceItemData.getEQKD()); //設備類別
             textDeviceNumberData.setText(chooseDeviceItemData.getEQNO()); //設備編號
-            textDeviceNameData.setText(chooseDeviceItemData.getEQKD()); //設備名稱
+            textDeviceNameData.setText(chooseDeviceItemData.getEQNM()); //設備名稱
         }
 
 

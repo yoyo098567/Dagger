@@ -29,10 +29,9 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class TeleportService extends Service {
-    private Retrofit retrofit;
     private Handler handler;
-    private int useApiCount;
-    private int deviceCount;
+    private String msg="";
+    private boolean isEnd=false;
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -43,15 +42,16 @@ public class TeleportService extends Service {
         init();
     }
     private void init(){
-        useApiCount=0;
         handler=new Handler();
-        onCreateApi();
+        isEnd=false;
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        handler.post(periodicUpdate);
-//        String a=intent.getStringExtra("aa");
-        deviceCount=0;
+        if("end".equals(intent.getStringExtra("msg"))){
+            msg=intent.getStringExtra("msg");
+        }else{
+            handler.post(periodicUpdate);
+        }
         // TODO Auto-generated method stub
         return super.onStartCommand(intent, flags, startId);
     }
@@ -66,77 +66,27 @@ public class TeleportService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.e("gggg","onDestroy");
+        handler.removeCallbacks(periodicUpdate);
         // TODO Auto-generated method stub
-    }
-
-    public int getNowDevice(){
-        return deviceCount;
-    }
-    private void onCreateApi(){
-        Interceptor interceptor=new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                return chain.proceed(chain.request().newBuilder()
-                        .header("Content-Type", "application/json")
-                        .build());
-            }
-        };
-        OkHttpClient okHttpClient=new OkHttpClient.Builder()
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                .addNetworkInterceptor(interceptor)
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .build();
-
-        retrofit=new Retrofit.Builder()
-                .baseUrl("https://cloud.fpcetg.com.tw/FPC/API/MTN/API_MTN/MTN/")
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build();
     }
     private Runnable periodicUpdate = new Runnable() {
         @Override
         public void run() {
-            handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
             Intent broadcastIntent = new Intent();
             broadcastIntent.setAction("datatest");
-            broadcastIntent.putExtra("Data", "Broadcast Data");
+            if(isEnd){
+                broadcastIntent.putExtra("time", "false");
+            }else{
+                broadcastIntent.putExtra("time", "true");
+            }
             sendBroadcast(broadcastIntent);
 
-            ApiService apiService=retrofit.create(ApiService.class);
-            final CORequest mCORequest = new CORequest("6c66fcbd-6dfe-45a2-ad6b-cbcda09b25bd","N123456789");
-            CompositeDisposable compositeDisposable=new CompositeDisposable();
-            compositeDisposable.add(apiService.getCO("SearchCO", mCORequest)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(new DisposableObserver<COResultList>() {
-
-                        @Override
-                        public void onNext(COResultList mCOResultList) {
-                            for(COResponse mCOResponse :mCOResultList.getcOResponseList()){
-                                Log.e("wwwww","getCO:"+mCOResponse.getcO());
-                                Log.e("wwwww","getCONM:"+mCOResponse.getcONM());
-                            }
-                            useApiCount++;
-                            Log.e("wwwww","getCONM:"+useApiCount);
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            if(useApiCount>1){
-                                handler.removeCallbacks(periodicUpdate);
-                                stopSelf();
-                            }
-                        }
-                    })
-            );
+            if("end".equals(msg)){
+                isEnd=true;
+                handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
+            }else{
+                handler.postDelayed(periodicUpdate, 1000); // schedule next wake up 10 second
+            }
         }
     };
 }

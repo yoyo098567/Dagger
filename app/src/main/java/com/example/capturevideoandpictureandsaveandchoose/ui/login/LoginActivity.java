@@ -26,15 +26,13 @@ import com.example.capturevideoandpictureandsaveandchoose.utils.sharepreferences
 import javax.inject.Inject;
 
 public class LoginActivity extends BaseActivity implements LoginContract.View,View.OnClickListener {
-    EditText editAccount, editPassword;
-    Button btnLogin;
-    String  account = "";
-    String  pwd = "";
-
-
     @Inject
     LoginContract.Presenter<LoginContract.View> mPresenter;
 
+    private EditText editAccount, editPassword;
+    private Button btnLogin;
+    private String  account = "";
+    private String  pwd = "";
     private LoginComponent mLoginActivityComponent;
     public static int loginStatus = 0;
     private static final int REQUEST_PERMISSIONS_CODE=20200410;
@@ -53,6 +51,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
         getAccount();
 
         mPresenter.onAttached(this);
+        mPresenter.onAutoLogin(account,pwd);
     }
 
     @Override
@@ -71,15 +70,15 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
-                if(!account.equals("") && !pwd.equals("")){
-                    mPresenter.onLogin(account,pwd);
-                    loginStatus = 1;
-                }else{
+//                if(!account.equals("") && !pwd.equals("")){
+//                    mPresenter.onLogin(account,pwd);
+//                    loginStatus = 1;
+//                }else{
 //                if(onCheckUserisEmpty()){
                     mPresenter.onLogin(editAccount.getText().toString(),editPassword.getText().toString());
 //                }
-                }
-
+//                }
+//                onCompleteLogin();
                 break;
         }
     }
@@ -99,6 +98,14 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("AccessToken",mPresenter.getAccessToken());
         intent.putExtra("account","N000054949");
+        startActivity(intent);
+    }
+
+    @Override
+    public void onCoompleteAutoLogin(String account) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("AccessToken",mPresenter.getAccessToken());
+        intent.putExtra("account",account);
         startActivity(intent);
     }
 

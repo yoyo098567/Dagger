@@ -29,7 +29,7 @@ public class ChooseDeviceItemData implements Serializable {
     private boolean backgroundChange=false;
     private boolean checkEndItem=false;
     private int progress;
-
+    private boolean chcekDataFromAPP =false;
     public String getOPCO() {
         return OPCO;
     }
@@ -220,5 +220,13 @@ public class ChooseDeviceItemData implements Serializable {
 
     public void setProgress(int progress) {
         this.progress = progress;
+    }
+
+    public boolean isChcekDataFromAPP() {
+        return chcekDataFromAPP;
+    }
+
+    public void setChcekDataFromAPP(boolean chcekDataFromAPP) {
+        this.chcekDataFromAPP = chcekDataFromAPP;
     }
 }

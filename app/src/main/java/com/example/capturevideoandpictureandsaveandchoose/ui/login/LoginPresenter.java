@@ -70,6 +70,48 @@ public class LoginPresenter <V extends LoginContract.View> extends BasePresenter
         );
     }
 
+    @Override
+    public void onAutoLogin(final String account, String password) {
+        getView().showProgressDialog("自動登入中");
+        String url = getView().getResourceString(R.string.api_on_Login);
+        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,account,password);
+//        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,"N000135056","1203-Z");
+//        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,account,password);
+        getCompositeDisposable().add(getApiService().onLogin(url, mLoginRequest)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<LoginResponse>() {
+
+                    @Override
+                    public void onNext(LoginResponse loginResponse) {
+                        if("true".equals(loginResponse.getmResult())){
+                            AccessToken = loginResponse.getmToken();
+                            mLoginPreferencesProvider.setToken(loginResponse.getmToken());
+                            getView().dismissProgressDialog();
+                            getView().onCoompleteAutoLogin(account);
+                        }else{
+                            Log.v("LoginResponse","登入失敗");
+                            getView().showDialogCaveatMessage("自動登入失敗");
+                            getView().dismissProgressDialog();
+//                            getView().onCompleteLogin();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().dismissProgressDialog();
+
+                        getView().showDialogCaveatMessage("自動登入失敗");
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                })
+        );
+    }
+
     public String getAccessToken(){
         return AccessToken;
     }

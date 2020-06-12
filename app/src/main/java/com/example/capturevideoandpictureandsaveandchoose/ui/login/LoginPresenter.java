@@ -58,7 +58,7 @@ public class LoginPresenter <V extends LoginContract.View> extends BasePresenter
                         Log.v("LoginResponse","登入失敗");
                         Log.v("LoginResponse","" + e);
                         getView().dismissProgressDialog();
-
+                        getView().onCompleteLogin();        //API壞掉，暫時修改
                         getView().showDialogCaveatMessage("登入失敗");
                     }
 

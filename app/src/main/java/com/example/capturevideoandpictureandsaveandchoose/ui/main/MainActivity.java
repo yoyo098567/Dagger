@@ -97,7 +97,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         setContentView(R.layout.activity_main);
         init();
         mPresenter.onAttached(this);
-        onStartTeleportService();
         mPresenter.onGetDisposableToken(sn);
         filePartition = new FilePartition();
     }
@@ -116,6 +115,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         btnBasicInformation = findViewById(R.id.btn_basic_information);
         btnFetchDevice = findViewById(R.id.btnFetchDevice);
         deviceDataList = new ArrayList<>();
+        mIntentFilter = new IntentFilter();
         mMainComponent = DaggerMainComponent.builder()
                 .mainModule(new MainModule(this))
                 .baseComponent(((Application) getApplication()).getApplicationComponent())
@@ -126,8 +126,8 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         if(loginStatus == 1){
             btnDeviceEdit.setEnabled(false);
             autoLogin();
+            onStartTeleportService();
         }
-//        autoLogin();
         Intent intent = this.getIntent();
         AccessToken = intent.getStringExtra("AccessToken");
         account = intent.getStringExtra("account");
@@ -157,29 +157,33 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if ("true".equals(intent.getStringExtra("time"))) {
-                getCurrentDataList();
-                if (deviceDataList.get(currentDataCount).getProgress() == 100) {
+            Log.v("CCCCCSIZE","777777777");
+            if(loginStatus == 1) {   //自動登入
+                if ("true".equals(intent.getStringExtra("time"))) {
+                    getCurrentDataList();
+                    if (deviceDataList.get(currentDataCount).getProgress() == 100) {
+                        mPresenter.onAddChkInfo(deviceDataList.get(currentDataCount));
+                    }
+                } else if ("false".equals(intent.getStringExtra("time"))) {
+                    //上傳end部分然後關掉service
+                    deviceDataList.get(currentDataCount).setEQNO("end");
                     mPresenter.onAddChkInfo(deviceDataList.get(currentDataCount));
+                    stopService(mTeleportServiceIntent);
                 }
-            }else if("false".equals(intent.getStringExtra("time"))){
-                //上傳end部分然後關掉service
-                deviceDataList.get(currentDataCount).setEQNO("end");
-                mPresenter.onAddChkInfo(deviceDataList.get(currentDataCount));
-                stopService(mTeleportServiceIntent);
-            }else{
-
             }
-//            Log.e("ggggg7", "getExtra:" + intent.getStringExtra("Data"));
-//            if(intent.getStringExtra("Data").equals("positionUpdate")){
-//                int a = intent.getIntExtra("position",0);
-//                Log.e("ggggg77", "" + a);
-//                textDeviceNumber.setText(deviceDataList.get(a).getEQNO());
-//                deviceDataPosition++;
-//            }else if(intent.getStringExtra("Data").equals("end")){
-//                Log.e("ggggg77", "END" );
-//                deviceDataPosition = 0;
-//            }
+            else{  //非自動登入
+                if ("true".equals(intent.getStringExtra("time"))) {
+//                    getCurrentDataList();
+//                    if (deviceDataList.get(currentDataCount).getProgress() == 100) {
+                    mPresenter.onAddChkInfo(deviceDataList.get(currentDataCount));
+//                    }
+                }else if("false".equals(intent.getStringExtra("time"))){
+                    //上傳end部分然後關掉service
+                    deviceDataList.get(currentDataCount).setEQNO("end");
+                    mPresenter.onAddChkInfo(deviceDataList.get(currentDataCount));
+                    stopService(NonInspectionServiceIntent);
+                }
+            }
         }
     };
 
@@ -543,7 +547,11 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_basic_information:
-                deviceInformation();
+                if (textDeviceNumber.getText().equals("")) {
+                    showDialogMessage("無設備");
+                } else {
+                    deviceInformation();
+                }
                 break;
             case R.id.btnFetchDevice:
                 fetchDevice();
@@ -602,11 +610,17 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 break;
         }
     }
-    private void onSendTeleportService(String msg){
+
+    private void onSendService(String msg){
         Bundle serviceBundle = new Bundle();
         serviceBundle.putString("msg",msg);
-        mTeleportServiceIntent.putExtras(serviceBundle);
-        this.startService(mTeleportServiceIntent);
+        if(loginStatus ==1){
+            mTeleportServiceIntent.putExtras(serviceBundle);
+            this.startService(mTeleportServiceIntent);
+        }else{
+            NonInspectionServiceIntent.putExtras(serviceBundle);
+            this.startService(NonInspectionServiceIntent);
+        }
     }
     //停止取資料和上傳
     private void onstopTeleportService() {
@@ -621,16 +635,18 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         this.startService(mTeleportServiceIntent);
     }
 
-    private void onStartNonInspectionService(int position) {
+    private void onStartNonInspectionService() {
         //非巡檢時用 用來
         NonInspectionServiceIntent = new Intent(this, NonInspectionService.class);
         Bundle serviceBundle = new Bundle();
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction("NonInspection");
-        serviceBundle.putSerializable("chooseDeviceData", deviceDataList);
-        serviceBundle.putInt("position", position);
         NonInspectionServiceIntent.putExtras(serviceBundle);
-        startService(NonInspectionServiceIntent);
+        this.startService(NonInspectionServiceIntent);
+    }
+
+    private void onStopNonInspectionService() {
+        this.stopService(NonInspectionServiceIntent);
     }
 
     private DialogInterface.OnClickListener onNonInspectionSelectDevice = new DialogInterface.OnClickListener() {
@@ -638,13 +654,26 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         public void onClick(DialogInterface dialog, int which) {
             Log.v("CCCCC", "deviceDataPosition:" + deviceDataPosition);
             Log.v("CCCCC", "which:" + which);
-            if (deviceDataPosition == 0) {
-                onStartNonInspectionService(which);
-            } else if (which == deviceDataPosition) {
-                onStartNonInspectionService(which);
-            } else {
-                textDeviceNumber.setText(deviceDataList.get(which).getEQNO());
-                stopService(NonInspectionServiceIntent);
+            if(loginStatus == 1){   //自動登入
+                if(which != deviceDataPosition){
+                    textDeviceNumber.setText(deviceDataList.get(which).getEQNO());
+                    textDeviceNumber.setTextColor(getResources().getColor(R.color.crimson));
+                    onstopTeleportService();
+                }else{
+                    onStartTeleportService();
+                    textDeviceNumber.setTextColor(getResources().getColor(R.color.black));
+                }
+            }else{      //非自動登入
+                if(which != deviceDataPosition){
+                    Log.v("CCCCCN$OSIZE","" + deviceDataList.size());
+                    textDeviceNumber.setText(deviceDataList.get(which).getEQNO());
+                    textDeviceNumber.setTextColor(getResources().getColor(R.color.crimson));
+                    onStopNonInspectionService();
+                }else{
+                    Log.v("CCCCCSIZE","" + deviceDataList.size());
+                    onStartNonInspectionService();
+                    textDeviceNumber.setTextColor(getResources().getColor(R.color.black));
+                }
             }
         }
     };
@@ -748,7 +777,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         deviceDataPosition=currentDataCount;
         if (currentDataCount>deviceDataList.size()-1){
             //這裡做end動作
-            onSendTeleportService("end");
+            onSendService("end");
         }
     }
 }

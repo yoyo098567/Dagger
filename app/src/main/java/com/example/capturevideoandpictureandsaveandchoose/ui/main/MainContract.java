@@ -11,6 +11,7 @@ import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.sear
 public interface MainContract {
     interface View extends BaseView {
         void onCompletebAddCurrentDevice();
+        void onNonService();
     }
 
     interface Presenter<V extends MainContract.View> extends BaseAttacher<V> {

@@ -3,7 +3,10 @@ package com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -34,6 +37,7 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
     private ArrayList<ChooseDeviceItemData> chooseDeviceItemDataList;
     private ChooseDeviceAdapter chooseDeviceAdapter;
     String account;
+    MyAdapter myAdapter;
     public static final int ADD_DEVICE_NUMBER=2020;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,7 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
         btnDelete.setOnClickListener(this);
         btnAdd.setOnClickListener(this);
         Bundle bundle=getIntent().getExtras();
+        myAdapter = new MyAdapter();
 
         chooseDeviceItemDataList= (ArrayList<ChooseDeviceItemData>) bundle.getSerializable("deviceDataList");
         account= bundle.getString("account");
@@ -92,27 +97,42 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        //Intent resultIntent = new Intent();
-        //if(chooseDeviceItemDataList.size()>0){
-        //    if(chooseDeviceItemDataList.size()>1){
-        //        chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-2).setCheckEndItem(false);
-        //        chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-1).setCheckEndItem(true);
-        //        resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
-        //    }else{
-        //        chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-1).setCheckEndItem(true);
-        //        resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
-        //    }
-        //    setResult(RESULT_OK, resultIntent);
-        //    finish();
-        //}else {
-        //    fileList();
-        //}
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
-        setResult(RESULT_OK, resultIntent);
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//        //Intent resultIntent = new Intent();
+//        //if(chooseDeviceItemDataList.size()>0){
+//        //    if(chooseDeviceItemDataList.size()>1){
+//        //        chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-2).setCheckEndItem(false);
+//        //        chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-1).setCheckEndItem(true);
+//        //        resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
+//        //    }else{
+//        //        chooseDeviceItemDataList.get(chooseDeviceItemDataList.size()-1).setCheckEndItem(true);
+//        //        resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
+//        //    }
+//        //    setResult(RESULT_OK, resultIntent);
+//        //    finish();
+//        //}else {
+//        //    fileList();
+//        //}
+//        Log.e("ggggg","Wwww");
+//        Intent resultIntent = new Intent();
+//        resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
+//        setResult(RESULT_OK, resultIntent);
+//        finish();
+//    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if (keyCode == KeyEvent.KEYCODE_BACK )
+        {
+            Log.e("ggggg","Wwww");
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -130,5 +150,35 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
     @Override
     public void setCurrentItem(int position) {
 
+    }
+
+    public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+        class ViewHolder extends RecyclerView.ViewHolder{
+            TextView num,EQNO;
+
+            ViewHolder(View itemView) {
+                super(itemView);
+                num = itemView.findViewById(R.id.text_number);
+                EQNO = itemView.findViewById(R.id.text_device_id);
+            }
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_recycler_view, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            holder.num.setText(position);
+            holder.EQNO.setText(chooseDeviceItemDataList.get(position).getEQNO());
+        }
+
+        @Override
+        public int getItemCount() {
+            return chooseDeviceItemDataList.size();
+        }
     }
 }

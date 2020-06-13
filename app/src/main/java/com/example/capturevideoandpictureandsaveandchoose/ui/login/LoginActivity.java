@@ -70,15 +70,14 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
-//                if(!account.equals("") && !pwd.equals("")){
-//                    mPresenter.onLogin(account,pwd);
-//                    loginStatus = 1;
-//                }else{
-//                if(onCheckUserisEmpty()){
-                    mPresenter.onLogin(editAccount.getText().toString(),editPassword.getText().toString());
-//                }
-//                }
-//                onCompleteLogin();
+                if(!account.equals("") && !pwd.equals("")){
+                    mPresenter.onLogin(account,pwd);
+                    loginStatus = 1;
+                }else{
+                    if(onCheckUserisEmpty()){
+                        mPresenter.onLogin(editAccount.getText().toString(),editPassword.getText().toString());
+                    }
+                }
                 break;
         }
     }

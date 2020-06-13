@@ -1,8 +1,11 @@
 package com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice;
 
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,9 +14,26 @@ import com.example.capturevideoandpictureandsaveandchoose.R;
 
 import java.util.ArrayList;
 
-public class ChooseDeviceAdapter extends RecyclerView.Adapter {
+public class ChooseDeviceAdapter extends RecyclerView.Adapter{
     private ArrayList<ChooseDeviceItemData> dataList;
-    private int CurrentPosition=0;
+    private int CurrentPosition;
+
+    class ViewHolder extends RecyclerView.ViewHolder{
+        TextView EQNO;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+            EQNO = itemView.findViewById(R.id.text_device_id);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    EQNO.setBackgroundColor(0xFF0000FF);
+                }
+            });
+        }
+    }
+
     public void setDataList(ArrayList<ChooseDeviceItemData> dataList){
         this.dataList=dataList;
         notifyDataSetChanged();
@@ -31,14 +51,23 @@ public class ChooseDeviceAdapter extends RecyclerView.Adapter {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.v("ggg","position:" + position + "CurrentPosition:" + CurrentPosition);
+                if(!(position == CurrentPosition)){
+                    dataList.get(CurrentPosition).setBackgroundChange(false);
+                }
                 CurrentPosition=position;
                 dataList.get(position).setBackgroundChange(!dataList.get(position).isBackgroundChange());
-//                notifyDataSetChanged();
+                notifyDataSetChanged();
             }
         });
         if (holder instanceof ChooseDeviceAdapterViewHolder) {
             ((ChooseDeviceAdapterViewHolder) holder).getItemDevice().setText(dataList.get(position).getEQNO());
             ((ChooseDeviceAdapterViewHolder) holder).getNumber().setText(""+position);
+            if(dataList.get(position).isBackgroundChange()){
+                ((ChooseDeviceAdapterViewHolder) holder).getItemDevice().setTextColor(Color.parseColor("#dc143c"));
+            }else{
+                ((ChooseDeviceAdapterViewHolder) holder).getItemDevice().setTextColor(Color.parseColor("#000000"));
+            }
         }
     }
 

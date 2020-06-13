@@ -48,11 +48,7 @@ public class NonInspectionService extends Service {
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if("end".equals(intent.getStringExtra("msg"))){
-            msg=intent.getStringExtra("msg");
-        }else{
-            handler.post(periodicUpdate);
-        }
+        handler.post(periodicUpdate);
         // TODO Auto-generated method stub
         return super.onStartCommand(intent, flags, startId);
     }
@@ -75,20 +71,12 @@ public class NonInspectionService extends Service {
         @Override
         public void run() {
             Intent broadcastIntent = new Intent();
-            broadcastIntent.setAction("NonInspection");
-            if(isEnd){
-                broadcastIntent.putExtra("time", "false");
-            }else{
-                broadcastIntent.putExtra("time", "true");
-            }
+            broadcastIntent.setAction("datatest");
+            broadcastIntent.putExtra("NonInspectionServiceTime", "false");
             sendBroadcast(broadcastIntent);
+            Log.e("CCCCCSIZE","wwwwww");
+            handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
 
-            if("end".equals(msg)){
-                isEnd=true;
-                handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
-            }else{
-                handler.postDelayed(periodicUpdate, 1000); // schedule next wake up 10 second
-            }
         }
     };
 }

@@ -28,7 +28,6 @@
         <activity
             android:name=".ui.deviceinformation.DeviceInformationActivity"
             android:screenOrientation="portrait" />
-
         <service
             android:name=".utils.service.TeleportService"
             android:enabled="true" />

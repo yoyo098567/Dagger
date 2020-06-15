@@ -29,10 +29,12 @@ public class LoginPresenter <V extends LoginContract.View> extends BasePresenter
     @Override
     public void onLogin(String account,String password) {
         getView().showProgressDialog("登入中");
+        Log.e("gggg","1:::"+account);
+        Log.e("gggg","::"+password);
         String url = getView().getResourceString(R.string.api_on_Login);
-        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,"N000054949","1203-Z");
+//        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,"N000054949","1203-Z");
 //        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,"N000135056","1203-Z");
-//        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,account,password);
+        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,account,password);
         getCompositeDisposable().add(getApiService().onLogin(url, mLoginRequest)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -49,7 +51,7 @@ public class LoginPresenter <V extends LoginContract.View> extends BasePresenter
                             Log.v("LoginResponse","登入失敗");
                             getView().showDialogCaveatMessage("登入失敗");
                             getView().dismissProgressDialog();
-                            getView().onCompleteLogin();
+//                            getView().onCompleteLogin();
                     }
                     }
 
@@ -58,7 +60,7 @@ public class LoginPresenter <V extends LoginContract.View> extends BasePresenter
                         Log.v("LoginResponse","登入失敗");
                         Log.v("LoginResponse","" + e);
                         getView().dismissProgressDialog();
-                        getView().onCompleteLogin();        //API壞掉，暫時修改
+//                        getView().onCompleteLogin();        //API壞掉，暫時修改
                         getView().showDialogCaveatMessage("登入失敗");
                     }
 

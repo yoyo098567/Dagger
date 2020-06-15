@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class ChooseDeviceAdapter extends RecyclerView.Adapter{
     private ArrayList<ChooseDeviceItemData> dataList;
     private int CurrentPosition;
+    boolean clickStatus = false;
 
     class ViewHolder extends RecyclerView.ViewHolder{
         TextView EQNO;
@@ -42,6 +43,12 @@ public class ChooseDeviceAdapter extends RecyclerView.Adapter{
     public int getCurrentPosition(){
         return CurrentPosition;
     }
+    public boolean getClickStatus(){
+        return clickStatus;
+    }
+    public void setClickStatusFalse(){
+        clickStatus = false;
+    }
     public void addDataToDataList(ChooseDeviceItemData mChooseDeviceItemData){
         dataList.add(mChooseDeviceItemData);
         notifyDataSetChanged();
@@ -51,6 +58,7 @@ public class ChooseDeviceAdapter extends RecyclerView.Adapter{
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                clickStatus = true;
                 Log.v("ggg","position:" + position + "CurrentPosition:" + CurrentPosition);
                 if(!(position == CurrentPosition)){
                     dataList.get(CurrentPosition).setBackgroundChange(false);

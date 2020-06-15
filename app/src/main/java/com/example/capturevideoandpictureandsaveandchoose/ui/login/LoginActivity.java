@@ -56,6 +56,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
 
     @Override
     public void init() {
+        loginStatus = 0;
         editAccount = findViewById(R.id.edit_account);
         editPassword = findViewById(R.id.edit_password);
         btnLogin = findViewById(R.id.btn_login);
@@ -70,9 +71,11 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
-                if(!account.equals("") && !pwd.equals("")){
-                    mPresenter.onLogin(account,pwd);
-                    loginStatus = 1;
+                getAccount();
+                if(loginStatus == 1){
+                    if(onCheckUserisEmpty()){
+                        mPresenter.onLogin(editAccount.getText().toString(),editPassword.getText().toString());
+                    }
                 }else{
                     if(onCheckUserisEmpty()){
                         mPresenter.onLogin(editAccount.getText().toString(),editPassword.getText().toString());
@@ -82,6 +85,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
         }
     }
     private boolean onCheckUserisEmpty(){
+        Log.v("LoginStatus","8888888888888");
         if ("".equals(editAccount.getText().toString())) {
             showDialogMessage(getResourceString(R.string.login_account_hint));
             return false;
@@ -92,23 +96,11 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
         }
         return true;
     }
-    @Override
-    public void onCompleteLogin() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("AccessToken",mPresenter.getAccessToken());
-        intent.putExtra("account","N000054949");
-        startActivity(intent);
-    }
-
-    @Override
-    public void onCoompleteAutoLogin(String account) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("AccessToken",mPresenter.getAccessToken());
-        intent.putExtra("account",account);
-        startActivity(intent);
-    }
 
     public void getAccount() {
+        Log.v("IN","77777777");
+        account = "";
+        pwd = "";
         String CONTENT_STRING = "content://tw.com.efpg.processe_equip.provider.ShareCloud/ShareCloud";
         Uri uri = Uri.parse(CONTENT_STRING);
 
@@ -120,14 +112,37 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
         );
 
         while (cursor.moveToNext()) {
-            String  isSuccess = cursor.getString(cursor.getColumnIndexOrThrow("IsSuccess"));
-            String  message = cursor.getString(cursor.getColumnIndexOrThrow("Message"));
-            account = cursor.getString(cursor.getColumnIndexOrThrow("Account"));
-            pwd = cursor.getString(cursor.getColumnIndexOrThrow("PWD"));
+            String isSuccess = cursor.getString(cursor.getColumnIndexOrThrow("IsSuccess"));
+            String message = cursor.getString(cursor.getColumnIndexOrThrow("Message"));
+            if(isSuccess.equals("true")){
+                account = cursor.getString(cursor.getColumnIndexOrThrow("Account"));
+                pwd = cursor.getString(cursor.getColumnIndexOrThrow("PWD"));
+            }
             Log.v("LoginStatus","isSuccess:" + isSuccess);
             Log.v("LoginStatus","message:" + message);
             Log.v("LoginStatus","account:" + account);
-            Log.v("LoginStatus","account:" + pwd);
+            Log.v("LoginStatus","pwd:" + pwd);
+
+            if(account.equals("") && pwd.equals("")){
+                loginStatus = 0;
+            }else{
+                loginStatus = 1;
+            }
         }
+    }
+    @Override
+    public void onCompleteLogin() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("AccessToken",mPresenter.getAccessToken());
+        intent.putExtra("account",account);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onCoompleteAutoLogin(String account) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("AccessToken",mPresenter.getAccessToken());
+        intent.putExtra("account",account);
+        startActivity(intent);
     }
 }

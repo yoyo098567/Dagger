@@ -20,6 +20,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -35,6 +36,7 @@ import com.example.capturevideoandpictureandsaveandchoose.di.module.main.MainMod
 import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceActivity;
 import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceItemData;
 import com.example.capturevideoandpictureandsaveandchoose.ui.deviceinformation.DeviceInformationActivity;
+import com.example.capturevideoandpictureandsaveandchoose.ui.login.LoginActivity;
 import com.example.capturevideoandpictureandsaveandchoose.utils.service.NonInspectionService;
 import com.example.capturevideoandpictureandsaveandchoose.utils.service.TeleportService;
 import com.guoxiaoxing.phoenix.compress.video.VideoCompressor;
@@ -58,6 +60,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static android.os.Environment.getExternalStoragePublicDirectory;
 import static com.example.capturevideoandpictureandsaveandchoose.ui.login.LoginActivity.loginStatus;
 
 public class MainActivity extends BaseActivity implements MainContract.View, View.OnClickListener {
@@ -89,6 +92,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     Intent NonInspectionServiceIntent;
     private Intent mTeleportServiceIntent;
     Handler NonHandler;
+    boolean NonServiceStatus = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,6 +129,8 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         if(loginStatus == 1){
             btnDeviceEdit.setEnabled(false);
             onStartTeleportService();
+        }else{
+            btnFetchDevice.setEnabled(false);
         }
         NonHandler=new Handler();
         Intent intent = this.getIntent();
@@ -156,9 +162,11 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.v("77788","8888");
             if(loginStatus == 1) {   //自動登入
                 if ("true".equals(intent.getStringExtra("time"))) {
                     getCurrentDataList();
+                    Log.v("77788","" + deviceDataList.get(currentDataCount).getProgress());
                     if (deviceDataList.get(currentDataCount).getProgress() == 100) {
                         mPresenter.onAddChkInfo(deviceDataList.get(currentDataCount));
                     }
@@ -176,22 +184,28 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     };
 
     private void fetchDevice() {
+        onstopTeleportService();
+        autoLogin();
+
         if(fetchDeviceMsg.equals("")){
             showDialogMessage("無資料");
         }else{
             showDialogMessage(fetchDeviceMsg);
         }
+
+        onStartTeleportService();
+        deviceDataPosition = 0;
+        currentDataCount = 0;
     }
 
     private void pickImageFromGallery() {
-
         //Create an Intent with action as ACTION_PICK
         Intent intent = new Intent(Intent.ACTION_PICK);
         // Sets the type as image/*. This ensures only components of type image are selected
         intent.setType("image/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
-        String[] mimeTypes = {"image/jpeg", "image/png"};
+        String[] mimeTypes = {"image/jpeg", "image/png", "image/jpg"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         // Launching the Intent
         startActivityForResult(intent, PICK_IMAGE_FROM_GALLERY_REQUEST_CODE);
@@ -261,7 +275,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
             if(loginStatus == 1){
                 textRouteCodeData.setText(WAYID);
-                textDeviceNumber.setText(EQNO);
+                textDeviceNumber.setText(deviceDataList.get(0).getEQNO());
             }
         }
         fetchDeviceMsg = "筆數:" + deviceDataList.size() + "首筆資料:{CO:" + deviceDataList.get(0).getCO() +
@@ -310,6 +324,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
+                Log.v("ERROR","" + ex);
                 // Error occurred while creating the File
 
             }
@@ -355,8 +370,8 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 new SimpleDateFormat("yyyyMMdd_HHmmss",
                         Locale.getDefault()).format(new Date());
         String imageFileName = "IMG_" + timeStamp + "_";
-        File storageDir =
-                getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+//        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -364,6 +379,8 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         );
 
         imageFilePath = image.getAbsolutePath();
+        Log.v("77777777","" + imageFilePath);
+
         return image;
     }
 
@@ -385,6 +402,11 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                     myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
                     out.flush();
                     out.close();
+
+                    Intent it = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    Uri uri = Uri.fromFile(imgFile);
+                    it.setData(uri);
+                    this.sendBroadcast(it);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -399,6 +421,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         if (requestCode == PICK_IMAGE_FROM_GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri selectedImage = data.getClipData().getItemAt(0).getUri();
             ArrayList<String> uriList = new ArrayList<String>();
+//            Log.v("8888","" + data.getClipData().getItemCount());
             for (int i = 0; i < data.getClipData().getItemCount(); i++) {
                 uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
                 Log.e("gggg", "" + uriList.get(i));
@@ -414,7 +437,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             for (int i = 0; i < data.getClipData().getItemCount(); i++) {
                 uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
                 Log.e("gggg555", "" + uriList.get(i));
-                filePartition.partition(uriList.get(i), 50 * 1024 * 1024);
+//                filePartition.partition(uriList.get(i), 50 * 1024 * 1024);
 
                 try {
                     File file = new File(uriList.get(i));
@@ -671,9 +694,11 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                     onstopTeleportService();
                 } else {
                     onStartTeleportService();
+                    textDeviceNumber.setText(deviceDataList.get(which).getEQNO());
                     textDeviceNumber.setTextColor(getResources().getColor(R.color.black));
                 }
             } else {      //非自動登入
+                NonServiceStatus = true;
                 textDeviceNumber.setText(deviceDataList.get(which).getEQNO());
                 mPresenter.onAddChkInfo(deviceDataList.get(currentDataCount));
                 onNonService();
@@ -776,9 +801,9 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     @Override
     public void onCompletebAddCurrentDevice() {
         if(loginStatus == 1){
+            currentDataCount++;
             textRouteCodeData.setText(deviceDataList.get(currentDataCount).getWAYID());
             textDeviceNumber.setText(deviceDataList.get(currentDataCount).getEQNO());
-            currentDataCount++;
             deviceDataPosition=currentDataCount;
             if (currentDataCount>deviceDataList.size()-1){
                 //這裡做end動作
@@ -793,7 +818,9 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     public void onNonService() {
         NonHandler.removeCallbacks(periodicUpdate);
         if(loginStatus == 0){
-            NonHandler.postDelayed(periodicUpdate, 10000);
+            if(NonServiceStatus){
+                NonHandler.postDelayed(periodicUpdate, 600000);
+            }
         }
     }
 
@@ -812,8 +839,19 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         if(loginStatus==1){
             onstopTeleportService();
         }else{
-            onStopNonInspectionService();
+            if(NonServiceStatus){
+                onStopNonInspectionService();
+            }
         }
         super.onDestroy();
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if (keyCode == KeyEvent.KEYCODE_BACK )
+        {
+
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

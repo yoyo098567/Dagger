@@ -83,9 +83,9 @@ public class TeleportService extends Service {
 
             if("end".equals(msg)){
                 isEnd=true;
-                handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
             }else{
-                handler.postDelayed(periodicUpdate, 1000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
             }
         }
     };

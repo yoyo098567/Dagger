@@ -84,7 +84,10 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
                 break;
             case R.id.btn_delete:
                 if (chooseDeviceItemDataList.size()>0){
-                    chooseDeviceItemDataList.remove(chooseDeviceAdapter.getCurrentPosition());
+                    if (chooseDeviceAdapter.getClickStatus()){
+                        chooseDeviceItemDataList.remove(chooseDeviceAdapter.getCurrentPosition());
+                        chooseDeviceAdapter.setClickStatusFalse();
+                    }
                     chooseDeviceAdapter.setDataList(chooseDeviceItemDataList);
                 }
                 break;

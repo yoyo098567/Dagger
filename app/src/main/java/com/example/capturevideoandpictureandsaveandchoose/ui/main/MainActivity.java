@@ -52,6 +52,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -366,7 +367,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             }
         }
 
-        startActivityForResult(it, DEVICE_INFORMATION);
+        startActivity(it);
     }
 
     private File createImageFile() throws IOException {
@@ -701,6 +702,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                     textDeviceNumber.setText(deviceDataList.get(which).getEQNO());
                     textDeviceNumber.setTextColor(getResources().getColor(R.color.black));
                 }
+                currentDataCount=which;
             } else {      //非自動登入
                 NonServiceStatus = true;
                 textDeviceNumber.setText(deviceDataList.get(which).getEQNO());
@@ -713,68 +715,78 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
     //如果能改成用retrofit加rxjava最好，已經嘗試過三天的，可能有缺什麼，不過緊急所以先求功能
     private void onUploadFile(final ArrayList<String> uriList, String type) {
-        showProgressDialog(type);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                OkHttpClient client = new OkHttpClient().newBuilder()
-                        .build();
-                MediaType mediaType = MediaType.parse("text/plain");
-                Log.e("gggg","EQKDNM:"+deviceDataList.get(currentDataCount).getEQKDNM());
-                Log.e("gggg","RecordDate:"+deviceDataList.get(currentDataCount).getRecordDate());
-                Log.e("gggg","RecordSubject:"+deviceDataList.get(currentDataCount).getRecordSubject());
+        if (deviceDataList.size()<1) {
+           showDialogCaveatMessage(getResourceString(R.string.upload_device_data_is_null));
+        }else{
+            showProgressDialog(type);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    OkHttpClient client = new OkHttpClient().newBuilder()
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(10, TimeUnit.SECONDS)
+                            .writeTimeout(10, TimeUnit.SECONDS)
+                            .build();
+                    MediaType mediaType = MediaType.parse("text/plain");
+                    MultipartBody.Builder buildernew = new MultipartBody.Builder()
+                            .setType(MultipartBody.FORM)
+                            .addFormDataPart("AuthorizedId", "1179cf63-9f4c-4060-a0f3-201f108b20c1")
+                            .addFormDataPart("CO", deviceDataList.get(currentDataCount).getCO())
+                            .addFormDataPart("CONM", deviceDataList.get(currentDataCount).getCONM())
+                            .addFormDataPart("PMFCT", deviceDataList.get(currentDataCount).getPMFCT())
+                            .addFormDataPart("PMFCTNM", deviceDataList.get(currentDataCount).getPMFCTNM())
+                            .addFormDataPart("EQKD", deviceDataList.get(currentDataCount).getEQKD())
+                            .addFormDataPart("EQKDNM", "123")
+                            .addFormDataPart("EQNO", deviceDataList.get(currentDataCount).getEQNO())
+                            .addFormDataPart("EQNM", deviceDataList.get(currentDataCount).getEQNM())
+                            .addFormDataPart("RecordDate", deviceDataList.get(currentDataCount).getRecordDate())
+                            .addFormDataPart("RecordSubject", "測試")
+                            .addFormDataPart("UploadEMP", account)
+                            .addFormDataPart("UploadNM", "新人")
+                            .addFormDataPart("UploadDATETM", "");
+                    for (String path : uriList) {
+                        File uploadFile = new File(path);
+                        buildernew.addFormDataPart("", uploadFile.getName(),
+                                RequestBody.create(MediaType.parse("application/octet-stream"),
+                                        uploadFile));
+                    }
+                    RequestBody body = buildernew.build();
 
-                MultipartBody.Builder buildernew = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("AuthorizedId", "1179cf63-9f4c-4060-a0f3-201f108b20c1")
-                        .addFormDataPart("CO", deviceDataList.get(currentDataCount).getCO())
-                        .addFormDataPart("CONM", deviceDataList.get(currentDataCount).getCONM())
-                        .addFormDataPart("PMFCT", deviceDataList.get(currentDataCount).getPMFCT())
-                        .addFormDataPart("PMFCTNM", deviceDataList.get(currentDataCount).getPMFCTNM())
-                        .addFormDataPart("EQKD", deviceDataList.get(currentDataCount).getEQKD())
-                        .addFormDataPart("EQKDNM", "124")
-                        .addFormDataPart("EQNO", deviceDataList.get(currentDataCount).getEQNO())
-                        .addFormDataPart("EQNM", deviceDataList.get(currentDataCount).getEQNM())
-                        .addFormDataPart("RecordDate", deviceDataList.get(currentDataCount).getRecordDate())
-                        .addFormDataPart("RecordSubject", "測試")
-                        .addFormDataPart("UploadEMP", account)
-                        .addFormDataPart("UploadNM", "新人")
-                        .addFormDataPart("UploadDATETM", "");
-                for (String path : uriList) {
-                    File uploadFile = new File(path);
-                    buildernew.addFormDataPart("", uploadFile.getName(),
-                            RequestBody.create(MediaType.parse("application/octet-stream"),
-                                    uploadFile));
-                }
-                RequestBody body = buildernew.build();
-
-                Request request = new Request.Builder()
-                        .url("https://cloud.fpcetg.com.tw/FPC/API/MTN/API_MTN/MTN/Upload")
-                        .method("POST", body)
-                        .build();
-                try {
-                    Response response = client.newCall(request).execute();
-                    Log.e("response", response.body().string());
-                    MainActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            dismissProgressDialog();
-                        }
-                    });
+                    Request request = new Request.Builder()
+                            .url("https://cloud.fpcetg.com.tw/FPC/API/MTN/API_MTN/MTN/Upload")
+                            .method("POST", body)
+                            .build();
+                    try {
+                        final Response response = client.newCall(request).execute();
+                        Log.e("response", response.body().string());
+                        Log.e("response", response.message());
+                        Log.e("gggg","wwwww");
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dismissProgressDialog();
+                                if("OK".equals(response.message())){
+                                    showDialogMessage("上傳完成");
+                                }else{
+                                    showDialogMessage("上傳失敗，設備資料有缺失，請確認設備資料是否完整");
+                                }
+                            }
+                        });
 //                        Log.e("isSuccess",json.get("IsSuccess").toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    MainActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            dismissProgressDialog();
-                            showDialogCaveatMessage("上傳失敗");
-                        }
-                    });
-                    Log.e("error", "" + e.getMessage());
+                    } catch (final Exception e) {
+                        e.printStackTrace();
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dismissProgressDialog();
+                                showDialogCaveatMessage("上傳失敗請確認網路問題");
+                            }
+                        });
+                        Log.e("error", "" + e.getMessage());
+                    }
                 }
-            }
-        }).start();
+            }).start();
+        }
     }
 
     private void getCurrentDataList() {

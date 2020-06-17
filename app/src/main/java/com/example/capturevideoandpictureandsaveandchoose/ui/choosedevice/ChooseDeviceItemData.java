@@ -21,7 +21,7 @@ public class ChooseDeviceItemData implements Serializable {
     private String EQNO=""; //設備編號
     private String EQNM=""; //設備名稱
     private String recordDate="";  //紀錄日期
-    private String recordSubject=""; //主旨說明 //keynote
+    private String recordSubject="測試"; //主旨說明 //keynote
     private String filePath=""; //檔案
     private String uploadEMP = ""; //上傳人員代號 //uploadEmployees
     private String UploadNM = ""; //上傳人員姓名

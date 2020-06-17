@@ -48,10 +48,11 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
         setContentView(R.layout.activity_login);
         init();
         requestPermissions(permissions, REQUEST_PERMISSIONS_CODE);
-        getAccount();
-
         mPresenter.onAttached(this);
-        mPresenter.onAutoLogin(account,pwd);
+        getAccount();
+        if(loginStatus==1){
+            mPresenter.onAutoLogin(account,pwd);
+        }
     }
 
     @Override
@@ -71,7 +72,16 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
-                getAccount();
+//                Intent intentCentralCloud = new Intent();
+//                intentCentralCloud.setAction(Intent.ACTION_VIEW);
+//                intentCentralCloud.setData(Uri.parse("https://cloud.fpcetg.com.tw/FPC/WEB/MTN/MTN_EQPT/Default.aspx?" +
+//                        "CO=" + "1" + "&" +
+//                        "PMFCT=" + "A3" + "&" +
+//                        "MNTCO=" + "1" + "&" +
+//                        "MNTFCT=" +"123" + "&" +
+//                        "EQNO=" + "P-166"+ "&" +
+//                        "token=" + "wwwww"));
+//                startActivity(intentCentralCloud);
                 if(loginStatus == 1){
                     if(onCheckUserisEmpty()){
                         mPresenter.onLogin(editAccount.getText().toString(),editPassword.getText().toString());
@@ -98,7 +108,6 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
     }
 
     public void getAccount() {
-        Log.v("IN","77777777");
         account = "";
         pwd = "";
         String CONTENT_STRING = "content://tw.com.efpg.processe_equip.provider.ShareCloud/ShareCloud";
@@ -110,23 +119,26 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
                 "LoginStatus",
                 null, null
         );
+        if(cursor==null){
+            showDialogCaveatMessage(getResourceString(R.string.auto_login_error_message));
+        }else{
+            while (cursor.moveToNext()) {
+                String isSuccess = cursor.getString(cursor.getColumnIndexOrThrow("IsSuccess"));
+                String message = cursor.getString(cursor.getColumnIndexOrThrow("Message"));
+                if(isSuccess.equals("true")){
+                    account = cursor.getString(cursor.getColumnIndexOrThrow("Account"));
+                    pwd = cursor.getString(cursor.getColumnIndexOrThrow("PWD"));
+                }
+                Log.v("LoginStatus","isSuccess:" + isSuccess);
+                Log.v("LoginStatus","message:" + message);
+                Log.v("LoginStatus","account:" + account);
+                Log.v("LoginStatus","pwd:" + pwd);
 
-        while (cursor.moveToNext()) {
-            String isSuccess = cursor.getString(cursor.getColumnIndexOrThrow("IsSuccess"));
-            String message = cursor.getString(cursor.getColumnIndexOrThrow("Message"));
-            if(isSuccess.equals("true")){
-                account = cursor.getString(cursor.getColumnIndexOrThrow("Account"));
-                pwd = cursor.getString(cursor.getColumnIndexOrThrow("PWD"));
-            }
-            Log.v("LoginStatus","isSuccess:" + isSuccess);
-            Log.v("LoginStatus","message:" + message);
-            Log.v("LoginStatus","account:" + account);
-            Log.v("LoginStatus","pwd:" + pwd);
-
-            if(account.equals("") && pwd.equals("")){
-                loginStatus = 0;
-            }else{
-                loginStatus = 1;
+                if(account.equals("") && pwd.equals("")){
+                    loginStatus = 0;
+                }else{
+                    loginStatus = 1;
+                }
             }
         }
     }

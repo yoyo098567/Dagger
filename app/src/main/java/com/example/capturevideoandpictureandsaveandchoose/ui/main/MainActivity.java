@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -47,6 +48,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -221,76 +223,78 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 null, null
         );
         int a = 0;
+        if(cursor==null){
+            showDialogCaveatMessage(getResourceString(R.string.get_inspection_data_error_message));
+        }else{
+            while (cursor.moveToNext()) {
+                a++;
+                Log.v("aaa", "" + a);
+                String OPCO = cursor.getString(cursor.getColumnIndexOrThrow("OPCO"));
+                String OPPLD = cursor.getString(cursor.getColumnIndexOrThrow("OPPLD"));
+                String PMFCT = cursor.getString(cursor.getColumnIndexOrThrow("PMFCT"));
+                String WAYID = cursor.getString(cursor.getColumnIndexOrThrow("WAYID"));
+                String WAYNM = cursor.getString(cursor.getColumnIndexOrThrow("WAYNM"));
+                String CTLPTID = cursor.getString(cursor.getColumnIndexOrThrow("CTLPTID"));
+                String IT = cursor.getString(cursor.getColumnIndexOrThrow("IT"));
+                String EQNO = cursor.getString(cursor.getColumnIndexOrThrow("EQNO"));
+                String EQNM = cursor.getString(cursor.getColumnIndexOrThrow("EQNM"));
+                String EQKD = cursor.getString(cursor.getColumnIndexOrThrow("EQKD"));
+                int progress = cursor.getInt(cursor.getColumnIndexOrThrow("Progress"));
+                String CO = cursor.getString(cursor.getColumnIndexOrThrow("CO"));
+                String CONM = cursor.getString(cursor.getColumnIndexOrThrow("CONM"));
+                String PMFCTNM = cursor.getString(cursor.getColumnIndexOrThrow("PMFCTNM"));
+                Log.v("autoLogin", "OPCO:" + OPCO);
+                Log.v("autoLogin", "OPPLD:" + OPPLD);
+                Log.v("autoLogin", "PMFCT:" + PMFCT);
+                Log.v("autoLogin", "WAYID:" + WAYID);
+                Log.v("autoLogin", "WAYNM:" + WAYNM);
+                Log.v("autoLogin", "CTLPTID:" + CTLPTID);
+                Log.v("autoLogin", "IT:" + IT);
+                Log.v("autoLogin", "EQNO:" + EQNO);
+                Log.v("autoLogin", "EQNM:" + EQNM);
+                Log.v("autoLogin", "EQKD:" + EQKD);
+                Log.v("autoLogin", "progress:" + progress);
+                Log.v("autoLogin", "CO:" + CO);
+                Log.v("autoLogin", "CONM:" + CONM);
+                Log.v("autoLogin", "PMFCTNM:" + PMFCTNM);
 
-        while (cursor.moveToNext()) {
-            a++;
-            Log.v("aaa", "" + a);
-            String OPCO = cursor.getString(cursor.getColumnIndexOrThrow("OPCO"));
-            String OPPLD = cursor.getString(cursor.getColumnIndexOrThrow("OPPLD"));
-            String PMFCT = cursor.getString(cursor.getColumnIndexOrThrow("PMFCT"));
-            String WAYID = cursor.getString(cursor.getColumnIndexOrThrow("WAYID"));
-            String WAYNM = cursor.getString(cursor.getColumnIndexOrThrow("WAYNM"));
-            String CTLPTID = cursor.getString(cursor.getColumnIndexOrThrow("CTLPTID"));
-            String IT = cursor.getString(cursor.getColumnIndexOrThrow("IT"));
-            String EQNO = cursor.getString(cursor.getColumnIndexOrThrow("EQNO"));
-            String EQNM = cursor.getString(cursor.getColumnIndexOrThrow("EQNM"));
-            String EQKD = cursor.getString(cursor.getColumnIndexOrThrow("EQKD"));
-            int progress = cursor.getInt(cursor.getColumnIndexOrThrow("Progress"));
-            String CO = cursor.getString(cursor.getColumnIndexOrThrow("CO"));
-            String CONM = cursor.getString(cursor.getColumnIndexOrThrow("CONM"));
-            String PMFCTNM = cursor.getString(cursor.getColumnIndexOrThrow("PMFCTNM"));
-            Log.v("autoLogin", "OPCO:" + OPCO);
-            Log.v("autoLogin", "OPPLD:" + OPPLD);
-            Log.v("autoLogin", "PMFCT:" + PMFCT);
-            Log.v("autoLogin", "WAYID:" + WAYID);
-            Log.v("autoLogin", "WAYNM:" + WAYNM);
-            Log.v("autoLogin", "CTLPTID:" + CTLPTID);
-            Log.v("autoLogin", "IT:" + IT);
-            Log.v("autoLogin", "EQNO:" + EQNO);
-            Log.v("autoLogin", "EQNM:" + EQNM);
-            Log.v("autoLogin", "EQKD:" + EQKD);
-            Log.v("autoLogin", "progress:" + progress);
-            Log.v("autoLogin", "CO:" + CO);
-            Log.v("autoLogin", "CONM:" + CONM);
-            Log.v("autoLogin", "PMFCTNM:" + PMFCTNM);
 
+                ChooseDeviceItemData mChooseDeviceItemData = new ChooseDeviceItemData();
+                mChooseDeviceItemData.setOPCO(OPCO);
+                mChooseDeviceItemData.setOPPLD(OPPLD);
+                mChooseDeviceItemData.setPMFCT(PMFCT);
+                mChooseDeviceItemData.setWAYID(WAYID);
+                mChooseDeviceItemData.setWAYNM(WAYNM);
+                mChooseDeviceItemData.setEQNO(EQNO);
+                mChooseDeviceItemData.setEQNM(EQNM);
+                mChooseDeviceItemData.setEQKD(EQKD);
+                mChooseDeviceItemData.setProgress(progress);
+                mChooseDeviceItemData.setCO(CO);
+                mChooseDeviceItemData.setCONM(CONM);
+                mChooseDeviceItemData.setPMFCTNM(PMFCTNM);
+                mChooseDeviceItemData.setUploadNM("王小明");
+                mChooseDeviceItemData.setUploadEMP(account);
+                mChooseDeviceItemData.setChcekDataFromAPP(true);
+                deviceDataList.add(mChooseDeviceItemData);
 
-            ChooseDeviceItemData mChooseDeviceItemData = new ChooseDeviceItemData();
-            mChooseDeviceItemData.setOPCO(OPCO);
-            mChooseDeviceItemData.setOPPLD(OPPLD);
-            mChooseDeviceItemData.setPMFCT(PMFCT);
-            mChooseDeviceItemData.setWAYID(WAYID);
-            mChooseDeviceItemData.setWAYNM(WAYNM);
-            mChooseDeviceItemData.setEQNO(EQNO);
-            mChooseDeviceItemData.setEQNM(EQNM);
-            mChooseDeviceItemData.setEQKD(EQKD);
-            mChooseDeviceItemData.setProgress(progress);
-            mChooseDeviceItemData.setCO(CO);
-            mChooseDeviceItemData.setCONM(CONM);
-            mChooseDeviceItemData.setPMFCTNM(PMFCTNM);
-            mChooseDeviceItemData.setUploadNM("王小明");
-            mChooseDeviceItemData.setUploadEMP(account);
-            mChooseDeviceItemData.setChcekDataFromAPP(true);
-            deviceDataList.add(mChooseDeviceItemData);
-
-            if(loginStatus == 1){
-                textRouteCodeData.setText(WAYID);
-                textDeviceNumber.setText(deviceDataList.get(0).getEQNO());
+                if(loginStatus == 1){
+                    textRouteCodeData.setText(WAYID);
+                    textDeviceNumber.setText(deviceDataList.get(0).getEQNO());
+                }
             }
+            fetchDeviceMsg = "筆數:" + deviceDataList.size() + "首筆資料:{CO:" + deviceDataList.get(0).getCO() +
+                    ",CONM:" + deviceDataList.get(0).getCONM() +
+                    ",EQKD:" + deviceDataList.get(0).getEQKD() +
+                    ",EQNM:" + deviceDataList.get(0).getEQNM() +
+                    ",EQNO:" + deviceDataList.get(0).getEQNO() +
+                    ",OPCO:" + deviceDataList.get(0).getOPCO() +
+                    ",OPPLD:" + deviceDataList.get(0).getOPPLD() +
+                    ",PMFCT:" + deviceDataList.get(0).getPMFCT() +
+                    ",PMFCTNM:" + deviceDataList.get(0).getPMFCTNM() +
+                    ",Progress:" + deviceDataList.get(0).getProgress() +
+                    ",WAYID:" + deviceDataList.get(0).getWAYID() +
+                    ",WAYNM:" + deviceDataList.get(0).getWAYNM() + "}";
         }
-        fetchDeviceMsg = "筆數:" + deviceDataList.size() + "首筆資料:{CO:" + deviceDataList.get(0).getCO() +
-                ",CONM:" + deviceDataList.get(0).getCONM() +
-                ",EQKD:" + deviceDataList.get(0).getEQKD() +
-                ",EQNM:" + deviceDataList.get(0).getEQNM() +
-                ",EQNO:" + deviceDataList.get(0).getEQNO() +
-                ",OPCO:" + deviceDataList.get(0).getOPCO() +
-                ",OPPLD:" + deviceDataList.get(0).getOPPLD() +
-                ",PMFCT:" + deviceDataList.get(0).getPMFCT() +
-                ",PMFCTNM:" + deviceDataList.get(0).getPMFCTNM() +
-                ",Progress:" + deviceDataList.get(0).getProgress() +
-                ",WAYID:" + deviceDataList.get(0).getWAYID() +
-                ",WAYNM:" + deviceDataList.get(0).getWAYNM() + "}";
-
         if(loginStatus == 0){
             deviceDataList = new ArrayList<>();
         }
@@ -716,20 +720,24 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 OkHttpClient client = new OkHttpClient().newBuilder()
                         .build();
                 MediaType mediaType = MediaType.parse("text/plain");
+                Log.e("gggg","EQKDNM:"+deviceDataList.get(currentDataCount).getEQKDNM());
+                Log.e("gggg","RecordDate:"+deviceDataList.get(currentDataCount).getRecordDate());
+                Log.e("gggg","RecordSubject:"+deviceDataList.get(currentDataCount).getRecordSubject());
+
                 MultipartBody.Builder buildernew = new MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
                         .addFormDataPart("AuthorizedId", "1179cf63-9f4c-4060-a0f3-201f108b20c1")
-                        .addFormDataPart("CO", "1")
-                        .addFormDataPart("CONM", "台塑")
-                        .addFormDataPart("PMFCT", "A3")
-                        .addFormDataPart("PMFCTNM", "麥寮AN廠")
-                        .addFormDataPart("EQKD", "PU")
-                        .addFormDataPart("EQKDNM", "泵浦")
-                        .addFormDataPart("EQNO", "P-166")
-                        .addFormDataPart("EQNM", "工業用水泵浦")
-                        .addFormDataPart("RecordDate", "2020/04/06")
+                        .addFormDataPart("CO", deviceDataList.get(currentDataCount).getCO())
+                        .addFormDataPart("CONM", deviceDataList.get(currentDataCount).getCONM())
+                        .addFormDataPart("PMFCT", deviceDataList.get(currentDataCount).getPMFCT())
+                        .addFormDataPart("PMFCTNM", deviceDataList.get(currentDataCount).getPMFCTNM())
+                        .addFormDataPart("EQKD", deviceDataList.get(currentDataCount).getEQKD())
+                        .addFormDataPart("EQKDNM", "124")
+                        .addFormDataPart("EQNO", deviceDataList.get(currentDataCount).getEQNO())
+                        .addFormDataPart("EQNM", deviceDataList.get(currentDataCount).getEQNM())
+                        .addFormDataPart("RecordDate", deviceDataList.get(currentDataCount).getRecordDate())
                         .addFormDataPart("RecordSubject", "測試")
-                        .addFormDataPart("UploadEMP", "1")
+                        .addFormDataPart("UploadEMP", account)
                         .addFormDataPart("UploadNM", "新人")
                         .addFormDataPart("UploadDATETM", "");
                 for (String path : uriList) {
@@ -747,12 +755,22 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 try {
                     Response response = client.newCall(request).execute();
                     Log.e("response", response.body().string());
-                    dismissProgressDialog();
+                    MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dismissProgressDialog();
+                        }
+                    });
 //                        Log.e("isSuccess",json.get("IsSuccess").toString());
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                    dismissProgressDialog();
-                    showDialogCaveatMessage("上傳失敗");
+                    MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dismissProgressDialog();
+                            showDialogCaveatMessage("上傳失敗");
+                        }
+                    });
                     Log.e("error", "" + e.getMessage());
                 }
             }
@@ -761,6 +779,10 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
     private void getCurrentDataList() {
         String CONTENT_STRING = "content://tw.com.efpg.processe_equip.provider.ShareCloud/ShareCloud";
+        Calendar mCal = Calendar.getInstance();
+        CharSequence currentDate;
+
+        currentDate = DateFormat.format("yyyy/MM/dd", mCal.getTime());
         Uri uri = Uri.parse(CONTENT_STRING);
         Cursor cursor = this.getContentResolver().query(
                 uri,
@@ -769,33 +791,38 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 null, null
         );
         ArrayList<ChooseDeviceItemData> tempDataList =new ArrayList<ChooseDeviceItemData>();
-        while (cursor.moveToNext()) {
-            String WAYID = cursor.getString(cursor.getColumnIndexOrThrow("WAYID"));
-            String EQNO = cursor.getString(cursor.getColumnIndexOrThrow("EQNO"));
-            ChooseDeviceItemData mChooseDeviceItemData = new ChooseDeviceItemData();
-            mChooseDeviceItemData.setOPCO(cursor.getString(cursor.getColumnIndexOrThrow("OPCO")));
-            mChooseDeviceItemData.setOPPLD(cursor.getString(cursor.getColumnIndexOrThrow("OPPLD")));
-            mChooseDeviceItemData.setPMFCT(cursor.getString(cursor.getColumnIndexOrThrow("PMFCT")));
-            //MNTFCT=OPPLD
-            mChooseDeviceItemData.setMNTFCT(cursor.getString(cursor.getColumnIndexOrThrow("OPPLD")));
-            mChooseDeviceItemData.setWAYID(WAYID);
-            mChooseDeviceItemData.setWAYNM(cursor.getString(cursor.getColumnIndexOrThrow("WAYNM")));
-            mChooseDeviceItemData.setEQNO(EQNO);
-            mChooseDeviceItemData.setEQNM(cursor.getString(cursor.getColumnIndexOrThrow("EQNM")));
-            mChooseDeviceItemData.setEQKD(cursor.getString(cursor.getColumnIndexOrThrow("EQKD")));
-            mChooseDeviceItemData.setProgress(cursor.getInt(cursor.getColumnIndexOrThrow("Progress")));
-            mChooseDeviceItemData.setCO(cursor.getString(cursor.getColumnIndexOrThrow("CO")));
-            mChooseDeviceItemData.setCONM(cursor.getString(cursor.getColumnIndexOrThrow("CONM")));
-            mChooseDeviceItemData.setPMFCTNM(cursor.getString(cursor.getColumnIndexOrThrow("PMFCTNM")));
-            mChooseDeviceItemData.setUploadNM("王小明");
-            mChooseDeviceItemData.setUploadEMP(account);
-            mChooseDeviceItemData.setChcekDataFromAPP(true);
-            tempDataList.add(mChooseDeviceItemData);
+        if(cursor==null){
+            showDialogCaveatMessage(getResourceString(R.string.get_inspection_data_error_message));
+        }else{
+            while (cursor.moveToNext()) {
+                String WAYID = cursor.getString(cursor.getColumnIndexOrThrow("WAYID"));
+                String EQNO = cursor.getString(cursor.getColumnIndexOrThrow("EQNO"));
+                ChooseDeviceItemData mChooseDeviceItemData = new ChooseDeviceItemData();
+                mChooseDeviceItemData.setOPCO(cursor.getString(cursor.getColumnIndexOrThrow("OPCO")));
+                mChooseDeviceItemData.setOPPLD(cursor.getString(cursor.getColumnIndexOrThrow("OPPLD")));
+                mChooseDeviceItemData.setPMFCT(cursor.getString(cursor.getColumnIndexOrThrow("PMFCT")));
+                //MNTFCT=OPPLD
+                mChooseDeviceItemData.setMNTFCT(cursor.getString(cursor.getColumnIndexOrThrow("OPPLD")));
+                mChooseDeviceItemData.setWAYID(WAYID);
+                mChooseDeviceItemData.setWAYNM(cursor.getString(cursor.getColumnIndexOrThrow("WAYNM")));
+                mChooseDeviceItemData.setEQNO(EQNO);
+                mChooseDeviceItemData.setRecordDate(currentDate.toString());
+                mChooseDeviceItemData.setEQNM(cursor.getString(cursor.getColumnIndexOrThrow("EQNM")));
+                mChooseDeviceItemData.setEQKD(cursor.getString(cursor.getColumnIndexOrThrow("EQKD")));
+                mChooseDeviceItemData.setProgress(cursor.getInt(cursor.getColumnIndexOrThrow("Progress")));
+                mChooseDeviceItemData.setCO(cursor.getString(cursor.getColumnIndexOrThrow("CO")));
+                mChooseDeviceItemData.setCONM(cursor.getString(cursor.getColumnIndexOrThrow("CONM")));
+                mChooseDeviceItemData.setPMFCTNM(cursor.getString(cursor.getColumnIndexOrThrow("PMFCTNM")));
+                mChooseDeviceItemData.setUploadNM("王小明");
+                mChooseDeviceItemData.setUploadEMP(account);
+                mChooseDeviceItemData.setChcekDataFromAPP(true);
+                tempDataList.add(mChooseDeviceItemData);
 
 //            textRouteCodeData.setText(WAYID);
 //            textDeviceNumber.setText(EQNO);
+            }
+            deviceDataList=tempDataList;
         }
-        deviceDataList=tempDataList;
     }
 
     @Override

@@ -48,7 +48,6 @@ public class LoginPresenter <V extends LoginContract.View> extends BasePresenter
                             getView().dismissProgressDialog();
                             getView().onCompleteLogin();
                         }else{
-                            Log.v("LoginResponse","登入失敗");
                             getView().showDialogCaveatMessage("登入失敗");
                             getView().dismissProgressDialog();
 //                            getView().onCompleteLogin();
@@ -57,7 +56,6 @@ public class LoginPresenter <V extends LoginContract.View> extends BasePresenter
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.v("LoginResponse","登入失敗");
                         Log.v("LoginResponse","" + e);
                         getView().dismissProgressDialog();
 //                        getView().onCompleteLogin();        //API壞掉，暫時修改
@@ -92,7 +90,6 @@ public class LoginPresenter <V extends LoginContract.View> extends BasePresenter
                             getView().dismissProgressDialog();
                             getView().onCoompleteAutoLogin(account);
                         }else{
-                            Log.v("LoginResponse","登入失敗");
                             getView().showDialogCaveatMessage("自動登入失敗");
                             getView().dismissProgressDialog();
 //                            getView().onCompleteLogin();
@@ -102,7 +99,7 @@ public class LoginPresenter <V extends LoginContract.View> extends BasePresenter
                     @Override
                     public void onError(Throwable e) {
                         getView().dismissProgressDialog();
-
+                        Log.e("LoginResponse","" + e);
                         getView().showDialogCaveatMessage("自動登入失敗");
                     }
 

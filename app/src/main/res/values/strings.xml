@@ -64,4 +64,6 @@
     <string name="add_device_no_data_file">檔案還未選擇</string>
 
     <string name="add_device_error">查詢資料失敗，請重試或檢查網路狀態，或檢查資料是否正確</string>
+    <string name="auto_login_error_message">巡檢取得不到資料，無法自動登入</string>
+    <string name="get_inspection_data_error_message">無法取得巡檢資料</string>
 </resources>

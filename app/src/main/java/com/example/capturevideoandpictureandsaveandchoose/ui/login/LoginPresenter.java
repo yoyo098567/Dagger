@@ -29,8 +29,6 @@ public class LoginPresenter <V extends LoginContract.View> extends BasePresenter
     @Override
     public void onLogin(String account,String password) {
         getView().showProgressDialog("登入中");
-        Log.e("gggg","1:::"+account);
-        Log.e("gggg","::"+password);
         String url = getView().getResourceString(R.string.api_on_Login);
 //        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,"N000054949","1203-Z");
 //        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,"N000135056","1203-Z");

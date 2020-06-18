@@ -19,7 +19,6 @@ public class DeviceInformationActivity extends BaseActivity implements View.OnCl
     textRouteNameData, textDeviceCategoryData, textDeviceNumberData, textDeviceNameData;
     private Button btnBack;
     private ChooseDeviceItemData chooseDeviceItemData;
-    private ArrayList<ChooseDeviceItemData> deviceDataList;
     boolean fileExist = false;
 
     @Override
@@ -47,7 +46,6 @@ public class DeviceInformationActivity extends BaseActivity implements View.OnCl
         if(getIntent().getExtras() != null){
             fileExist = true;
             chooseDeviceItemData =(ChooseDeviceItemData) getIntent().getExtras().getSerializable("device");
-            deviceDataList = (ArrayList<ChooseDeviceItemData>) getIntent().getExtras().getSerializable("NonInspectionWorkDevic");
             textCompanyData.setText(chooseDeviceItemData.getCONM()); //公司
             textJobSiteData.setText(chooseDeviceItemData.getPMFCTNM()); //作業廠處
             textProductionPlantData.setText(chooseDeviceItemData.getPMFCTNM()); //生產廠
@@ -68,22 +66,9 @@ public class DeviceInformationActivity extends BaseActivity implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_back:
-                Log.v("77777777","back");
-                Intent it = new Intent(this, MainActivity.class);
-                it.putExtra("NonInspectionWorkDevice",deviceDataList);
-                setResult(RESULT_OK, it);
                 finish();
                 break;
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent it = new Intent(this, MainActivity.class);
-        if(fileExist){
-            it.putExtra("NonInspectionWorkDevice",deviceDataList);
-        }
-        setResult(RESULT_OK, it);
-    }
 }

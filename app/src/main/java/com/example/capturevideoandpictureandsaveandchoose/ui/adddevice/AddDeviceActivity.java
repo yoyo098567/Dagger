@@ -34,11 +34,13 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
     AddDeviceContract.Presenter<AddDeviceContract.View> mPresenter;
     private TextView textMaintenancePlant,textCompany,textProductionPlant,textDeviceCategory,
            textDeviceNumber;
-    private TextView textRecordDate, textFile, textUploadPerson;
-    private EditText editKeynote;
+    private TextView textRecordDate;
+//    private TextView textFile, textUploadPerson;
+//    private EditText editKeynote;
     private AddDeviceData mAddDeviceData;
     private ChooseDeviceItemData mChooseDeviceItemData;
-    private Button btnBrowse, btnUpload;
+    private Button btnUpload;
+    private Button btnBrowse;
     private AddDeviceComponent mAddDeviceComponent;
     private ArrayList<String> dialogString;
     String account;
@@ -63,10 +65,10 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
         textDeviceCategory = findViewById(R.id.text_value_device_category);
         textDeviceNumber = findViewById(R.id.text_value_device_number);
         textRecordDate = findViewById(R.id.text_record_date_data);
-        textFile = findViewById(R.id.text_file_data);
-        textUploadPerson = findViewById(R.id.text_upload_person_data);
-        editKeynote=findViewById(R.id.edit_keynote_data);
-        btnBrowse = findViewById(R.id.btn_browse);
+//        textFile = findViewById(R.id.text_file_data);
+//        textUploadPerson = findViewById(R.id.text_upload_person_data);
+//        editKeynote=findViewById(R.id.edit_keynote_data);
+//        btnBrowse = findViewById(R.id.btn_browse);
         btnUpload = findViewById(R.id.btn_upload);
         mAddDeviceComponent = DaggerAddDeviceComponent.builder()
                 .addDeviceModule(new AddDeviceModule(this))
@@ -79,7 +81,7 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
         mChooseDeviceItemData =new ChooseDeviceItemData();
         textRecordDate.setText(date);
         btnUpload.setOnClickListener(this);
-        btnBrowse.setOnClickListener(this);
+//        btnBrowse.setOnClickListener(this);
         textMaintenancePlant.setOnClickListener(this);
         textCompany.setOnClickListener(this);
         textProductionPlant.setOnClickListener(this);
@@ -91,8 +93,8 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_browse:
-                break;
+//            case R.id.btn_browse:
+//                break;
             case R.id.btn_upload:
                 uploadDevice();
                 break;
@@ -229,7 +231,7 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
     };
 
     private void uploadDevice(){
-        mChooseDeviceItemData.setRecordSubject(editKeynote.getText().toString());
+        mChooseDeviceItemData.setRecordSubject(mChooseDeviceItemData.getEQNO());
         if (mChooseDeviceItemData.getMNTFCT().equals("")){
             showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_maintenance_plant));
         }else if(mChooseDeviceItemData.getCO().equals("")){
@@ -240,15 +242,16 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
             showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_device_categry));
         }else if(mChooseDeviceItemData.getEQNO().equals("")){
             showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_device_id));
-        }else if(mChooseDeviceItemData.getRecordSubject().equals("")){
-            showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_keynote));
         }
+//        else if(mChooseDeviceItemData.getRecordSubject().equals("")){
+//            showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_keynote));
+//        }
 //        else if(mChooseDeviceItemData.getFilePath().equals("")){
 //            showDialogCaveatMessage(getResourceString(R.string.add_device_no_data_file));
 //        }
         else{
             mChooseDeviceItemData.setUploadEMP(account);
-            mChooseDeviceItemData.setUploadNM("王小明");
+            mChooseDeviceItemData.setUploadNM("");
             mChooseDeviceItemData.setUploadDATETM(date.toString());
             Intent intent = new Intent();
             intent.putExtra("device", mChooseDeviceItemData);

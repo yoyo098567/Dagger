@@ -91,7 +91,6 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                     @Override
                     public void onNext(AddChkInfoResponse addChkInfoResponse) {
                         Log.e("ggggg",""+addChkInfoResponse.getMessage());
-                        getView().onCompletebAddCurrentDevice();
                         getView().onNonService();
                     }
 

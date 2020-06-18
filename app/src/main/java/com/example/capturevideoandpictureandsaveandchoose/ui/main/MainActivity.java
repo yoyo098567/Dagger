@@ -79,23 +79,23 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     private static final int GET_DEVICE_DATA = 2021;
     private String AccessToken = "";
     private ArrayList<ChooseDeviceItemData> deviceDataList;
-
     String imageFilePath;
     private Button btnFetchDevice, btnCapturePicture, btnRecordVideo, btnGetImageFromGallery, btnGetVideoFromGallery, btnDeviceEdit, btnCentralCloud, btnChoseDevice, btnBasicInformation;
     private TextView textDeviceNumber, textRouteCodeData;
     private File photoFile;
     private MainComponent mMainComponent;
     final String sn = android.os.Build.SERIAL;
-    int countFile = 0;
-    int deviceDataPosition = 0;
-    int currentDataCount = 0;
+    private int countFile = 0;
+    private int deviceDataPosition = 0;
+    private int currentDataCount = 0;
     private IntentFilter mIntentFilter;
-    String fetchDeviceMsg;
-    String account;
-    Intent NonInspectionServiceIntent;
+    private String fetchDeviceMsg;
+    private String account;
+    private Intent NonInspectionServiceIntent;
     private Intent mTeleportServiceIntent;
-    Handler NonHandler;
-    boolean NonServiceStatus = false;
+    private int deviceonLeaveTheRoute;
+    private Handler NonHandler;
+    private boolean NonServiceStatus = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,26 +119,27 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         btnChoseDevice = findViewById(R.id.btn_chose_device);
         btnBasicInformation = findViewById(R.id.btn_basic_information);
         btnFetchDevice = findViewById(R.id.btnFetchDevice);
-        deviceDataList = new ArrayList<>();
-        mIntentFilter = new IntentFilter();
         mMainComponent = DaggerMainComponent.builder()
                 .mainModule(new MainModule(this))
                 .baseComponent(((Application) getApplication()).getApplicationComponent())
                 .build();
         mMainComponent.inject(this);
-        currentDataCount = 0;
-        Log.v("LoginStatus", "" + loginStatus);
-        autoLogin();
-        if(loginStatus == 1){
-            btnDeviceEdit.setEnabled(false);
-            onStartTeleportService();
-        }else{
-            btnFetchDevice.setEnabled(false);
-        }
-        NonHandler=new Handler();
+        deviceDataList = new ArrayList<>();
+        mIntentFilter = new IntentFilter();
         Intent intent = this.getIntent();
         AccessToken = intent.getStringExtra("AccessToken");
         account = intent.getStringExtra("account");
+        currentDataCount = 0;
+        deviceonLeaveTheRoute=0;
+        Log.v("LoginStatus", "" + loginStatus);
+        autoLogin();
+        if (loginStatus == 1) {
+            btnDeviceEdit.setEnabled(false);
+            onStartTeleportService();
+        } else {
+            btnFetchDevice.setEnabled(false);
+        }
+        NonHandler = new Handler();
         btnCapturePicture.setOnClickListener(this);
         btnRecordVideo.setOnClickListener(this);
         btnGetImageFromGallery.setOnClickListener(this);
@@ -165,23 +166,11 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.v("77788","8888");
-            if(loginStatus == 1) {   //自動登入
-                if ("true".equals(intent.getStringExtra("time"))) {
-                    getCurrentDataList();
-                    Log.v("77788","" + deviceDataList.get(currentDataCount).getProgress());
-                    if (deviceDataList.get(currentDataCount).getProgress() == 100) {
-                        mPresenter.onAddChkInfo(deviceDataList.get(currentDataCount));
-                    }
-                } else if ("false".equals(intent.getStringExtra("time"))) {
-                    //上傳end部分然後關掉service
-                    String currentEQNO = deviceDataList.get(currentDataCount).getEQNO();
-                    deviceDataList.get(currentDataCount).setEQNO("end");
-                    mPresenter.onAddChkInfo(deviceDataList.get(currentDataCount));
-                    deviceDataList.get(currentDataCount).setEQNO(currentEQNO);
-                    stopService(mTeleportServiceIntent);
-                }
-            }else{  //非巡檢
+            if (loginStatus == 1) {   //自動登入
+                currentDataCount=Integer.valueOf(intent.getStringExtra("refresh"));
+                deviceonLeaveTheRoute=currentDataCount;
+                textDeviceNumber.setText(deviceDataList.get(currentDataCount).getEQNO());
+                Log.e("currentDataCountonBroadcast",""+currentDataCount);
             }
         }
     };
@@ -190,9 +179,9 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         onstopTeleportService();
         autoLogin();
 
-        if(fetchDeviceMsg.equals("")){
+        if (fetchDeviceMsg.equals("")) {
             showDialogMessage("無資料");
-        }else{
+        } else {
             showDialogMessage(fetchDeviceMsg);
         }
 
@@ -224,9 +213,9 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 null, null
         );
         int a = 0;
-        if(cursor==null){
+        if (cursor == null) {
             showDialogCaveatMessage(getResourceString(R.string.get_inspection_data_error_message));
-        }else{
+        } else {
             while (cursor.moveToNext()) {
                 a++;
                 Log.v("aaa", "" + a);
@@ -244,21 +233,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 String CO = cursor.getString(cursor.getColumnIndexOrThrow("CO"));
                 String CONM = cursor.getString(cursor.getColumnIndexOrThrow("CONM"));
                 String PMFCTNM = cursor.getString(cursor.getColumnIndexOrThrow("PMFCTNM"));
-                Log.v("autoLogin", "OPCO:" + OPCO);
-                Log.v("autoLogin", "OPPLD:" + OPPLD);
-                Log.v("autoLogin", "PMFCT:" + PMFCT);
-                Log.v("autoLogin", "WAYID:" + WAYID);
-                Log.v("autoLogin", "WAYNM:" + WAYNM);
-                Log.v("autoLogin", "CTLPTID:" + CTLPTID);
-                Log.v("autoLogin", "IT:" + IT);
-                Log.v("autoLogin", "EQNO:" + EQNO);
-                Log.v("autoLogin", "EQNM:" + EQNM);
-                Log.v("autoLogin", "EQKD:" + EQKD);
-                Log.v("autoLogin", "progress:" + progress);
-                Log.v("autoLogin", "CO:" + CO);
-                Log.v("autoLogin", "CONM:" + CONM);
-                Log.v("autoLogin", "PMFCTNM:" + PMFCTNM);
-
 
                 ChooseDeviceItemData mChooseDeviceItemData = new ChooseDeviceItemData();
                 mChooseDeviceItemData.setOPCO(OPCO);
@@ -278,7 +252,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 mChooseDeviceItemData.setChcekDataFromAPP(true);
                 deviceDataList.add(mChooseDeviceItemData);
 
-                if(loginStatus == 1){
+                if (loginStatus == 1) {
                     textRouteCodeData.setText(WAYID);
                     textDeviceNumber.setText(deviceDataList.get(0).getEQNO());
                 }
@@ -296,7 +270,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                     ",WAYID:" + deviceDataList.get(0).getWAYID() +
                     ",WAYNM:" + deviceDataList.get(0).getWAYNM() + "}";
         }
-        if(loginStatus == 0){
+        if (loginStatus == 0) {
             deviceDataList = new ArrayList<>();
         }
     }
@@ -318,7 +292,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 //        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         startActivityForResult(intent, PICK_FILE_REQUEST_CODE);
     }
-
     private void openCameraIntent() {
         Intent pictureIntent = new Intent(
                 MediaStore.ACTION_IMAGE_CAPTURE);
@@ -329,7 +302,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                Log.v("ERROR","" + ex);
+                Log.v("ERROR", "" + ex);
                 // Error occurred while creating the File
 
             }
@@ -355,18 +328,16 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
     private void deviceInformation() {
         Intent it = new Intent(this, DeviceInformationActivity.class);
-        if(loginStatus == 0){
+        if (loginStatus == 0) {
             if (deviceDataList.size() != 0 && !textDeviceNumber.getText().equals("")) {
-                it.putExtra("NonInspectionWorkDevice", deviceDataList);
                 it.putExtra("device", deviceDataList.get(deviceDataPosition));
             }
-        }else{
+        } else {
             if (deviceDataList.size() != 0 && !textDeviceNumber.getText().equals("")) {
-                it.putExtra("NonInspectionWorkDevice", deviceDataList);
+                Log.e("qqqqq",""+currentDataCount);
                 it.putExtra("device", deviceDataList.get(currentDataCount));
             }
         }
-
         startActivity(it);
     }
 
@@ -384,7 +355,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         );
 
         imageFilePath = image.getAbsolutePath();
-        Log.v("77777777","" + imageFilePath);
+        Log.v("77777777", "" + imageFilePath);
 
         return image;
     }
@@ -612,10 +583,10 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 } else {
                     Intent intentCentralCloud = new Intent();
                     intentCentralCloud.setAction(Intent.ACTION_VIEW);
-                    if (deviceDataList.get(deviceDataPosition).isChcekDataFromAPP()){
+                    if (deviceDataList.get(deviceDataPosition).isChcekDataFromAPP()) {
                         deviceDataList.get(deviceDataPosition).setMNTCO("1");
                     }
-                    Log.e("gggg","CO=" + deviceDataList.get(deviceDataPosition).getCO() + "&" +
+                    Log.e("gggg", "CO=" + deviceDataList.get(deviceDataPosition).getCO() + "&" +
                             "PMFCT=" + deviceDataList.get(deviceDataPosition).getPMFCT() + "&" +
                             "MNTCO=" + deviceDataList.get(deviceDataPosition).getMNTCO() + "&" +
                             "MNTFCT=" + deviceDataList.get(deviceDataPosition).getMNTFCT() + "&" +
@@ -635,7 +606,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 Intent intent = new Intent(this, ChooseDeviceActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("deviceDataList", deviceDataList);
-                bundle.putString("account", "N000054949");
+                bundle.putString("account", account);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, GET_DEVICE_DATA);
                 break;
@@ -649,38 +620,20 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         }
     }
 
-    private void onSendService(String msg){
-        Bundle serviceBundle = new Bundle();
-        serviceBundle.putString("msg",msg);
-        if(loginStatus ==1){
-            mTeleportServiceIntent.putExtras(serviceBundle);
-            this.startService(mTeleportServiceIntent);
-        }else{
-            NonInspectionServiceIntent.putExtras(serviceBundle);
-            this.startService(NonInspectionServiceIntent);
-        }
-    }
     //停止取資料和上傳
     private void onstopTeleportService() {
         this.stopService(mTeleportServiceIntent);
     }
+
     private void onStartTeleportService() {
-        mTeleportServiceIntent=new Intent(this, TeleportService.class);
+        mTeleportServiceIntent = new Intent(this, TeleportService.class);
         Bundle serviceBundle = new Bundle();
+        serviceBundle.putString("account", account);
+        serviceBundle.putString("currentDataCount",""+deviceonLeaveTheRoute);
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction("datatest");
         mTeleportServiceIntent.putExtras(serviceBundle);
         this.startService(mTeleportServiceIntent);
-    }
-
-    private void onStartNonInspectionService() {
-        //非巡檢時用 用來
-        NonInspectionServiceIntent = new Intent(this, NonInspectionService.class);
-        Bundle serviceBundle = new Bundle();
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction("datatest");
-        NonInspectionServiceIntent.putExtras(serviceBundle);
-        this.startService(NonInspectionServiceIntent);
     }
 
     private void onStopNonInspectionService() {
@@ -691,14 +644,16 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         @Override
         public void onClick(DialogInterface dialog, int which) {
             Log.v("CCCCC", "deviceDataPosition:" + deviceDataPosition);
+            Log.v("CCCCC", "currentDataCount:" + currentDataCount);
             Log.v("CCCCC", "which:" + which);
             if (loginStatus == 1) {   //自動登入
-                if (which != deviceDataPosition) {
+                if (which != deviceonLeaveTheRoute) {
                     textDeviceNumber.setText(deviceDataList.get(which).getEQNO());
                     textDeviceNumber.setTextColor(getResources().getColor(R.color.crimson));
                     onstopTeleportService();
                 } else {
                     onStartTeleportService();
+                    mPresenter.onAddChkInfo(deviceDataList.get(currentDataCount));
                     textDeviceNumber.setText(deviceDataList.get(which).getEQNO());
                     textDeviceNumber.setTextColor(getResources().getColor(R.color.black));
                 }
@@ -706,7 +661,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             } else {      //非自動登入
                 NonServiceStatus = true;
                 textDeviceNumber.setText(deviceDataList.get(which).getEQNO());
-                mPresenter.onAddChkInfo(deviceDataList.get(currentDataCount));
+                mPresenter.onAddChkInfo(deviceDataList.get(deviceDataPosition));
                 onNonService();
                 deviceDataPosition = which;
             }
@@ -715,9 +670,9 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
     //如果能改成用retrofit加rxjava最好，已經嘗試過三天的，可能有缺什麼，不過緊急所以先求功能
     private void onUploadFile(final ArrayList<String> uriList, String type) {
-        if (deviceDataList.size()<1) {
-           showDialogCaveatMessage(getResourceString(R.string.upload_device_data_is_null));
-        }else{
+        if (deviceDataList.size() < 1) {
+            showDialogCaveatMessage(getResourceString(R.string.upload_device_data_is_null));
+        } else {
             showProgressDialog(type);
             new Thread(new Runnable() {
                 @Override
@@ -740,9 +695,9 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                             .addFormDataPart("EQNO", deviceDataList.get(currentDataCount).getEQNO())
                             .addFormDataPart("EQNM", deviceDataList.get(currentDataCount).getEQNM())
                             .addFormDataPart("RecordDate", deviceDataList.get(currentDataCount).getRecordDate())
-                            .addFormDataPart("RecordSubject", "測試")
+                            .addFormDataPart("RecordSubject", deviceDataList.get(currentDataCount).getEQNO())
                             .addFormDataPart("UploadEMP", account)
-                            .addFormDataPart("UploadNM", "新人")
+                            .addFormDataPart("UploadNM", "")
                             .addFormDataPart("UploadDATETM", "");
                     for (String path : uriList) {
                         File uploadFile = new File(path);
@@ -758,16 +713,14 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                             .build();
                     try {
                         final Response response = client.newCall(request).execute();
-                        Log.e("response", response.body().string());
-                        Log.e("response", response.message());
-                        Log.e("gggg","wwwww");
+                        Log.e("ggggg",""+response.body().string());
                         MainActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 dismissProgressDialog();
-                                if("OK".equals(response.message())){
+                                if ("OK".equals(response.message())) {
                                     showDialogMessage("上傳完成");
-                                }else{
+                                } else {
                                     showDialogMessage("上傳失敗，設備資料有缺失，請確認設備資料是否完整");
                                 }
                             }
@@ -789,75 +742,13 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         }
     }
 
-    private void getCurrentDataList() {
-        String CONTENT_STRING = "content://tw.com.efpg.processe_equip.provider.ShareCloud/ShareCloud";
-        Calendar mCal = Calendar.getInstance();
-        CharSequence currentDate;
 
-        currentDate = DateFormat.format("yyyy/MM/dd", mCal.getTime());
-        Uri uri = Uri.parse(CONTENT_STRING);
-        Cursor cursor = this.getContentResolver().query(
-                uri,
-                null,
-                "CurrentJob",
-                null, null
-        );
-        ArrayList<ChooseDeviceItemData> tempDataList =new ArrayList<ChooseDeviceItemData>();
-        if(cursor==null){
-            showDialogCaveatMessage(getResourceString(R.string.get_inspection_data_error_message));
-        }else{
-            while (cursor.moveToNext()) {
-                String WAYID = cursor.getString(cursor.getColumnIndexOrThrow("WAYID"));
-                String EQNO = cursor.getString(cursor.getColumnIndexOrThrow("EQNO"));
-                ChooseDeviceItemData mChooseDeviceItemData = new ChooseDeviceItemData();
-                mChooseDeviceItemData.setOPCO(cursor.getString(cursor.getColumnIndexOrThrow("OPCO")));
-                mChooseDeviceItemData.setOPPLD(cursor.getString(cursor.getColumnIndexOrThrow("OPPLD")));
-                mChooseDeviceItemData.setPMFCT(cursor.getString(cursor.getColumnIndexOrThrow("PMFCT")));
-                //MNTFCT=OPPLD
-                mChooseDeviceItemData.setMNTFCT(cursor.getString(cursor.getColumnIndexOrThrow("OPPLD")));
-                mChooseDeviceItemData.setWAYID(WAYID);
-                mChooseDeviceItemData.setWAYNM(cursor.getString(cursor.getColumnIndexOrThrow("WAYNM")));
-                mChooseDeviceItemData.setEQNO(EQNO);
-                mChooseDeviceItemData.setRecordDate(currentDate.toString());
-                mChooseDeviceItemData.setEQNM(cursor.getString(cursor.getColumnIndexOrThrow("EQNM")));
-                mChooseDeviceItemData.setEQKD(cursor.getString(cursor.getColumnIndexOrThrow("EQKD")));
-                mChooseDeviceItemData.setProgress(cursor.getInt(cursor.getColumnIndexOrThrow("Progress")));
-                mChooseDeviceItemData.setCO(cursor.getString(cursor.getColumnIndexOrThrow("CO")));
-                mChooseDeviceItemData.setCONM(cursor.getString(cursor.getColumnIndexOrThrow("CONM")));
-                mChooseDeviceItemData.setPMFCTNM(cursor.getString(cursor.getColumnIndexOrThrow("PMFCTNM")));
-                mChooseDeviceItemData.setUploadNM("王小明");
-                mChooseDeviceItemData.setUploadEMP(account);
-                mChooseDeviceItemData.setChcekDataFromAPP(true);
-                tempDataList.add(mChooseDeviceItemData);
-
-//            textRouteCodeData.setText(WAYID);
-//            textDeviceNumber.setText(EQNO);
-            }
-            deviceDataList=tempDataList;
-        }
-    }
-
-    @Override
-    public void onCompletebAddCurrentDevice() {
-        if(loginStatus == 1){
-            currentDataCount++;
-            textRouteCodeData.setText(deviceDataList.get(currentDataCount).getWAYID());
-            textDeviceNumber.setText(deviceDataList.get(currentDataCount).getEQNO());
-            deviceDataPosition=currentDataCount;
-            if (currentDataCount>deviceDataList.size()-1){
-                //這裡做end動作
-                currentDataCount--;
-                deviceDataPosition=currentDataCount;
-                onSendService("end");
-            }
-        }
-    }
 
     @Override
     public void onNonService() {
         NonHandler.removeCallbacks(periodicUpdate);
-        if(loginStatus == 0){
-            if(NonServiceStatus){
+        if (loginStatus == 0) {
+            if (NonServiceStatus) {
                 NonHandler.postDelayed(periodicUpdate, 600000);
             }
         }
@@ -875,20 +766,18 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
     @Override
     protected void onDestroy() {
-        if(loginStatus==1){
+        if (loginStatus == 1) {
             onstopTeleportService();
-        }else{
-            if(NonServiceStatus){
+        } else {
+            if (NonServiceStatus) {
                 onStopNonInspectionService();
             }
         }
         super.onDestroy();
     }
 
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
-        if (keyCode == KeyEvent.KEYCODE_BACK )
-        {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
 
         }
         return super.onKeyDown(keyCode, event);

@@ -84,11 +84,13 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
 //                startActivity(intentCentralCloud);
                 if(loginStatus == 1){
                     if(onCheckUserisEmpty()){
-                        mPresenter.onLogin(editAccount.getText().toString(),editPassword.getText().toString());
+                        account=editAccount.getText().toString();
+                        mPresenter.onLogin(account,editPassword.getText().toString());
                     }
                 }else{
                     if(onCheckUserisEmpty()){
-                        mPresenter.onLogin(editAccount.getText().toString(),editPassword.getText().toString());
+                        account=editAccount.getText().toString();
+                        mPresenter.onLogin(account,editPassword.getText().toString());
                     }
                 }
                 break;
@@ -129,10 +131,6 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
                     account = cursor.getString(cursor.getColumnIndexOrThrow("Account"));
                     pwd = cursor.getString(cursor.getColumnIndexOrThrow("PWD"));
                 }
-                Log.v("LoginStatus","isSuccess:" + isSuccess);
-                Log.v("LoginStatus","message:" + message);
-                Log.v("LoginStatus","account:" + account);
-                Log.v("LoginStatus","pwd:" + pwd);
 
                 if(account.equals("") && pwd.equals("")){
                     loginStatus = 0;
@@ -146,7 +144,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
     public void onCompleteLogin() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("AccessToken",mPresenter.getAccessToken());
-        intent.putExtra("account",account);
+        intent.putExtra("account",editAccount.getText().toString());
         startActivity(intent);
     }
 

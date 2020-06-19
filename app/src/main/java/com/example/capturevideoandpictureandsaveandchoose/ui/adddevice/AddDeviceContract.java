@@ -21,6 +21,7 @@ public interface AddDeviceContract {
     }
 
     interface Presenter<V extends AddDeviceContract.View> extends BaseAttacher<V> {
+        void setUserId(String account);
         void onGetCOData();
         void onGetMNTFCTData();
         void onGetPMFCTData(String mMNTCO,String mMNTFCT);

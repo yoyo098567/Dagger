@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -37,8 +36,6 @@ import com.example.capturevideoandpictureandsaveandchoose.di.module.main.MainMod
 import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceActivity;
 import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceItemData;
 import com.example.capturevideoandpictureandsaveandchoose.ui.deviceinformation.DeviceInformationActivity;
-import com.example.capturevideoandpictureandsaveandchoose.ui.login.LoginActivity;
-import com.example.capturevideoandpictureandsaveandchoose.utils.service.NonInspectionService;
 import com.example.capturevideoandpictureandsaveandchoose.utils.service.TeleportService;
 import com.guoxiaoxing.phoenix.compress.video.VideoCompressor;
 import com.guoxiaoxing.phoenix.compress.video.format.MediaFormatStrategyPresets;
@@ -48,7 +45,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -132,14 +128,14 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         currentDataCount = 0;
         deviceonLeaveTheRoute=0;
         Log.v("LoginStatus", "" + loginStatus);
-        autoLogin();
         if (loginStatus == 1) {
             btnDeviceEdit.setEnabled(false);
+            autoLogin();
             onStartTeleportService();
         } else {
+            NonHandler = new Handler();
             btnFetchDevice.setEnabled(false);
         }
-        NonHandler = new Handler();
         btnCapturePicture.setOnClickListener(this);
         btnRecordVideo.setOnClickListener(this);
         btnGetImageFromGallery.setOnClickListener(this);
@@ -212,46 +208,45 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 "CurrentJob",
                 null, null
         );
-        int a = 0;
         if (cursor == null) {
             showDialogCaveatMessage(getResourceString(R.string.get_inspection_data_error_message));
         } else {
             while (cursor.moveToNext()) {
-                a++;
-                Log.v("aaa", "" + a);
-                String OPCO = cursor.getString(cursor.getColumnIndexOrThrow("OPCO"));
-                String OPPLD = cursor.getString(cursor.getColumnIndexOrThrow("OPPLD"));
-                String PMFCT = cursor.getString(cursor.getColumnIndexOrThrow("PMFCT"));
+//                String OPCO = cursor.getString(cursor.getColumnIndexOrThrow("OPCO"));
+//                String OPPLD = cursor.getString(cursor.getColumnIndexOrThrow("OPPLD"));
+//                String PMFCT = cursor.getString(cursor.getColumnIndexOrThrow("PMFCT"));
+//                String WAYID = cursor.getString(cursor.getColumnIndexOrThrow("WAYID"));
+//                String WAYNM = cursor.getString(cursor.getColumnIndexOrThrow("WAYNM"));
+//                String CTLPTID = cursor.getString(cursor.getColumnIndexOrThrow("CTLPTID"));
+//                String IT = cursor.getString(cursor.getColumnIndexOrThrow("IT"));
+//                String EQNO = cursor.getString(cursor.getColumnIndexOrThrow("EQNO"));
+//                String EQNM = cursor.getString(cursor.getColumnIndexOrThrow("EQNM"));
+//                String EQKD = cursor.getString(cursor.getColumnIndexOrThrow("EQKD"));
+//                int progress = cursor.getInt(cursor.getColumnIndexOrThrow("Progress"));
+//                String CO = cursor.getString(cursor.getColumnIndexOrThrow("CO"));
+//                String CONM = cursor.getString(cursor.getColumnIndexOrThrow("CONM"));
+//                String PMFCTNM = cursor.getString(cursor.getColumnIndexOrThrow("PMFCTNM"));
                 String WAYID = cursor.getString(cursor.getColumnIndexOrThrow("WAYID"));
-                String WAYNM = cursor.getString(cursor.getColumnIndexOrThrow("WAYNM"));
-                String CTLPTID = cursor.getString(cursor.getColumnIndexOrThrow("CTLPTID"));
-                String IT = cursor.getString(cursor.getColumnIndexOrThrow("IT"));
                 String EQNO = cursor.getString(cursor.getColumnIndexOrThrow("EQNO"));
-                String EQNM = cursor.getString(cursor.getColumnIndexOrThrow("EQNM"));
-                String EQKD = cursor.getString(cursor.getColumnIndexOrThrow("EQKD"));
-                int progress = cursor.getInt(cursor.getColumnIndexOrThrow("Progress"));
-                String CO = cursor.getString(cursor.getColumnIndexOrThrow("CO"));
-                String CONM = cursor.getString(cursor.getColumnIndexOrThrow("CONM"));
-                String PMFCTNM = cursor.getString(cursor.getColumnIndexOrThrow("PMFCTNM"));
-
                 ChooseDeviceItemData mChooseDeviceItemData = new ChooseDeviceItemData();
-                mChooseDeviceItemData.setOPCO(OPCO);
-                mChooseDeviceItemData.setOPPLD(OPPLD);
-                mChooseDeviceItemData.setPMFCT(PMFCT);
+                mChooseDeviceItemData.setOPCO(cursor.getString(cursor.getColumnIndexOrThrow("OPCO")));
+                mChooseDeviceItemData.setOPPLD(cursor.getString(cursor.getColumnIndexOrThrow("OPPLD")));
+                mChooseDeviceItemData.setPMFCT(cursor.getString(cursor.getColumnIndexOrThrow("PMFCT")));
+                //MNTFCT=OPPLD
+                mChooseDeviceItemData.setMNTFCT(cursor.getString(cursor.getColumnIndexOrThrow("OPPLD")));
                 mChooseDeviceItemData.setWAYID(WAYID);
-                mChooseDeviceItemData.setWAYNM(WAYNM);
+                mChooseDeviceItemData.setWAYNM(cursor.getString(cursor.getColumnIndexOrThrow("WAYNM")));
                 mChooseDeviceItemData.setEQNO(EQNO);
-                mChooseDeviceItemData.setEQNM(EQNM);
-                mChooseDeviceItemData.setEQKD(EQKD);
-                mChooseDeviceItemData.setProgress(progress);
-                mChooseDeviceItemData.setCO(CO);
-                mChooseDeviceItemData.setCONM(CONM);
-                mChooseDeviceItemData.setPMFCTNM(PMFCTNM);
-                mChooseDeviceItemData.setUploadNM("王小明");
+                mChooseDeviceItemData.setEQNM(cursor.getString(cursor.getColumnIndexOrThrow("EQNM")));
+                mChooseDeviceItemData.setEQKD(cursor.getString(cursor.getColumnIndexOrThrow("EQKD")));
+                mChooseDeviceItemData.setProgress(cursor.getInt(cursor.getColumnIndexOrThrow("Progress")));
+                mChooseDeviceItemData.setCO(cursor.getString(cursor.getColumnIndexOrThrow("CO")));
+                mChooseDeviceItemData.setCONM(cursor.getString(cursor.getColumnIndexOrThrow("CONM")));
+                mChooseDeviceItemData.setPMFCTNM(cursor.getString(cursor.getColumnIndexOrThrow("PMFCTNM")));
+                mChooseDeviceItemData.setUploadNM("測試");
                 mChooseDeviceItemData.setUploadEMP(account);
                 mChooseDeviceItemData.setChcekDataFromAPP(true);
                 deviceDataList.add(mChooseDeviceItemData);
-
                 if (loginStatus == 1) {
                     textRouteCodeData.setText(WAYID);
                     textDeviceNumber.setText(deviceDataList.get(0).getEQNO());
@@ -571,11 +566,25 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 break;
             case R.id.btnGetImageFromGallery:
                 onNonService();
-                pickImageFromGallery();
+                if("".equals(deviceDataList.get(currentDataCount).getEQKDNM())){
+                    mPresenter.onGetEQKDData(account,deviceDataList.get(currentDataCount).getCO(),
+                            deviceDataList.get(currentDataCount).getPMFCT(),
+                            deviceDataList.get(currentDataCount).getEQKD(),
+                            1);
+                }else{
+                    pickImageFromGallery();
+                }
                 break;
             case R.id.btnGetVideoFromGallery:
                 onNonService();
-                pickVideoFromGallery();
+                if("".equals(deviceDataList.get(currentDataCount).getEQKDNM())){
+                    mPresenter.onGetEQKDData(account,deviceDataList.get(currentDataCount).getCO(),
+                            deviceDataList.get(currentDataCount).getPMFCT(),
+                            deviceDataList.get(currentDataCount).getEQKD(),
+                            2);
+                }else{
+                    pickVideoFromGallery();
+                }
                 break;
             case R.id.btn_central_cloud:
                 if (textDeviceNumber.getText().equals("")) {
@@ -661,7 +670,9 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             } else {      //非自動登入
                 NonServiceStatus = true;
                 textDeviceNumber.setText(deviceDataList.get(which).getEQNO());
-                mPresenter.onAddChkInfo(deviceDataList.get(deviceDataPosition));
+                deviceDataList.get(which).setWAYNM("非巡檢路線");
+                deviceDataList.get(which).setWAYID("Non-Ins");
+                mPresenter.onAddChkInfo(deviceDataList.get(which));
                 onNonService();
                 deviceDataPosition = which;
             }
@@ -670,6 +681,9 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
     //如果能改成用retrofit加rxjava最好，已經嘗試過三天的，可能有缺什麼，不過緊急所以先求功能
     private void onUploadFile(final ArrayList<String> uriList, String type) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
+        final String currentDate = formatter.format(curDate);
         if (deviceDataList.size() < 1) {
             showDialogCaveatMessage(getResourceString(R.string.upload_device_data_is_null));
         } else {
@@ -683,6 +697,22 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                             .writeTimeout(10, TimeUnit.SECONDS)
                             .build();
                     MediaType mediaType = MediaType.parse("text/plain");
+                    Log.e("rrrrrrrrrrrr",""+uriList.get(0));
+                            Log.e("vvvvvvv","CO:"+ deviceDataList.get(currentDataCount).getCO());
+                            Log.e("vvvvvvv","CONM:"+ deviceDataList.get(currentDataCount).getCONM());
+                            Log.e("vvvvvvv","PMFCT:"+ deviceDataList.get(currentDataCount).getPMFCT());
+                            Log.e("vvvvvvv","PMFCTNM:"+ deviceDataList.get(currentDataCount).getPMFCTNM());
+                            Log.e("vvvvvvv","EQKD:"+ deviceDataList.get(currentDataCount).getEQKD());
+                            Log.e("vvvvvvv","EQKDNM:"+ deviceDataList.get(currentDataCount).getEQKDNM());
+                            Log.e("vvvvvvv","EQNO:"+ deviceDataList.get(currentDataCount).getEQNO());
+                            Log.e("vvvvvvv","EQNM:"+ deviceDataList.get(currentDataCount).getEQNM());
+                            Log.e("vvvvvvv","RecordDate:"+currentDate);
+                            Log.e("vvvvvvv","RecordSubject:"+ deviceDataList.get(currentDataCount).getEQNO());
+                            Log.e("vvvvvvv","UploadEMP:"+ account);
+                            Log.e("vvvvvvv","UploadNM:"+ "");
+                            Log.e("vvvvvvv","UploadDATETM:"+ "");
+                    File uuloadFile = new File(uriList.get(0));
+                            Log.e("vvvvvvv","file:"+ uuloadFile.getName());
                     MultipartBody.Builder buildernew = new MultipartBody.Builder()
                             .setType(MultipartBody.FORM)
                             .addFormDataPart("AuthorizedId", "1179cf63-9f4c-4060-a0f3-201f108b20c1")
@@ -694,7 +724,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                             .addFormDataPart("EQKDNM", "123")
                             .addFormDataPart("EQNO", deviceDataList.get(currentDataCount).getEQNO())
                             .addFormDataPart("EQNM", deviceDataList.get(currentDataCount).getEQNM())
-                            .addFormDataPart("RecordDate", deviceDataList.get(currentDataCount).getRecordDate())
+                            .addFormDataPart("RecordDate",currentDate)
                             .addFormDataPart("RecordSubject", deviceDataList.get(currentDataCount).getEQNO())
                             .addFormDataPart("UploadEMP", account)
                             .addFormDataPart("UploadNM", "")
@@ -714,6 +744,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                     try {
                         final Response response = client.newCall(request).execute();
                         Log.e("ggggg",""+response.body().string());
+                        Log.e("ggggg",""+response.message());
                         MainActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -721,7 +752,12 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                                 if ("OK".equals(response.message())) {
                                     showDialogMessage("上傳完成");
                                 } else {
-                                    showDialogMessage("上傳失敗，設備資料有缺失，請確認設備資料是否完整");
+//                                    try {'
+//                                        showDialogMessage(response.body().string());
+//                                    } catch (Exception e) {
+                                        showDialogMessage("上傳失敗，請重新上傳");
+//                                        e.printStackTrace();
+//                                    }
                                 }
                             }
                         });
@@ -732,7 +768,11 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                             @Override
                             public void run() {
                                 dismissProgressDialog();
-                                showDialogCaveatMessage("上傳失敗請確認網路問題");
+                                if("connect timed out".equals(e.toString())){
+                                    showDialogCaveatMessage("上傳失敗，連結超時");
+                                }else{
+                                    showDialogCaveatMessage("上傳失敗請確認網路問題");
+                                }
                             }
                         });
                         Log.e("error", "" + e.getMessage());
@@ -746,11 +786,25 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
     @Override
     public void onNonService() {
-        NonHandler.removeCallbacks(periodicUpdate);
         if (loginStatus == 0) {
+            NonHandler.removeCallbacks(periodicUpdate);
             if (NonServiceStatus) {
                 NonHandler.postDelayed(periodicUpdate, 600000);
             }
+        }
+    }
+
+    @Override
+    public void onSetEQKDNMData(String mEQKDNM,int ispickImage) {
+        if (ispickImage==1){
+            deviceDataList.get(currentDataCount).setEQKDNM(mEQKDNM);
+            pickImageFromGallery();
+        }else if(ispickImage==2){
+            deviceDataList.get(currentDataCount).setEQKDNM(mEQKDNM);
+            Log.e("qqqqqq","video:"+mEQKDNM);
+            pickVideoFromGallery();
+        }else{
+            showDialogCaveatMessage("沒有設備類別名稱，無法使用上傳功能");
         }
     }
 

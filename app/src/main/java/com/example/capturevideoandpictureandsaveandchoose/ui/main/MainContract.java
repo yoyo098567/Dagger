@@ -11,11 +11,13 @@ import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.sear
 public interface MainContract {
     interface View extends BaseView {
         void onNonService();
+        void onSetEQKDNMData(String EQKDNM,int ispickImage);
     }
 
     interface Presenter<V extends MainContract.View> extends BaseAttacher<V> {
         void onGetDisposableToken(String DeviceId);
         void onAddChkInfo(ChooseDeviceItemData mChooseDeviceItemData);
+        void onGetEQKDData(String account,String CO,String PMFCT,String EQKD,int ispickImage);
         String getDisposableToken();
     }
 }

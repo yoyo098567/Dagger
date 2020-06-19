@@ -41,13 +41,11 @@ public class DeviceInformationActivity extends BaseActivity implements View.OnCl
         textDeviceNumberData = findViewById(R.id.text_device_number_data);
         textDeviceNameData = findViewById(R.id.text_device_name_data);
         btnBack = findViewById(R.id.btn_back);
-
-
         if(getIntent().getExtras() != null){
             fileExist = true;
             chooseDeviceItemData =(ChooseDeviceItemData) getIntent().getExtras().getSerializable("device");
             textCompanyData.setText(chooseDeviceItemData.getCONM()); //公司
-            textJobSiteData.setText(chooseDeviceItemData.getPMFCTNM()); //作業廠處
+            textJobSiteData.setText(chooseDeviceItemData.getMNTFCT()); //作業廠處
             textProductionPlantData.setText(chooseDeviceItemData.getPMFCTNM()); //生產廠
             textRouteCodeData.setText(chooseDeviceItemData.getWAYID()); //路線代號
             textRouteNameData.setText(chooseDeviceItemData.getWAYNM()); //路線名稱
@@ -55,11 +53,7 @@ public class DeviceInformationActivity extends BaseActivity implements View.OnCl
             textDeviceNumberData.setText(chooseDeviceItemData.getEQNO()); //設備編號
             textDeviceNameData.setText(chooseDeviceItemData.getEQNM()); //設備名稱
         }
-
-
         btnBack.setOnClickListener(this);
-
-
     }
 
     @Override

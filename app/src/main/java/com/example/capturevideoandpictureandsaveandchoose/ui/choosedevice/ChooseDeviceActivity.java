@@ -79,7 +79,7 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
         switch (view.getId()) {
             case R.id.btn_add:
                 Intent intent = new Intent(this, AddDeviceActivity.class);
-                intent.putExtra("account","N000054949");
+                intent.putExtra("account",account);
                 startActivityForResult(intent, ADD_DEVICE_NUMBER);
                 break;
             case R.id.btn_delete:
@@ -129,7 +129,6 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
     {
         if (keyCode == KeyEvent.KEYCODE_BACK )
         {
-            Log.e("ggggg","Wwww");
             Intent resultIntent = new Intent();
             resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
             setResult(RESULT_OK, resultIntent);

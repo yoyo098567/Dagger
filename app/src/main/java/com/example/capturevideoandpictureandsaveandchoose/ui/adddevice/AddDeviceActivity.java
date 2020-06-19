@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,7 +35,7 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
     AddDeviceContract.Presenter<AddDeviceContract.View> mPresenter;
     private TextView textMaintenancePlant,textCompany,textProductionPlant,textDeviceCategory,
            textDeviceNumber;
-    private TextView textRecordDate;
+    private TextView textRecordDate,textDeviceNameValue;
 //    private TextView textFile, textUploadPerson;
 //    private EditText editKeynote;
     private AddDeviceData mAddDeviceData;
@@ -53,6 +54,7 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
         account = intent.getStringExtra("account");
         init();
         mPresenter.onAttached(this);
+        mPresenter.setUserId(account);
     }
 
     @Override
@@ -65,6 +67,7 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
         textDeviceCategory = findViewById(R.id.text_value_device_category);
         textDeviceNumber = findViewById(R.id.text_value_device_number);
         textRecordDate = findViewById(R.id.text_record_date_data);
+        textDeviceNameValue=findViewById(R.id.text_device_name_value);
 //        textFile = findViewById(R.id.text_file_data);
 //        textUploadPerson = findViewById(R.id.text_upload_person_data);
 //        editKeynote=findViewById(R.id.edit_keynote_data);
@@ -224,7 +227,8 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
     private DialogInterface.OnClickListener onDeciceDialogItemClick = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            textDeviceNumber.setText(mAddDeviceData.getmEQNODataList().get(which).getmEQNM());
+            textDeviceNumber.setText(mAddDeviceData.getmEQNODataList().get(which).getmEQNO());
+            textDeviceNameValue.setText(mAddDeviceData.getmEQNODataList().get(which).getmEQNM());
             mChooseDeviceItemData.setEQNO(mAddDeviceData.getmEQNODataList().get(which).getmEQNO());
             mChooseDeviceItemData.setEQNM(mAddDeviceData.getmEQNODataList().get(which).getmEQNM());
         }

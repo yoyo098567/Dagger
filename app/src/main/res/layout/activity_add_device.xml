@@ -59,14 +59,14 @@
         android:id="@+id/text_record_date_data"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:textSize="15sp"
-        android:gravity="center_vertical"
         android:background="@drawable/bg_add_device_rectangle"
+        android:gravity="center_vertical"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@id/text_record_date"
+        app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
         app:layout_constraintTop_toTopOf="@id/text_record_date"
-        app:layout_constraintWidth_percent="0.4"
-        app:layout_constraintHeight_percent="0.05"/>
+        app:layout_constraintWidth_percent="0.4" />
 
 
     <!--  保養廠  -->
@@ -86,14 +86,14 @@
         android:id="@+id/text_value_maintenance_plant"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:textSize="15sp"
-        android:gravity="center_vertical"
         android:background="@drawable/bg_add_device_rectangle"
+        android:gravity="center_vertical"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@id/text_maintenance_plant"
+        app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
         app:layout_constraintTop_toTopOf="@id/text_maintenance_plant"
-        app:layout_constraintWidth_percent="0.55"
-        app:layout_constraintHeight_percent="0.05"/>
+        app:layout_constraintWidth_percent="0.55" />
 
     <ImageView
         android:layout_width="0dp"
@@ -124,14 +124,14 @@
         android:id="@+id/text_value_company"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:textSize="15sp"
-        android:gravity="center_vertical"
         android:background="@drawable/bg_add_device_rectangle"
+        android:gravity="center_vertical"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@id/text_company"
+        app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
         app:layout_constraintTop_toTopOf="@id/text_company"
-        app:layout_constraintWidth_percent="0.4"
-        app:layout_constraintHeight_percent="0.05"/>
+        app:layout_constraintWidth_percent="0.4" />
 
     <ImageView
         android:layout_width="0dp"
@@ -161,14 +161,14 @@
         android:id="@+id/text_value_production_plant"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:textSize="15sp"
-        android:gravity="center_vertical"
         android:background="@drawable/bg_add_device_rectangle"
+        android:gravity="center_vertical"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@id/text_production_plant"
+        app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
         app:layout_constraintTop_toTopOf="@id/text_production_plant"
-        app:layout_constraintWidth_percent="0.55"
-        app:layout_constraintHeight_percent="0.05"/>
+        app:layout_constraintWidth_percent="0.55" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -199,14 +199,14 @@
         android:id="@+id/text_value_device_category"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:textSize="15sp"
-        android:gravity="center_vertical"
         android:background="@drawable/bg_add_device_rectangle"
+        android:gravity="center_vertical"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@id/text_device_category"
+        app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
         app:layout_constraintTop_toTopOf="@id/text_device_category"
-        app:layout_constraintWidth_percent="0.45"
-        app:layout_constraintHeight_percent="0.05"/>
+        app:layout_constraintWidth_percent="0.45" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -227,10 +227,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="@string/device_name"
+        android:text="@string/device_number"
         android:textColor="@color/black"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/text_value_device_name"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"
         app:layout_constraintTop_toBottomOf="@id/text_device_category" />
 
@@ -238,14 +238,14 @@
         android:id="@+id/text_value_device_number"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:textSize="15sp"
-        android:gravity="center_vertical"
         android:background="@drawable/bg_add_device_rectangle"
+        android:gravity="center_vertical"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@id/text_device_number"
+        app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
         app:layout_constraintTop_toTopOf="@id/text_device_number"
-        app:layout_constraintWidth_percent="0.45"
-        app:layout_constraintHeight_percent="0.05"/>
+        app:layout_constraintWidth_percent="0.45" />
 
     <ImageView
         android:layout_width="0dp"
@@ -258,99 +258,127 @@
         app:layout_constraintTop_toTopOf="@id/text_value_device_number"
         app:layout_constraintWidth_percent="0.05" />
 
+    <!--  設備名稱  -->
+
+    <TextView
+        android:id="@+id/text_value_device_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="設備名稱: "
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"
+        app:layout_constraintTop_toBottomOf="@id/text_device_number" />
+
+    <TextView
+        android:id="@+id/text_device_name_value"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_add_device_rectangle"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:paddingStart="10dp"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@id/text_value_device_name"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
+        app:layout_constraintTop_toTopOf="@id/text_value_device_name"
+        app:layout_constraintWidth_percent="0.6" />
+
     <!--  主旨說明  -->
 
     <!--<TextView-->
-        <!--android:id="@+id/text_keynote"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="主旨說明: "-->
-        <!--android:textColor="@color/black"-->
-        <!--android:textSize="20sp"-->
-        <!--app:layout_constraintBottom_toTopOf="@id/text_file"-->
-        <!--app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"-->
-        <!--app:layout_constraintTop_toBottomOf="@id/text_device_number" />-->
+    <!--android:id="@+id/text_keynote"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="主旨說明: "-->
+    <!--android:textColor="@color/black"-->
+    <!--android:textSize="20sp"-->
+    <!--app:layout_constraintBottom_toTopOf="@id/text_file"-->
+    <!--app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"-->
+    <!--app:layout_constraintTop_toBottomOf="@id/text_device_number" />-->
 
     <!--<EditText-->
-        <!--android:id="@+id/edit_keynote_data"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:maxLines="1"-->
-        <!--android:textSize="15sp"-->
-        <!--android:gravity="center_vertical"-->
-        <!--android:background="@drawable/bg_add_device_rectangle"-->
-        <!--app:layout_constraintBottom_toBottomOf="@id/text_keynote"-->
-        <!--app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"-->
-        <!--app:layout_constraintTop_toTopOf="@id/text_keynote"-->
-        <!--android:paddingStart="10dp"-->
-        <!--app:layout_constraintWidth_percent="0.6"-->
-        <!--app:layout_constraintHeight_percent="0.05"/>-->
+    <!--android:id="@+id/edit_keynote_data"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:maxLines="1"-->
+    <!--android:textSize="15sp"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:background="@drawable/bg_add_device_rectangle"-->
+    <!--app:layout_constraintBottom_toBottomOf="@id/text_keynote"-->
+    <!--app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"-->
+    <!--app:layout_constraintTop_toTopOf="@id/text_keynote"-->
+    <!--android:paddingStart="10dp"-->
+    <!--app:layout_constraintWidth_percent="0.6"-->
+    <!--app:layout_constraintHeight_percent="0.05"/>-->
 
 
     <!--  檔案  -->
 
     <!--<TextView-->
-        <!--android:id="@+id/text_file"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/file"-->
-        <!--android:textColor="@color/black"-->
-        <!--android:textSize="20sp"-->
-        <!--app:layout_constraintBottom_toTopOf="@id/text_upload_person"-->
-        <!--app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"-->
-        <!--app:layout_constraintTop_toBottomOf="@id/text_keynote" />-->
+    <!--android:id="@+id/text_file"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="@string/file"-->
+    <!--android:textColor="@color/black"-->
+    <!--android:textSize="20sp"-->
+    <!--app:layout_constraintBottom_toTopOf="@id/text_upload_person"-->
+    <!--app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"-->
+    <!--app:layout_constraintTop_toBottomOf="@id/text_keynote" />-->
 
     <!--<TextView-->
-        <!--android:id="@+id/text_file_data"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:textSize="15sp"-->
-        <!--android:gravity="center_vertical"-->
-        <!--android:background="@drawable/bg_add_device_rectangle"-->
-        <!--app:layout_constraintBottom_toBottomOf="@id/text_file"-->
-        <!--app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"-->
-        <!--app:layout_constraintTop_toTopOf="@id/text_file"-->
-        <!--app:layout_constraintWidth_percent="0.4"-->
-        <!--app:layout_constraintHeight_percent="0.05"/>-->
+    <!--android:id="@+id/text_file_data"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:textSize="15sp"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:background="@drawable/bg_add_device_rectangle"-->
+    <!--app:layout_constraintBottom_toBottomOf="@id/text_file"-->
+    <!--app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"-->
+    <!--app:layout_constraintTop_toTopOf="@id/text_file"-->
+    <!--app:layout_constraintWidth_percent="0.4"-->
+    <!--app:layout_constraintHeight_percent="0.05"/>-->
 
     <!--<Button-->
-        <!--android:id="@+id/btn_browse"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:background="@drawable/bg_add_device_button"-->
-        <!--android:text="@string/browse"-->
-        <!--android:textColor="@color/white"-->
-        <!--app:layout_constraintBottom_toBottomOf="@id/text_file"-->
-        <!--app:layout_constraintHeight_percent="0.05"-->
-        <!--app:layout_constraintStart_toEndOf="@id/guide_line_vertical_77"-->
-        <!--app:layout_constraintTop_toTopOf="@id/text_file"-->
-        <!--app:layout_constraintWidth_percent="0.15" />-->
+    <!--android:id="@+id/btn_browse"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:background="@drawable/bg_add_device_button"-->
+    <!--android:text="@string/browse"-->
+    <!--android:textColor="@color/white"-->
+    <!--app:layout_constraintBottom_toBottomOf="@id/text_file"-->
+    <!--app:layout_constraintHeight_percent="0.05"-->
+    <!--app:layout_constraintStart_toEndOf="@id/guide_line_vertical_77"-->
+    <!--app:layout_constraintTop_toTopOf="@id/text_file"-->
+    <!--app:layout_constraintWidth_percent="0.15" />-->
 
     <!--  上傳人員  -->
 
     <!--<TextView-->
-        <!--android:id="@+id/text_upload_person"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/upload_person"-->
-        <!--android:textColor="@color/black"-->
-        <!--android:textSize="20sp"-->
-        <!--app:layout_constraintBottom_toTopOf="@id/guide_line_horizontal_85"-->
-        <!--app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"-->
-        <!--app:layout_constraintTop_toBottomOf="@id/text_file" />-->
+    <!--android:id="@+id/text_upload_person"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="@string/upload_person"-->
+    <!--android:textColor="@color/black"-->
+    <!--android:textSize="20sp"-->
+    <!--app:layout_constraintBottom_toTopOf="@id/guide_line_horizontal_85"-->
+    <!--app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"-->
+    <!--app:layout_constraintTop_toBottomOf="@id/text_file" />-->
 
     <!--<TextView-->
-        <!--android:id="@+id/text_upload_person_data"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:textSize="15sp"-->
-        <!--android:gravity="center_vertical"-->
-        <!--android:background="@drawable/bg_add_device_rectangle"-->
-        <!--app:layout_constraintBottom_toBottomOf="@id/text_upload_person"-->
-        <!--app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"-->
-        <!--app:layout_constraintTop_toTopOf="@id/text_upload_person"-->
-        <!--app:layout_constraintWidth_percent="0.4"-->
-        <!--app:layout_constraintHeight_percent="0.05"/>-->
+    <!--android:id="@+id/text_upload_person_data"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:textSize="15sp"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:background="@drawable/bg_add_device_rectangle"-->
+    <!--app:layout_constraintBottom_toBottomOf="@id/text_upload_person"-->
+    <!--app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"-->
+    <!--app:layout_constraintTop_toTopOf="@id/text_upload_person"-->
+    <!--app:layout_constraintWidth_percent="0.4"-->
+    <!--app:layout_constraintHeight_percent="0.05"/>-->
     <!--OK-->
     <Button
         android:id="@+id/btn_upload"
@@ -358,10 +386,10 @@
         android:layout_height="0dp"
         android:background="#006EC7"
         android:text="@string/upload"
-        android:textSize="25sp"
         android:textColor="@color/white"
-        app:layout_constraintHeight_percent="0.07"
+        android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.07"
         app:layout_constraintWidth_percent="0.15" />
 
 

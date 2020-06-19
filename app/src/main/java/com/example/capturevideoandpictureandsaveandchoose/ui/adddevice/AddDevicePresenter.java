@@ -37,7 +37,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
     private String KEY_SEARCH_PMFCT = "25d5cf12-a1aa-428b-8297-3dc042580e24";
     private String KEY_SEARCH_EQKD = "378540a4-6d39-448d-ad34-1db12e61550a";
     private String KEY_SEARCH_EQNO = "568c47b1-a332-49ee-929a-6f3cc7c7303c";
-    private String USER_ID = "N123456789";
+    private String account = "";
 
     @Inject
     public AddDevicePresenter(ApiService api, ErpAPI erpAPI, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable) {
@@ -45,10 +45,15 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
     }
 
     @Override
+    public void setUserId(String account) {
+        this.account=account;
+    }
+
+    @Override
     public void onGetCOData() {
         getView().showProgressDialog("讀取中");
         String url = getView().getResourceString(R.string.api_on_getCO);
-        final CORequest mCORequest = new CORequest(KEY_SEARCH_CO, USER_ID);
+        final CORequest mCORequest = new CORequest(KEY_SEARCH_CO, account);
         getCompositeDisposable().add(getApiService().getCO(url, mCORequest)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -79,7 +84,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
     public void onGetMNTFCTData() {
         getView().showProgressDialog("讀取中");
         String url = getView().getResourceString(R.string.api_on_getMNTFCT);
-        MNTFCTRequest mMNTFCTRequest = new MNTFCTRequest(KEY_SEARCH_MNTFCT, USER_ID);
+        MNTFCTRequest mMNTFCTRequest = new MNTFCTRequest(KEY_SEARCH_MNTFCT, account);
         getCompositeDisposable().add(getApiService().getMNTFCT(url, mMNTFCTRequest)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -109,7 +114,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
     @Override
     public void onGetPMFCTData(String MNTCO, String MNTFCT) {
         getView().showProgressDialog("讀取中");
-        PMFCTRequest mPMFCTRequest = new PMFCTRequest(KEY_SEARCH_PMFCT, USER_ID, MNTCO, MNTFCT);
+        PMFCTRequest mPMFCTRequest = new PMFCTRequest(KEY_SEARCH_PMFCT, account, MNTCO, MNTFCT);
         String url = getView().getResourceString(R.string.api_on_getPMFCT);
         getCompositeDisposable().add(getApiService().getPMFCT(url, mPMFCTRequest)
                 .subscribeOn(getSchedulerProvider().io())
@@ -144,7 +149,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
     @Override
     public void onGetEQKDData(String CO,String PMFCT) {
         getView().showProgressDialog("讀取中");
-        EQKDRequest mEQKDRequest = new EQKDRequest(KEY_SEARCH_EQKD, USER_ID, CO, PMFCT);
+        EQKDRequest mEQKDRequest = new EQKDRequest(KEY_SEARCH_EQKD, account, CO, PMFCT);
         String url = getView().getResourceString(R.string.api_on_getEQKD);
         getCompositeDisposable().add(getApiService().getEQKD(url, mEQKDRequest)
                 .subscribeOn(getSchedulerProvider().io())
@@ -179,7 +184,7 @@ public class AddDevicePresenter<V extends AddDeviceContract.View> extends BasePr
     @Override
     public void onGetEQNOData(String CO,String PMFCT,String EQKD) {
         getView().showProgressDialog("讀取中");
-        EQNORequest mEQNORequest=new EQNORequest(KEY_SEARCH_EQNO, USER_ID, CO, PMFCT, EQKD);
+        EQNORequest mEQNORequest=new EQNORequest(KEY_SEARCH_EQNO, account, CO, PMFCT, EQKD);
         String url = getView().getResourceString(R.string.api_on_getEQNO);
         getCompositeDisposable().add(getApiService().getEQNO(url, mEQNORequest)
                 .subscribeOn(getSchedulerProvider().io())

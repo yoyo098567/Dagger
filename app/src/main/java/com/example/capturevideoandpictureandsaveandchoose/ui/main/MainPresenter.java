@@ -18,7 +18,10 @@ import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.sear
 import com.example.capturevideoandpictureandsaveandchoose.utils.rxjava.SchedulerProvider;
 import com.example.capturevideoandpictureandsaveandchoose.utils.sharepreferences.LoginPreferencesProvider;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -70,12 +73,12 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
     @Override
     public void onAddChkInfo(ChooseDeviceItemData mChooseDeviceItemData) {
         String authorizedId ="e1569364-6066-48af-8f47-8f11bb4916dd";
-        Calendar mCal = Calendar.getInstance();
-        CharSequence date = DateFormat.format("yyyy/MM/dd hh:mm:ss ", mCal.getTime());
-        Log.e("gggggg",""+mChooseDeviceItemData.getUploadEMP());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
+        Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
+        String date = sdf.format(curDate);
         AddChkInfoRequest mAddChkInfoRequest=new AddChkInfoRequest(authorizedId,
                 mChooseDeviceItemData.getCO(),
-                mChooseDeviceItemData.getMNTCO(),
+                mChooseDeviceItemData.getMNTFCT(),
                 mChooseDeviceItemData.getWAYID(),
                 mChooseDeviceItemData.getWAYNM(),
                 mChooseDeviceItemData.getCO(),
@@ -85,7 +88,7 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                 mChooseDeviceItemData.getEQNO(),
                 mChooseDeviceItemData.getUploadEMP(),
                 mChooseDeviceItemData.getUploadNM(),
-                date.toString());
+                date);
         String url = getView().getResourceString(R.string.api_on_AddChkInfo);
         getCompositeDisposable().add(getApiService().onAddChkInfo(url, mAddChkInfoRequest)
                 .subscribeOn(getSchedulerProvider().io())

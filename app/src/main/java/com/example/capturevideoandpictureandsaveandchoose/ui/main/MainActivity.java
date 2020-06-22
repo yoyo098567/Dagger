@@ -164,9 +164,11 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         public void onReceive(Context context, Intent intent) {
             if (loginStatus == 1) {   //自動登入
                 currentDataCount=Integer.valueOf(intent.getStringExtra("refresh"));
+                if(currentDataCount>=deviceDataList.size()){
+                    currentDataCount=deviceDataList.size()-1;
+                }
                 deviceonLeaveTheRoute=currentDataCount;
                 textDeviceNumber.setText(deviceDataList.get(currentDataCount).getEQNO());
-                Log.e("currentDataCountonBroadcast",""+currentDataCount);
             }
         }
     };
@@ -247,11 +249,15 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 mChooseDeviceItemData.setUploadEMP(account);
                 mChooseDeviceItemData.setChcekDataFromAPP(true);
                 deviceDataList.add(mChooseDeviceItemData);
+                if(mChooseDeviceItemData.getProgress()==100){
+                    deviceonLeaveTheRoute++;
+                }
                 if (loginStatus == 1) {
                     textRouteCodeData.setText(WAYID);
                     textDeviceNumber.setText(deviceDataList.get(0).getEQNO());
                 }
             }
+            deviceonLeaveTheRoute--;
             fetchDeviceMsg = "筆數:" + deviceDataList.size() + "首筆資料:{CO:" + deviceDataList.get(0).getCO() +
                     ",CONM:" + deviceDataList.get(0).getCONM() +
                     ",EQKD:" + deviceDataList.get(0).getEQKD() +
@@ -681,8 +687,10 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
     //如果能改成用retrofit加rxjava最好，已經嘗試過三天的，可能有缺什麼，不過緊急所以先求功能
     private void onUploadFile(final ArrayList<String> uriList, String type) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat curTime = new SimpleDateFormat("HH:mm:ss");
         Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
+        final String currentTime=curTime.format(curDate);
         final String currentDate = formatter.format(curDate);
         if (deviceDataList.size() < 1) {
             showDialogCaveatMessage(getResourceString(R.string.upload_device_data_is_null));
@@ -710,7 +718,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                             Log.e("vvvvvvv","RecordSubject:"+ deviceDataList.get(currentDataCount).getEQNO());
                             Log.e("vvvvvvv","UploadEMP:"+ account);
                             Log.e("vvvvvvv","UploadNM:"+ "");
-                            Log.e("vvvvvvv","UploadDATETM:"+ "");
+                            Log.e("vvvvvvv","UploadDATETM:"+ currentTime);
                     File uuloadFile = new File(uriList.get(0));
                             Log.e("vvvvvvv","file:"+ uuloadFile.getName());
                     MultipartBody.Builder buildernew = new MultipartBody.Builder()
@@ -728,7 +736,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                             .addFormDataPart("RecordSubject", deviceDataList.get(currentDataCount).getEQNO())
                             .addFormDataPart("UploadEMP", account)
                             .addFormDataPart("UploadNM", "")
-                            .addFormDataPart("UploadDATETM", "");
+                            .addFormDataPart("UploadDATETM", currentTime);
                     for (String path : uriList) {
                         File uploadFile = new File(path);
                         buildernew.addFormDataPart("", uploadFile.getName(),

@@ -45,7 +45,6 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
         setContentView(R.layout.activity_choose_device);
         init();
         mPresenter.onAttached(this);
-
     }
 
     @Override
@@ -67,6 +66,11 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
         myAdapter = new MyAdapter();
 
         chooseDeviceItemDataList= (ArrayList<ChooseDeviceItemData>) bundle.getSerializable("deviceDataList");
+        if(chooseDeviceItemDataList.size()>0){
+            for(int i=0;i<chooseDeviceItemDataList.size();i++){
+                chooseDeviceItemDataList.get(i).setBackgroundChange(false);
+            }
+        }
         account= bundle.getString("account");
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager); // 必須設置 LayoutManager
@@ -84,10 +88,13 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
                 break;
             case R.id.btn_delete:
                 if (chooseDeviceItemDataList.size()>0){
-                    if (chooseDeviceAdapter.getClickStatus()){
-                        chooseDeviceItemDataList.remove(chooseDeviceAdapter.getCurrentPosition());
-                        chooseDeviceAdapter.setClickStatusFalse();
+                    ArrayList<ChooseDeviceItemData> tempchooseDeviceItemDataList = new ArrayList<ChooseDeviceItemData>();
+                    for(ChooseDeviceItemData mChooseDeviceItemData :chooseDeviceAdapter.getDataList()){
+                        if(!mChooseDeviceItemData.isBackgroundChange()){
+                            tempchooseDeviceItemDataList.add(mChooseDeviceItemData);
+                        }
                     }
+                    chooseDeviceItemDataList=tempchooseDeviceItemDataList;
                     chooseDeviceAdapter.setDataList(chooseDeviceItemDataList);
                 }
                 break;
@@ -124,7 +131,6 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
 //        setResult(RESULT_OK, resultIntent);
 //        finish();
 //    }
-
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
         if (keyCode == KeyEvent.KEYCODE_BACK )

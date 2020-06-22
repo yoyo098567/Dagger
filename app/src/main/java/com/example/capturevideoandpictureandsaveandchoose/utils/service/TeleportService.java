@@ -39,6 +39,7 @@ public class TeleportService extends Service {
     private boolean isEnd = false;
     private boolean isStart=true;
     private int currentDataCount;
+    private int error_api_times=0;
     private Retrofit retrofit;
     private Handler refreshHandle;
 
@@ -110,9 +111,9 @@ public class TeleportService extends Service {
         public void run() {
             getCurrentDataList();
             if (isEnd) {
-                handler.postDelayed(periodicUpdate, 3000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 2000); // schedule next wake up 10 second
             } else {
-                handler.postDelayed(periodicUpdate, 1800); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 1000); // schedule next wake up 10 second
             }
         }
     };
@@ -121,7 +122,7 @@ public class TeleportService extends Service {
         String CONTENT_STRING = "content://tw.com.efpg.processe_equip.provider.ShareCloud/ShareCloud";
         Calendar mCal = Calendar.getInstance();
         CharSequence currentDate;
-
+        error_api_times=0;
         currentDate = DateFormat.format("yyyy/MM/dd", mCal.getTime());
         Uri uri = Uri.parse(CONTENT_STRING);
         Cursor cursor = this.getContentResolver().query(
@@ -213,7 +214,10 @@ public class TeleportService extends Service {
                             @Override
                             public void onError(Throwable e) {
                                 Log.e("gggg", "error:" + e);
-                                onAddChkInfo(mChooseDeviceItemData);
+                                if(error_api_times<3){
+                                    onAddChkInfo(mChooseDeviceItemData);
+                                }
+                                error_api_times++;
                             }
 
                             @Override

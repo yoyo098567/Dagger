@@ -27,14 +27,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.68"/>
-
+<!--android:text="N000054949"-->
     <EditText
         android:id="@+id/edit_account"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:hint="@string/login_account_hint"
         android:textColorHint="@color/white"
-        android:text="N000054949"
+        android:text=""
         android:gravity="center"
         app:layout_constraintWidth_percent="0.9"
         app:layout_constraintHeight_percent="0.08"
@@ -42,14 +42,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guide_line_horizontal_45"/>
-
+<!--android:text="1203-Z"-->
     <EditText
         android:id="@+id/edit_password"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:hint="@string/login_password_hint"
         android:inputType="textPassword"
-        android:text="1203-Z"
+        android:text=""
         android:textColorHint="@color/white"
         android:gravity="center"
         android:background="@drawable/bg_login_password"

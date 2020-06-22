@@ -87,7 +87,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     private IntentFilter mIntentFilter;
     private String fetchDeviceMsg;
     private String account;
-    private Intent NonInspectionServiceIntent;
     private Intent mTeleportServiceIntent;
     private int deviceonLeaveTheRoute;
     private Handler NonHandler;
@@ -651,10 +650,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         this.startService(mTeleportServiceIntent);
     }
 
-    private void onStopNonInspectionService() {
-        this.stopService(NonInspectionServiceIntent);
-    }
-
     private DialogInterface.OnClickListener onNonInspectionSelectDevice = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
@@ -832,7 +827,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             onstopTeleportService();
         } else {
             if (NonServiceStatus) {
-                onStopNonInspectionService();
             }
         }
         super.onDestroy();

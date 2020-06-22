@@ -571,25 +571,34 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 break;
             case R.id.btnGetImageFromGallery:
                 onNonService();
-                if("".equals(deviceDataList.get(currentDataCount).getEQKDNM())){
-                    mPresenter.onGetEQKDData(account,deviceDataList.get(currentDataCount).getCO(),
-                            deviceDataList.get(currentDataCount).getPMFCT(),
-                            deviceDataList.get(currentDataCount).getEQKD(),
-                            1);
+                if(deviceDataList.size()>0){
+                    if("".equals(deviceDataList.get(currentDataCount).getEQKDNM())){
+                        mPresenter.onGetEQKDData(account,deviceDataList.get(currentDataCount).getCO(),
+                                deviceDataList.get(currentDataCount).getPMFCT(),
+                                deviceDataList.get(currentDataCount).getEQKD(),
+                                1);
+                    }else{
+                        pickImageFromGallery();
+                    }
                 }else{
-                    pickImageFromGallery();
+                    showDialogMessage("無設備");
                 }
                 break;
             case R.id.btnGetVideoFromGallery:
                 onNonService();
-                if("".equals(deviceDataList.get(currentDataCount).getEQKDNM())){
-                    mPresenter.onGetEQKDData(account,deviceDataList.get(currentDataCount).getCO(),
-                            deviceDataList.get(currentDataCount).getPMFCT(),
-                            deviceDataList.get(currentDataCount).getEQKD(),
-                            2);
+                if(deviceDataList.size()>0){
+                    if("".equals(deviceDataList.get(currentDataCount).getEQKDNM())){
+                        mPresenter.onGetEQKDData(account,deviceDataList.get(currentDataCount).getCO(),
+                                deviceDataList.get(currentDataCount).getPMFCT(),
+                                deviceDataList.get(currentDataCount).getEQKD(),
+                                2);
+                    }else{
+                        pickVideoFromGallery();
+                    }
                 }else{
-                    pickVideoFromGallery();
+                    showDialogMessage("無設備");
                 }
+
                 break;
             case R.id.btn_central_cloud:
                 if (textDeviceNumber.getText().equals("")) {
@@ -681,7 +690,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     };
 
     //如果能改成用retrofit加rxjava最好，已經嘗試過三天的，可能有缺什麼，不過緊急所以先求功能
-    private void onUploadFile(final ArrayList<String> uriList, String type) {
+    private void onUploadFile(final ArrayList<String> uriList, final String type) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
         SimpleDateFormat curTime = new SimpleDateFormat("HH:mm:ss");
         Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
@@ -829,6 +838,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             if (NonServiceStatus) {
             }
         }
+        dismissProgressDialog();
         super.onDestroy();
     }
 

@@ -103,7 +103,7 @@ public class TeleportService extends Service {
             broadcastIntent.setAction("datatest");
             broadcastIntent.putExtra("refresh", "" + currentDataCount);
             sendBroadcast(broadcastIntent);
-            refreshHandle.postDelayed(refreshRunnable, 1000); // schedule next wake up 10 second
+            refreshHandle.postDelayed(refreshRunnable, 2000); // schedule next wake up 10 second
         }
     };
     private Runnable periodicUpdate = new Runnable() {
@@ -111,9 +111,9 @@ public class TeleportService extends Service {
         public void run() {
             getCurrentDataList();
             if (isEnd) {
-                handler.postDelayed(periodicUpdate, 2000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
             } else {
-                handler.postDelayed(periodicUpdate, 1000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
             }
         }
     };
@@ -158,9 +158,12 @@ public class TeleportService extends Service {
                 mChooseDeviceItemData.setChcekDataFromAPP(true);
                 tempDataList.add(mChooseDeviceItemData);
             }
-            if (currentDataCount == tempDataList.size()) {
+            Log.e("wwwwww",""+currentDate);
+            Log.e("wwwwww",""+tempDataList.size());
+
+            if (currentDataCount >= tempDataList.size()) {
                 isEnd = true;
-                onAddChkInfo(tempDataList.get(currentDataCount - 1));
+                onAddChkInfo(tempDataList.get(tempDataList.size() - 1));
             } else {
                 if (tempDataList.get(currentDataCount).getProgress() == 100) {
                     onAddChkInfo(tempDataList.get(currentDataCount));

@@ -146,6 +146,11 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         ChooseDeviceItemData mChooseDeviceItemData;
+        if(chooseDeviceItemDataList.size()>0){
+            for(int i=0;i<chooseDeviceItemDataList.size();i++){
+                chooseDeviceItemDataList.get(i).setBackgroundChange(false);
+            }
+        }
         if(requestCode==ADD_DEVICE_NUMBER && resultCode==RESULT_OK){
             mChooseDeviceItemData = (ChooseDeviceItemData) data.getSerializableExtra("device");
             Log.e("wwww1",""+ mChooseDeviceItemData.getCONM());

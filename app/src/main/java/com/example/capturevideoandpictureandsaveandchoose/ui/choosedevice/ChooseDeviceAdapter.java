@@ -51,7 +51,7 @@ public class ChooseDeviceAdapter extends RecyclerView.Adapter{
             }
         });
         if (holder instanceof ChooseDeviceAdapterViewHolder) {
-            ((ChooseDeviceAdapterViewHolder) holder).getItemDevice().setText(dataList.get(position).getEQNO());
+            ((ChooseDeviceAdapterViewHolder) holder).getItemDevice().setText(dataList.get(position).getEQNO()+" "+dataList.get(position).getEQNM());
             ((ChooseDeviceAdapterViewHolder) holder).getNumber().setText(""+position);
             if(dataList.get(position).isBackgroundChange()){
                 ((ChooseDeviceAdapterViewHolder) holder).getItemDevice().setTextColor(Color.parseColor("#dc143c"));

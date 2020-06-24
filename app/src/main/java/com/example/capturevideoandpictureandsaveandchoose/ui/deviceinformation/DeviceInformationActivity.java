@@ -49,7 +49,7 @@ public class DeviceInformationActivity extends BaseActivity implements View.OnCl
             textProductionPlantData.setText(chooseDeviceItemData.getPMFCTNM()); //生產廠
             textRouteCodeData.setText(chooseDeviceItemData.getWAYID()); //路線代號
             textRouteNameData.setText(chooseDeviceItemData.getWAYNM()); //路線名稱
-            textDeviceCategoryData.setText(chooseDeviceItemData.getEQKD()); //設備類別
+            textDeviceCategoryData.setText(chooseDeviceItemData.getEQKD()+" "+chooseDeviceItemData.getEQKDNM()); //設備類別
             textDeviceNumberData.setText(chooseDeviceItemData.getEQNO()); //設備編號
             textDeviceNameData.setText(chooseDeviceItemData.getEQNM()); //設備名稱
         }

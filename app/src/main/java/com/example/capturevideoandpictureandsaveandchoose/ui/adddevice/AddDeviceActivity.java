@@ -35,7 +35,7 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
     AddDeviceContract.Presenter<AddDeviceContract.View> mPresenter;
     private TextView textMaintenancePlant,textCompany,textProductionPlant,textDeviceCategory,
            textDeviceNumber;
-    private TextView textRecordDate,textDeviceNameValue;
+    private TextView textRecordDate,textDeviceNameValue,textDeviceCategoryNameValue;
 //    private TextView textFile, textUploadPerson;
 //    private EditText editKeynote;
     private AddDeviceData mAddDeviceData;
@@ -63,6 +63,7 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
         date = DateFormat.format("yyyy/MM/dd", mCal.getTime());
         textMaintenancePlant = findViewById(R.id.text_value_maintenance_plant);
         textCompany = findViewById(R.id.text_value_company);
+        textDeviceCategoryNameValue=findViewById(R.id.text_device_category_name_value);
         textProductionPlant = findViewById(R.id.text_value_production_plant);
         textDeviceCategory = findViewById(R.id.text_value_device_category);
         textDeviceNumber = findViewById(R.id.text_value_device_number);
@@ -153,7 +154,7 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
         dialogString.clear();
         mAddDeviceData.setmEQKDDataList(adapterData);
         for(EQKDResponse mEQKDResponse: adapterData){
-            dialogString.add(mEQKDResponse.getmEQKDNM());
+            dialogString.add(mEQKDResponse.getmEQKD()+"  "+mEQKDResponse.getmEQKDNM());
         }
         showItemDialog(dialogString,onDeviceCategoryDialogItemClick);
     }
@@ -163,7 +164,7 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
         dialogString.clear();
         mAddDeviceData.setmEQNODataList(adapterData);
         for(EQNOResponse mEQNOResponse: adapterData){
-            dialogString.add(mEQNOResponse.getmEQNM());
+            dialogString.add(mEQNOResponse.getmEQNO()+" "+mEQNOResponse.getmEQNM());
         }
         showItemDialog(dialogString,onDeciceDialogItemClick);
     }
@@ -219,7 +220,8 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
     private DialogInterface.OnClickListener onDeviceCategoryDialogItemClick = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            textDeviceCategory.setText(mAddDeviceData.getmEQKDDataList().get(which).getmEQKDNM());
+            textDeviceCategory.setText(mAddDeviceData.getmEQKDDataList().get(which).getmEQKD());
+            textDeviceCategoryNameValue.setText(mAddDeviceData.getmEQKDDataList().get(which).getmEQKDNM());
             mChooseDeviceItemData.setEQKDNM(mAddDeviceData.getmEQKDDataList().get(which).getmEQKDNM());
             mChooseDeviceItemData.setEQKD(mAddDeviceData.getmEQKDDataList().get(which).getmEQKD());
         }

@@ -1,6 +1,7 @@
 package com.example.capturevideoandpictureandsaveandchoose.ui.main;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 
 import android.content.BroadcastReceiver;
@@ -23,6 +24,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -568,35 +570,36 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 break;
             case R.id.btnGetImageFromGallery:
                 onNonService();
-                if(deviceDataList.size()>0){
-                    if("".equals(deviceDataList.get(currentDataCount).getEQKDNM())){
-                        mPresenter.onGetEQKDData(account,deviceDataList.get(currentDataCount).getCO(),
-                                deviceDataList.get(currentDataCount).getPMFCT(),
-                                deviceDataList.get(currentDataCount).getEQKD(),
-                                1);
-                    }else{
-                        pickImageFromGallery();
-                    }
-                }else{
-                    showDialogMessage("無設備");
-                }
+                onShowRecordSubjectDialog(1);
+//                if(deviceDataList.size()>0){
+//                    if("".equals(deviceDataList.get(currentDataCount).getEQKDNM())){
+//                        mPresenter.onGetEQKDData(account,deviceDataList.get(currentDataCount).getCO(),
+//                                deviceDataList.get(currentDataCount).getPMFCT(),
+//                                deviceDataList.get(currentDataCount).getEQKD(),
+//                                1);
+//                    }else{
+//                        pickImageFromGallery();
+//                    }
+//                }else{
+//                    showDialogMessage("無設備");
+//                }
                 break;
             case R.id.btnGetVideoFromGallery:
                 //目前影片能用到1分02秒
                 onNonService();
-                if(deviceDataList.size()>0){
-                    if("".equals(deviceDataList.get(currentDataCount).getEQKDNM())){
-                        mPresenter.onGetEQKDData(account,deviceDataList.get(currentDataCount).getCO(),
-                                deviceDataList.get(currentDataCount).getPMFCT(),
-                                deviceDataList.get(currentDataCount).getEQKD(),
-                                2);
-                    }else{
-                        pickVideoFromGallery();
-                    }
-                }else{
-                    showDialogMessage("無設備");
-                }
-
+                onShowRecordSubjectDialog(2);
+//                if(deviceDataList.size()>0){
+//                    if("".equals(deviceDataList.get(currentDataCount).getEQKDNM())){
+//                        mPresenter.onGetEQKDData(account,deviceDataList.get(currentDataCount).getCO(),
+//                                deviceDataList.get(currentDataCount).getPMFCT(),
+//                                deviceDataList.get(currentDataCount).getEQKD(),
+//                                2);
+//                    }else{
+//                        pickVideoFromGallery();
+//                    }
+//                }else{
+//                    showDialogMessage("無設備");
+//                }
                 break;
             case R.id.btn_central_cloud:
                 if (textDeviceNumber.getText().equals("")) {
@@ -640,7 +643,43 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 break;
         }
     }
+    private void onShowRecordSubjectDialog(final int ispickImage){
+        final EditText edittext = new EditText(this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("主旨輸入");
+        alert.setView(edittext);
 
+        alert.setPositiveButton("確認", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String recordSubjectValue = edittext.getText().toString();
+                if(deviceDataList.size()>0){
+                    if("".equals(recordSubjectValue)){
+                        deviceDataList.get(currentDataCount).setRecordSubject("沒有輸入主旨");
+                    }else{
+                        deviceDataList.get(currentDataCount).setRecordSubject(recordSubjectValue);
+                    }
+                    if("".equals(deviceDataList.get(currentDataCount).getEQKDNM())){
+                        mPresenter.onGetEQKDData(account,deviceDataList.get(currentDataCount).getCO(),
+                                deviceDataList.get(currentDataCount).getPMFCT(),
+                                deviceDataList.get(currentDataCount).getEQKD(),
+                                ispickImage);
+                    }else{
+                        if(ispickImage==1){
+                            pickImageFromGallery();
+                        }else if(ispickImage==2){
+                            pickVideoFromGallery();
+                        }else{
+                            showDialogCaveatMessage("沒有設備類別名稱，無法使用上傳功能");
+                        }
+                    }
+                }else{
+                    showDialogMessage("無設備");
+                }
+            }
+        });
+
+        alert.show();
+    }
     //停止取資料和上傳
     private void onstopTeleportService() {
         this.stopService(mTeleportServiceIntent);
@@ -714,7 +753,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                             Log.e("vvvvvvv","EQNO:"+ deviceDataList.get(currentDataCount).getEQNO());
                             Log.e("vvvvvvv","EQNM:"+ deviceDataList.get(currentDataCount).getEQNM());
                             Log.e("vvvvvvv","RecordDate:"+currentDate);
-                            Log.e("vvvvvvv","RecordSubject:"+ deviceDataList.get(currentDataCount).getEQNO());
+                            Log.e("vvvvvvv","RecordSubject:"+ deviceDataList.get(currentDataCount).getRecordSubject());
                             Log.e("vvvvvvv","UploadEMP:"+ account);
                             Log.e("vvvvvvv","UploadNM:"+ "");
                             Log.e("vvvvvvv","UploadDATETM:"+ currentTime);
@@ -730,7 +769,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                             .addFormDataPart("EQNO", deviceDataList.get(currentDataCount).getEQNO())
                             .addFormDataPart("EQNM", deviceDataList.get(currentDataCount).getEQNM())
                             .addFormDataPart("RecordDate",currentDate)
-                            .addFormDataPart("RecordSubject", deviceDataList.get(currentDataCount).getEQNO())
+                            .addFormDataPart("RecordSubject", deviceDataList.get(currentDataCount).getRecordSubject())
                             .addFormDataPart("UploadEMP", account)
                             .addFormDataPart("UploadNM", "")
                             .addFormDataPart("UploadDATETM", currentTime);

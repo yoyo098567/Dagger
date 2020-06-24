@@ -254,7 +254,9 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                     textDeviceNumber.setText(deviceDataList.get(0).getEQNO()+" "+deviceDataList.get(0).getEQNM());
                 }
             }
-            deviceonLeaveTheRoute--;
+            if(deviceDataList.get(deviceDataList.size()-1).getProgress()==100){
+                deviceonLeaveTheRoute=deviceDataList.size()-1;
+            }
             fetchDeviceMsg = "筆數:" + deviceDataList.size() + "首筆資料:{CO:" + deviceDataList.get(0).getCO() +
                     ",CONM:" + deviceDataList.get(0).getCONM() +
                     ",EQKD:" + deviceDataList.get(0).getEQKD() +

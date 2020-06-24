@@ -38,6 +38,7 @@ public class TeleportService extends Service {
     private String account = "";
     private boolean isEnd = false;
     private boolean isStart=true;
+    private int totalData=0;
     private int currentDataCount;
     private int error_api_times=0;
     private Retrofit retrofit;
@@ -111,8 +112,10 @@ public class TeleportService extends Service {
         public void run() {
             getCurrentDataList();
             if (isEnd) {
+//                handler.postDelayed(periodicUpdate, 2000); // schedule next wake up 10 second
                 handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
             } else {
+//                handler.postDelayed(periodicUpdate, 3000); // schedule next wake up 10 second
                 handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
             }
         }
@@ -122,7 +125,6 @@ public class TeleportService extends Service {
         String CONTENT_STRING = "content://tw.com.efpg.processe_equip.provider.ShareCloud/ShareCloud";
         Calendar mCal = Calendar.getInstance();
         CharSequence currentDate;
-        error_api_times=0;
         currentDate = DateFormat.format("yyyy/MM/dd", mCal.getTime());
         Uri uri = Uri.parse(CONTENT_STRING);
         Cursor cursor = this.getContentResolver().query(
@@ -158,9 +160,10 @@ public class TeleportService extends Service {
                 mChooseDeviceItemData.setChcekDataFromAPP(true);
                 tempDataList.add(mChooseDeviceItemData);
             }
-            Log.e("wwwwww",""+currentDate);
+            Log.e("wwwwww",""+currentDataCount);
             Log.e("wwwwww",""+tempDataList.size());
-
+            totalData=tempDataList.size();
+            error_api_times=0;
             if (currentDataCount >= tempDataList.size()) {
                 isEnd = true;
                 onAddChkInfo(tempDataList.get(tempDataList.size() - 1));
@@ -217,8 +220,13 @@ public class TeleportService extends Service {
                             @Override
                             public void onError(Throwable e) {
                                 Log.e("gggg", "error:" + e);
-                                if(error_api_times<3){
+                                if(error_api_times<1){
                                     onAddChkInfo(mChooseDeviceItemData);
+                                    if(currentDataCount>=totalData){
+                                        currentDataCount=totalData;
+                                    }else{
+                                        currentDataCount++;
+                                    }
                                 }
                                 error_api_times++;
                             }

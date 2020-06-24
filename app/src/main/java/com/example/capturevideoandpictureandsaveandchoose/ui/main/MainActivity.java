@@ -724,7 +724,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                             .addFormDataPart("PMFCT", deviceDataList.get(currentDataCount).getPMFCT())
                             .addFormDataPart("PMFCTNM", deviceDataList.get(currentDataCount).getPMFCTNM())
                             .addFormDataPart("EQKD", deviceDataList.get(currentDataCount).getEQKD())
-                            .addFormDataPart("EQKDNM", "123")
+                            .addFormDataPart("EQKDNM", deviceDataList.get(currentDataCount).getEQKDNM())
                             .addFormDataPart("EQNO", deviceDataList.get(currentDataCount).getEQNO())
                             .addFormDataPart("EQNM", deviceDataList.get(currentDataCount).getEQNM())
                             .addFormDataPart("RecordDate",currentDate)

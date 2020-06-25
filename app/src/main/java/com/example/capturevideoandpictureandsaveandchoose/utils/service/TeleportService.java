@@ -164,13 +164,16 @@ public class TeleportService extends Service {
             Log.e("wwwwww",""+tempDataList.size());
             totalData=tempDataList.size();
             error_api_times=0;
-            if (currentDataCount >= tempDataList.size()) {
-                isEnd = true;
+            if (isEnd) {
                 onAddChkInfo(tempDataList.get(tempDataList.size() - 1));
             } else {
                 if (tempDataList.get(currentDataCount).getProgress() == 100) {
                     onAddChkInfo(tempDataList.get(currentDataCount));
+                    currentDataCount++;
                 }
+            }
+            if (currentDataCount >= tempDataList.size()){
+                isEnd = true;
             }
         }
     }
@@ -212,8 +215,6 @@ public class TeleportService extends Service {
 //                            broadcastIntent.setAction("datatest");
 //                            broadcastIntent.putExtra("end", "true");
 //                            sendBroadcast(broadcastIntent);
-                                } else {
-                                    currentDataCount++;
                                 }
                             }
 
@@ -222,11 +223,6 @@ public class TeleportService extends Service {
                                 Log.e("gggg", "error:" + e);
                                 if(error_api_times<1){
                                     onAddChkInfo(mChooseDeviceItemData);
-                                    if(currentDataCount>=totalData){
-                                        currentDataCount=totalData;
-                                    }else{
-                                        currentDataCount++;
-                                    }
                                 }
                                 error_api_times++;
                             }

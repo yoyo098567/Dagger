@@ -788,24 +788,34 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                             .build();
                     try {
                         final Response response = client.newCall(request).execute();
-                        Log.e("ggggg",""+response.body().string());
-                        Log.e("ggggg",""+response.message());
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                dismissProgressDialog();
-                                if ("OK".equals(response.message())) {
+                        String responseBody=response.body().string();
+                        Log.e("eeeeeee",""+responseBody);
+                        Log.e("eeeeeee",""+responseBody.length());
+                        if ("OK".equals(response.message())&&responseBody.length()>23) {
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
                                     showDialogMessage("上傳完成");
-                                } else {
-//                                    try {'
-//                                        showDialogMessage(response.body().string());
-//                                    } catch (Exception e) {
-                                        showDialogMessage("上傳失敗，請重新上傳");
-//                                        e.printStackTrace();
-//                                    }
                                 }
-                            }
-                        });
+                            });
+                        }else if(responseBody.length()<=23){
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    showDialogMessage("上傳失敗，此檔案無法上傳，請重新錄影並在上傳");
+                                }
+                            });
+                        } else {
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    showDialogMessage("上傳失敗，請重新上傳");
+                                }
+                            });
+                        }
                     } catch (final Exception e) {
                         e.printStackTrace();
                         MainActivity.this.runOnUiThread(new Runnable() {
@@ -822,7 +832,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                                 }
                             }
                         });
-                        Log.e("error", "" + e.getMessage());
+                        Log.e("eeeeeeee", "" + e.getMessage());
                     }
                 }
             }).start();

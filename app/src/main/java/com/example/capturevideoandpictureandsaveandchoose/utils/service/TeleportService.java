@@ -40,7 +40,6 @@ public class TeleportService extends Service {
     private boolean isStart=true;
     private int totalData=0;
     private int currentDataCount;
-    private int error_api_times=0;
     private Retrofit retrofit;
     private Handler refreshHandle;
 
@@ -112,11 +111,11 @@ public class TeleportService extends Service {
         public void run() {
             getCurrentDataList();
             if (isEnd) {
-//                handler.postDelayed(periodicUpdate, 2000); // schedule next wake up 10 second
-                handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
+//                handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
             } else {
-//                handler.postDelayed(periodicUpdate, 3000); // schedule next wake up 10 second
-                handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
+//                handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
             }
         }
     };
@@ -163,7 +162,6 @@ public class TeleportService extends Service {
             Log.e("wwwwww",""+currentDataCount);
             Log.e("wwwwww",""+tempDataList.size());
             totalData=tempDataList.size();
-            error_api_times=0;
             if (isEnd) {
                 onAddChkInfo(tempDataList.get(tempDataList.size() - 1));
             } else {
@@ -221,10 +219,7 @@ public class TeleportService extends Service {
                             @Override
                             public void onError(Throwable e) {
                                 Log.e("gggg", "error:" + e);
-                                if(error_api_times<1){
-                                    onAddChkInfo(mChooseDeviceItemData);
-                                }
-                                error_api_times++;
+                                onAddChkInfo(mChooseDeviceItemData);
                             }
 
                             @Override

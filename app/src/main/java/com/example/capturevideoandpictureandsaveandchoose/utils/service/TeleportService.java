@@ -166,6 +166,10 @@ public class TeleportService extends Service {
                 onAddChkInfo(tempDataList.get(tempDataList.size() - 1));
             } else {
                 if (tempDataList.get(currentDataCount).getProgress() == 100) {
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
+                    String str = formatter.format(curDate);
+                    tempDataList.get(currentDataCount).setRecordDate(str);
                     onAddChkInfo(tempDataList.get(currentDataCount));
                     currentDataCount++;
                 }
@@ -178,9 +182,7 @@ public class TeleportService extends Service {
 
     public void onAddChkInfo(final ChooseDeviceItemData mChooseDeviceItemData) {
         String authorizedId = "e1569364-6066-48af-8f47-8f11bb4916dd";
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
-        String str = formatter.format(curDate);
+
         if (isEnd) {
             mChooseDeviceItemData.setEQNO("end");
         }
@@ -196,7 +198,7 @@ public class TeleportService extends Service {
                 mChooseDeviceItemData.getEQNO(),
                 account,
                 mChooseDeviceItemData.getUploadNM(),
-                str);
+                mChooseDeviceItemData.getRecordDate());
         ApiService apiService = retrofit.create(ApiService.class);
         CompositeDisposable compositeDisposable = new CompositeDisposable();
         compositeDisposable.add(apiService.onAddChkInfo("AddChkInfo", mAddChkInfoRequest)

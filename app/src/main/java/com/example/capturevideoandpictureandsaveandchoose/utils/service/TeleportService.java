@@ -111,11 +111,11 @@ public class TeleportService extends Service {
         public void run() {
             getCurrentDataList();
             if (isEnd) {
-                handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
-//                handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
+//                handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
             } else {
-                handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
-//                handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
+//                handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
             }
         }
     };
@@ -154,7 +154,7 @@ public class TeleportService extends Service {
                 mChooseDeviceItemData.setCO(cursor.getString(cursor.getColumnIndexOrThrow("CO")));
                 mChooseDeviceItemData.setCONM(cursor.getString(cursor.getColumnIndexOrThrow("CONM")));
                 mChooseDeviceItemData.setPMFCTNM(cursor.getString(cursor.getColumnIndexOrThrow("PMFCTNM")));
-                mChooseDeviceItemData.setUploadNM("測試");
+                mChooseDeviceItemData.setUploadNM("");
                 mChooseDeviceItemData.setUploadEMP(account);
                 mChooseDeviceItemData.setChcekDataFromAPP(true);
                 tempDataList.add(mChooseDeviceItemData);

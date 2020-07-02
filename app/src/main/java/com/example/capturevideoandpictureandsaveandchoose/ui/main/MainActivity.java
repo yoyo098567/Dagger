@@ -245,7 +245,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 mChooseDeviceItemData.setCO(cursor.getString(cursor.getColumnIndexOrThrow("CO")));
                 mChooseDeviceItemData.setCONM(cursor.getString(cursor.getColumnIndexOrThrow("CONM")));
                 mChooseDeviceItemData.setPMFCTNM(cursor.getString(cursor.getColumnIndexOrThrow("PMFCTNM")));
-                mChooseDeviceItemData.setUploadNM("測試");
+                mChooseDeviceItemData.setUploadNM("");
                 mChooseDeviceItemData.setUploadEMP(account);
                 mChooseDeviceItemData.setChcekDataFromAPP(true);
                 deviceDataList.add(mChooseDeviceItemData);

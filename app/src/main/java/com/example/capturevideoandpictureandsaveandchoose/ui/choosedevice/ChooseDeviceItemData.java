@@ -26,6 +26,7 @@ public class ChooseDeviceItemData implements Serializable {
     private String uploadEMP = ""; //上傳人員代號 //uploadEmployees
     private String UploadNM = ""; //上傳人員姓名
     private String UploadDATETM = ""; //上傳日期時間
+    private int position=0;
     private boolean backgroundChange=false;
     private boolean checkEndItem=false;
     private int progress;
@@ -228,5 +229,13 @@ public class ChooseDeviceItemData implements Serializable {
 
     public void setChcekDataFromAPP(boolean chcekDataFromAPP) {
         this.chcekDataFromAPP = chcekDataFromAPP;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

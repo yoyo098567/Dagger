@@ -17,6 +17,7 @@ public interface MainContract {
     interface Presenter<V extends MainContract.View> extends BaseAttacher<V> {
         void onGetDisposableToken(String DeviceId);
         void onAddChkInfo(ChooseDeviceItemData mChooseDeviceItemData);
+        void onAddEndChkInfo(ChooseDeviceItemData mChooseDeviceItemData);
         void onGetEQKDData(String account,String CO,String PMFCT,String EQKD,int ispickImage);
         String getDisposableToken();
     }

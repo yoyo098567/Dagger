@@ -1,6 +1,5 @@
 package com.example.capturevideoandpictureandsaveandchoose.ui.main;
 
-import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.example.capturevideoandpictureandsaveandchoose.R;
@@ -18,11 +17,6 @@ import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.sear
 import com.example.capturevideoandpictureandsaveandchoose.utils.rxjava.SchedulerProvider;
 import com.example.capturevideoandpictureandsaveandchoose.utils.sharepreferences.LoginPreferencesProvider;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-
 import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -37,7 +31,6 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
     public MainPresenter(ApiService api, ErpAPI erpAPI, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable) {
         super(api, erpAPI, schedulerProvider, compositeDisposable);
     }
-
 
     @Override
     public void onGetDisposableToken(String DeviceId) {
@@ -71,11 +64,8 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
     }
 
     @Override
-    public void onAddChkInfo(ChooseDeviceItemData mChooseDeviceItemData) {
+    public void onAddChkInfo(final ChooseDeviceItemData mChooseDeviceItemData) {
         String authorizedId ="e1569364-6066-48af-8f47-8f11bb4916dd";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
-        Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
-        String date = sdf.format(curDate);
         AddChkInfoRequest mAddChkInfoRequest=new AddChkInfoRequest(authorizedId,
                 mChooseDeviceItemData.getCO(),
                 mChooseDeviceItemData.getMNTFCT(),
@@ -88,7 +78,7 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                 mChooseDeviceItemData.getEQNO(),
                 mChooseDeviceItemData.getUploadEMP(),
                 mChooseDeviceItemData.getUploadNM(),
-                date);
+                mChooseDeviceItemData.getRecordDate());
         String url = getView().getResourceString(R.string.api_on_AddChkInfo);
         getCompositeDisposable().add(getApiService().onAddChkInfo(url, mAddChkInfoRequest)
                 .subscribeOn(getSchedulerProvider().io())
@@ -98,12 +88,12 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                     @Override
                     public void onNext(AddChkInfoResponse addChkInfoResponse) {
                         Log.e("ggggg",""+addChkInfoResponse.getMessage());
-                        getView().onNonService();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.e("gggg","error:"+e);
+                        onAddChkInfo(mChooseDeviceItemData);
                     }
 
                     @Override
@@ -113,6 +103,48 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                 })
         );
     }
+
+    @Override
+    public void onAddEndChkInfo(final ChooseDeviceItemData mChooseDeviceItemData) {
+        String authorizedId ="e1569364-6066-48af-8f47-8f11bb4916dd";
+        AddChkInfoRequest mAddChkInfoRequest=new AddChkInfoRequest(authorizedId,
+                mChooseDeviceItemData.getCO(),
+                mChooseDeviceItemData.getMNTFCT(),
+                mChooseDeviceItemData.getWAYID(),
+                mChooseDeviceItemData.getWAYNM(),
+                mChooseDeviceItemData.getCO(),
+                mChooseDeviceItemData.getCONM(),
+                mChooseDeviceItemData.getPMFCT(),
+                mChooseDeviceItemData.getPMFCTNM(),
+                "end",
+                mChooseDeviceItemData.getUploadEMP(),
+                mChooseDeviceItemData.getUploadNM(),
+                mChooseDeviceItemData.getRecordDate());
+        String url = getView().getResourceString(R.string.api_on_AddChkInfo);
+        getCompositeDisposable().add(getApiService().onAddChkInfo(url, mAddChkInfoRequest)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<AddChkInfoResponse>() {
+
+                    @Override
+                    public void onNext(AddChkInfoResponse addChkInfoResponse) {
+                        Log.e("ggggg",""+addChkInfoResponse.getMessage());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("gggg","error:"+e);
+                        onAddEndChkInfo(mChooseDeviceItemData);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                })
+        );
+    }
+
     @Override
     public void onGetEQKDData(String account, String CO, String PMFCT, final String EQKD, final int ispickImage) {
         getView().showProgressDialog("讀取中");

@@ -111,11 +111,11 @@ public class TeleportService extends Service {
         public void run() {
             getCurrentDataList();
             if (isEnd) {
-//                handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
-                handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
+//                handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
             } else {
-//                handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
-                handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
+//                handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
             }
         }
     };
@@ -162,19 +162,29 @@ public class TeleportService extends Service {
             Log.e("wwwwww",""+currentDataCount);
             Log.e("wwwwww",""+tempDataList.size());
             totalData=tempDataList.size();
-            if (isEnd) {
-                onAddChkInfo(tempDataList.get(tempDataList.size() - 1));
-            } else {
-                if (tempDataList.get(currentDataCount).getProgress() == 100) {
+            if(currentDataCount<=tempDataList.size()){
+                if (currentDataCount == tempDataList.size()) {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                     Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
                     String str = formatter.format(curDate);
-                    tempDataList.get(currentDataCount).setRecordDate(str);
-                    onAddChkInfo(tempDataList.get(currentDataCount));
+                    tempDataList.get(tempDataList.size() - 1).setRecordDate(str);
+                    tempDataList.get(tempDataList.size() - 1).setEQNO("end");
+                    tempDataList.get(tempDataList.size() - 1).setPosition(currentDataCount);
+                    onAddChkInfo(tempDataList.get(tempDataList.size() - 1));
                     currentDataCount++;
+                } else {
+                    if (tempDataList.get(currentDataCount).getProgress() == 100) {
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                        Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
+                        String str = formatter.format(curDate);
+                        tempDataList.get(currentDataCount).setRecordDate(str);
+                        tempDataList.get(currentDataCount).setPosition(currentDataCount);
+                        onAddChkInfo(tempDataList.get(currentDataCount));
+                        currentDataCount++;
+                    }
                 }
             }
-            if (currentDataCount >= tempDataList.size()){
+            if(currentDataCount >= tempDataList.size()){
                 isEnd = true;
             }
         }
@@ -183,9 +193,6 @@ public class TeleportService extends Service {
     public void onAddChkInfo(final ChooseDeviceItemData mChooseDeviceItemData) {
         String authorizedId = "e1569364-6066-48af-8f47-8f11bb4916dd";
 
-        if (isEnd) {
-            mChooseDeviceItemData.setEQNO("end");
-        }
         AddChkInfoRequest mAddChkInfoRequest = new AddChkInfoRequest(authorizedId,
                 mChooseDeviceItemData.getOPCO(),
                 mChooseDeviceItemData.getOPPLD(),
@@ -209,7 +216,7 @@ public class TeleportService extends Service {
                             @Override
                             public void onNext(AddChkInfoResponse addChkInfoResponse) {
                                 Log.e("ggggg", "" + addChkInfoResponse.getMessage());
-                                if (isEnd) {
+                                if (mChooseDeviceItemData.getPosition() >= totalData) {
                                     stopSelf();
 //                            Intent broadcastIntent = new Intent();
 //                            broadcastIntent.setAction("datatest");

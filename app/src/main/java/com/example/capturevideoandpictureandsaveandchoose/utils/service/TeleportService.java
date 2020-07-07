@@ -58,7 +58,6 @@ public class TeleportService extends Service {
         handler = new Handler();
         refreshHandle = new Handler();
         isEnd = false;
-        Log.e("ooooooooooooo", "" + currentDataCount);
     }
 
     @Override
@@ -66,11 +65,8 @@ public class TeleportService extends Service {
         if (isStart){
             account = intent.getStringExtra("account");
             if(account==null){
-                Log.e("aaaaaaaaa","null");
             }
-            Log.e("gggg", "" + account);
             currentDataCount = Integer.valueOf(intent.getStringExtra("currentDataCount"));
-            Log.e("uuuuuuuuuuuu", "" + currentDataCount);
             onCreateApi();
             handler.post(periodicUpdate);
             refreshHandle.post(refreshRunnable);
@@ -90,7 +86,6 @@ public class TeleportService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e("gggg", "onDestroy");
         handler.removeCallbacks(periodicUpdate);
         refreshHandle.removeCallbacks(refreshRunnable);
         // TODO Auto-generated method stub
@@ -159,8 +154,6 @@ public class TeleportService extends Service {
                 mChooseDeviceItemData.setChcekDataFromAPP(true);
                 tempDataList.add(mChooseDeviceItemData);
             }
-            Log.e("wwwwww",""+currentDataCount);
-            Log.e("wwwwww",""+tempDataList.size());
             totalData=tempDataList.size();
             if(currentDataCount<=tempDataList.size()){
                 if (currentDataCount == tempDataList.size()) {
@@ -215,7 +208,6 @@ public class TeleportService extends Service {
 
                             @Override
                             public void onNext(AddChkInfoResponse addChkInfoResponse) {
-                                Log.e("ggggg", "" + addChkInfoResponse.getMessage());
                                 if (mChooseDeviceItemData.getPosition() >= totalData) {
                                     stopSelf();
 //                            Intent broadcastIntent = new Intent();
@@ -227,7 +219,6 @@ public class TeleportService extends Service {
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e("gggg", "error:" + e);
                                 onAddChkInfo(mChooseDeviceItemData);
                             }
 

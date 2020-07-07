@@ -106,7 +106,6 @@ public class LoginPresenter<V extends LoginContract.View> extends BasePresenter<
                             @Override
                             public void onError(Throwable e) {
                                 getView().dismissProgressDialog();
-                                Log.e("LoginResponse", "" + e);
                                 getView().showDialogCaveatMessage("自動登入失敗");
                             }
 

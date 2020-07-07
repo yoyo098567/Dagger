@@ -43,16 +43,11 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                 .subscribeWith(new DisposableObserver<DisposableTokenResponse>() {
                     @Override
                     public void onNext(DisposableTokenResponse disposableTokenResponse) {
-                        Log.e("wwwww","getmResult:"+disposableTokenResponse.getmResult());
-                        Log.e("wwwww","getmErrMsg:"+disposableTokenResponse.getmErrMsg());
-                        Log.e("wwwww","getmDisposableToken:"+disposableTokenResponse.getmDisposableToken());
                         disposableToken = disposableTokenResponse.getmDisposableToken();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("wwwww","ERROR：" + e);
-
                     }
 
                     @Override
@@ -87,12 +82,10 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
                     @Override
                     public void onNext(AddChkInfoResponse addChkInfoResponse) {
-                        Log.e("ggggg",""+addChkInfoResponse.getMessage());
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("gggg","error:"+e);
                         onAddChkInfo(mChooseDeviceItemData);
                     }
 
@@ -128,12 +121,10 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
                     @Override
                     public void onNext(AddChkInfoResponse addChkInfoResponse) {
-                        Log.e("ggggg",""+addChkInfoResponse.getMessage());
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("gggg","error:"+e);
                         onAddEndChkInfo(mChooseDeviceItemData);
                     }
 
@@ -200,16 +191,11 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                 .subscribeWith(new DisposableObserver<DisposableTokenResponse>() {
                     @Override
                     public void onNext(DisposableTokenResponse disposableTokenResponse) {
-                        Log.e("wwwww","getmResult:"+disposableTokenResponse.getmResult());
-                        Log.e("wwwww","getmErrMsg:"+disposableTokenResponse.getmErrMsg());
-                        Log.e("wwwww","getmDisposableToken:"+disposableTokenResponse.getmDisposableToken());
                         disposableToken = disposableTokenResponse.getmDisposableToken();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("wwwww","ERROR：" + e);
-
                     }
 
                     @Override

@@ -62,7 +62,6 @@ public class NonInspectionService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e("gggg","onDestroy");
         handler.removeCallbacks(periodicUpdate);
         // TODO Auto-generated method stub
     }
@@ -74,7 +73,6 @@ public class NonInspectionService extends Service {
             broadcastIntent.setAction("datatest");
             broadcastIntent.putExtra("NonInspectionServiceTime", "false");
             sendBroadcast(broadcastIntent);
-            Log.e("CCCCCSIZE","wwwwww");
             handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
 
         }

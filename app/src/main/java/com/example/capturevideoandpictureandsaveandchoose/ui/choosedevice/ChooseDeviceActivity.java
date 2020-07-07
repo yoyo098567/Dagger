@@ -125,7 +125,6 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
 //        //}else {
 //        //    fileList();
 //        //}
-//        Log.e("ggggg","Wwww");
 //        Intent resultIntent = new Intent();
 //        resultIntent.putExtra("NonInspectionWorkDevice",chooseDeviceItemDataList);
 //        setResult(RESULT_OK, resultIntent);
@@ -153,7 +152,6 @@ public class ChooseDeviceActivity extends BaseActivity implements ChooseDeviceCo
         }
         if(requestCode==ADD_DEVICE_NUMBER && resultCode==RESULT_OK){
             mChooseDeviceItemData = (ChooseDeviceItemData) data.getSerializableExtra("device");
-            Log.e("wwww1",""+ mChooseDeviceItemData.getCONM());
             chooseDeviceAdapter.addDataToDataList(mChooseDeviceItemData);
         }else {
             showDialogCaveatMessage(getResourceString(R.string.add_device_error_on_choose_device_activity));

@@ -338,7 +338,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             }
         } else {
             if (deviceDataList.size() != 0 && !textDeviceNumber.getText().equals("")) {
-                Log.e("qqqqq", "" + currentDataCount);
                 it.putExtra("device", deviceDataList.get(currentDataCount));
             }
         }
@@ -401,12 +400,9 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         if (requestCode == PICK_IMAGE_FROM_GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri selectedImage = data.getClipData().getItemAt(0).getUri();
             ArrayList<String> uriList = new ArrayList<String>();
-//            Log.v("8888","" + data.getClipData().getItemCount());
             for (int i = 0; i < data.getClipData().getItemCount(); i++) {
                 uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
-                Log.e("gggg", "" + uriList.get(i));
             }
-            Log.e("gggg", "1:" + data.getClipData().getItemCount());
             //照片的uri
             onUploadFile(uriList, getResourceString(R.string.on_upload_image));
         }
@@ -416,7 +412,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             ArrayList<String> uriList = new ArrayList<String>();
             for (int i = 0; i < data.getClipData().getItemCount(); i++) {
                 uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
-                Log.e("gggg555", "" + uriList.get(i));
 //                filePartition.partition(uriList.get(i), 50 * 1024 * 1024);
 
                 try {
@@ -424,8 +419,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                     MediaPlayer mediaPlayer = new MediaPlayer();
                     mediaPlayer.setDataSource(file.getPath());
                     mediaPlayer.prepare();
-                    Log.e("ggggLONG", "" + mediaPlayer.getDuration());
-                    Log.e("ggggCurren", "" + mediaPlayer.getCurrentPosition());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -444,10 +437,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
         if (requestCode == PICK_FILE_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri selectedFile = data.getData();
-            Log.e("ggggg", "" + selectedFile);
             String filePath = MagicFileChooser.getAbsolutePathFromUri(this, selectedFile);
-            Log.e("filePath", filePath + "");
-
             checkFileTypeAndOpen(filePath, selectedFile);
 
         }
@@ -494,7 +484,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             try {
                 File compressCachePath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "phoenix");
                 compressCachePath.mkdir();
-                Log.e("input", inputFileList.get(i).length() + "");
                 if (inputFileList.get(i).length() / 1048576 >= 50) {
                     compressFileList.add(countNeedToCompress, File.createTempFile("compress" + i, ".mp4", compressCachePath));
                     countNeedToCompress++;
@@ -518,8 +507,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             public void onTranscodeCompleted() {
                 String compressPath = compressFileList.get(countFile).getAbsolutePath();
                 returnList.add(compressPath);
-                Log.e("afterCompress", "" + compressFileList.get(countFile).length());
-                Log.e("compressPath", "" + compressPath);
                 countFile++;
 
             }
@@ -612,12 +599,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                     if (deviceDataList.get(currentDataCount).isChcekDataFromAPP()) {
                         deviceDataList.get(currentDataCount).setMNTCO("1");
                     }
-                    Log.e("gggg", "CO=" + deviceDataList.get(currentDataCount).getCO() + "&" +
-                            "PMFCT=" + deviceDataList.get(currentDataCount).getPMFCT() + "&" +
-                            "MNTCO=" + deviceDataList.get(currentDataCount).getMNTCO() + "&" +
-                            "MNTFCT=" + deviceDataList.get(currentDataCount).getMNTFCT() + "&" +
-                            "EQNO=" + deviceDataList.get(currentDataCount).getEQNO() + "&" +
-                            "token=" + mPresenter.getDisposableToken());
                     intentCentralCloud.setData(Uri.parse("https://cloud.fpcetg.com.tw/FPC/WEB/MTN/MTN_EQPT/Default.aspx?" +
                             "CO=" + deviceDataList.get(currentDataCount).getCO() + "&" +
                             "PMFCT=" + deviceDataList.get(currentDataCount).getPMFCT() + "&" +
@@ -756,19 +737,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                             .readTimeout(30, TimeUnit.SECONDS)
                             .writeTimeout(30, TimeUnit.SECONDS)
                             .build();
-//                    Log.e("vvvvvvv", "CO:" + deviceDataList.get(currentDataCount).getCO());
-//                    Log.e("vvvvvvv", "CONM:" + deviceDataList.get(currentDataCount).getCONM());
-//                    Log.e("vvvvvvv", "PMFCT:" + deviceDataList.get(currentDataCount).getPMFCT());
-//                    Log.e("vvvvvvv", "PMFCTNM:" + deviceDataList.get(currentDataCount).getPMFCTNM());
-//                    Log.e("vvvvvvv", "EQKD:" + deviceDataList.get(currentDataCount).getEQKD());
-//                    Log.e("vvvvvvv", "EQKDNM:" + deviceDataList.get(currentDataCount).getEQKDNM());
-//                    Log.e("vvvvvvv", "EQNO:" + deviceDataList.get(currentDataCount).getEQNO());
-//                    Log.e("vvvvvvv", "EQNM:" + deviceDataList.get(currentDataCount).getEQNM());
-//                    Log.e("vvvvvvv", "RecordDate:" + currentDate);
-//                    Log.e("vvvvvvv", "RecordSubject:" + deviceDataList.get(currentDataCount).getRecordSubject());
-//                    Log.e("vvvvvvv", "UploadEMP:" + account);
-//                    Log.e("vvvvvvv", "UploadNM:" + "");
-//                    Log.e("vvvvvvv", "UploadDATETM:" + currentTime);
                     MultipartBody.Builder buildernew = new MultipartBody.Builder()
                             .setType(MultipartBody.FORM)
                             .addFormDataPart("AuthorizedId", "1179cf63-9f4c-4060-a0f3-201f108b20c1")
@@ -787,7 +755,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                             .addFormDataPart("UploadDATETM", currentTime);
                     for (String path : uriList) {
                         File uploadFile = new File(path);
-                        Log.e("fileSize", "" + uploadFile.length());
                         buildernew.addFormDataPart("", uploadFile.getName(),
                                 RequestBody.create(MediaType.parse("application/octet-stream"),
                                         uploadFile));
@@ -801,8 +768,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                     try {
                         final Response response = client.newCall(request).execute();
                         String responseBody = response.body().string();
-                        Log.e("eeeeeee", "" + responseBody);
-                        Log.e("eeeeeee", "" + responseBody.length());
                         if ("OK".equals(response.message()) && responseBody.length() > 23) {
                             MainActivity.this.runOnUiThread(new Runnable() {
                                 @Override
@@ -843,7 +808,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                                 }
                             }
                         });
-                        Log.e("eeeeeeee", "" + e.getMessage());
                     }
                 }
             }).start();
@@ -853,7 +817,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     @Override
     public void onNonService() {
         if (currentDataCount == deviceDataList.size() - 1) {
-            Log.e("qqqqqqqqqqqq","eeeeeeeeee");
             if (loginStatus == 0) {
                 NonHandler.removeCallbacks(periodicUpdate);
                 if (NonServiceStatus) {

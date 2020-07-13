@@ -695,7 +695,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                     Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
                     String date = sdf.format(curDate);
                     deviceDataList.get(currentDataCount).setRecordDate(date);
-                    mPresenter.onAddChkInfo(deviceDataList.get(currentDataCount),true);
+                    mPresenter.onAddChkInfo(deviceDataList.get(currentDataCount));
                     textDeviceNumber.setText(deviceDataList.get(which).getEQNO() + " " + deviceDataList.get(which).getEQNM());
                     textDeviceNumber.setTextColor(getResources().getColor(R.color.black));
                 }
@@ -711,7 +711,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 deviceDataList.get(which).setWAYNM("非巡檢路線");
                 deviceDataList.get(which).setWAYID("Non-Ins");
                 deviceDataList.get(which).setRecordDate(date);
-                mPresenter.onAddChkInfo(deviceDataList.get(which),false);
+                mPresenter.onAddChkInfo(deviceDataList.get(which));
                 currentDataCount = which;
                 onNonService();
             }

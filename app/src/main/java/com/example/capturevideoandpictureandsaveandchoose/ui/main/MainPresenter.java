@@ -90,7 +90,7 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
     }
 
     @Override
-    public void onAddChkInfo(final ChooseDeviceItemData mChooseDeviceItemData,final boolean loginStatus) {
+    public void onAddChkInfo(final ChooseDeviceItemData mChooseDeviceItemData) {
         String authorizedId ="e1569364-6066-48af-8f47-8f11bb4916dd";
         AddChkInfoRequest mAddChkInfoRequest=new AddChkInfoRequest(authorizedId,
                 mChooseDeviceItemData.getCO(),
@@ -113,18 +113,11 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
                     @Override
                     public void onNext(AddChkInfoResponse addChkInfoResponse) {
-                        dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                        if (loginStatus){
-                            generateLogTxt("打api成功 設備為:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
-                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        if (loginStatus){
-                            generateLogTxt("打api失敗，原因為"+e.toString()+"\n");
-                        }
-                        onAddChkInfo(mChooseDeviceItemData,loginStatus);
+                        onAddChkInfo(mChooseDeviceItemData);
                     }
 
                     @Override

@@ -1,5 +1,6 @@
 package com.example.capturevideoandpictureandsaveandchoose.ui.main;
 
+import android.os.Environment;
 import android.util.Log;
 
 import com.example.capturevideoandpictureandsaveandchoose.R;
@@ -17,6 +18,14 @@ import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.sear
 import com.example.capturevideoandpictureandsaveandchoose.utils.rxjava.SchedulerProvider;
 import com.example.capturevideoandpictureandsaveandchoose.utils.sharepreferences.LoginPreferencesProvider;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -27,6 +36,8 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
     LoginPreferencesProvider mLoginPreferencesProvider;
     private String disposableToken;
     private String KEY_SEARCH_EQKD = "378540a4-6d39-448d-ad34-1db12e61550a";
+    private DateFormat dateFormat;
+
     @Inject
     public MainPresenter(ApiService api, ErpAPI erpAPI, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable) {
         super(api, erpAPI, schedulerProvider, compositeDisposable);
@@ -58,8 +69,28 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
         );
     }
 
+    public void generateLogTxt(String sBody) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM_dd");
+            Date date = new Date();
+            File root = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/capturevideoandpictureandsaveandchoose/");
+            if (!root.exists()) {
+                root.mkdirs();
+            }
+            String sFileName="log"+sdf.format(date)+".txt";
+            File logttt = new File(root, sFileName);
+            FileWriter writer = new FileWriter(logttt,true);
+            writer.append(sBody);
+            writer.flush();
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
-    public void onAddChkInfo(final ChooseDeviceItemData mChooseDeviceItemData) {
+    public void onAddChkInfo(final ChooseDeviceItemData mChooseDeviceItemData,final boolean loginStatus) {
         String authorizedId ="e1569364-6066-48af-8f47-8f11bb4916dd";
         AddChkInfoRequest mAddChkInfoRequest=new AddChkInfoRequest(authorizedId,
                 mChooseDeviceItemData.getCO(),
@@ -82,11 +113,18 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
                     @Override
                     public void onNext(AddChkInfoResponse addChkInfoResponse) {
+                        dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                        if (loginStatus){
+                            generateLogTxt("打api成功 設備為:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        onAddChkInfo(mChooseDeviceItemData);
+                        if (loginStatus){
+                            generateLogTxt("打api失敗，原因為"+e.toString()+"\n");
+                        }
+                        onAddChkInfo(mChooseDeviceItemData,loginStatus);
                     }
 
                     @Override

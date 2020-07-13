@@ -43,21 +43,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guide_line_horizontal_45"/>
 <!--android:text="1203-Z"-->
+
     <EditText
-        android:id="@+id/edit_password"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:hint="@string/login_password_hint"
-        android:inputType="textPassword"
-        android:text=""
-        android:textColorHint="@color/white"
-        android:gravity="center"
-        android:background="@drawable/bg_login_password"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.9"
-        app:layout_constraintHeight_percent="0.08"
-        app:layout_constraintTop_toBottomOf="@id/guide_line_horizontal_56"/>
+            android:id="@+id/edit_password"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_login_password"
+            android:gravity="center"
+            android:hint="@string/login_password_hint"
+            android:inputType="textPassword"
+            android:text=""
+            android:textColorHint="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.08"
+            app:layout_constraintHorizontal_bias="0.512"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guide_line_horizontal_56"
+            app:layout_constraintWidth_percent="0.9" />
 
     <Button
         android:id="@+id/btn_login"

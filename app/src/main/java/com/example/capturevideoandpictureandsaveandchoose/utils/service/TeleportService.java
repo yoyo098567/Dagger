@@ -1,20 +1,26 @@
 package com.example.capturevideoandpictureandsaveandchoose.utils.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
-import android.text.format.DateFormat;
+
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceItemData;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.ApiService;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.addchkInfo.AddChkInfoRequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.addchkInfo.AddChkInfoResponse;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,6 +39,9 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static java.lang.String.format;
+import static java.text.DateFormat.*;
+
 public class TeleportService extends Service {
     private Handler handler;
     private String account = "";
@@ -42,6 +51,25 @@ public class TeleportService extends Service {
     private int currentDataCount;
     private Retrofit retrofit;
     private Handler refreshHandle;
+    private DateFormat dateFormat;
+
+    //創建log.txt
+    public void generateLogTxt(String sFileName, String sBody) {
+        try {
+             File root = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/capturevideoandpictureandsaveandchoose/");
+            if (!root.exists()) {
+                root.mkdirs();
+            }
+            File logttt = new File(root, sFileName);
+            FileWriter writer = new FileWriter(logttt,true);
+            writer.append(sBody);
+            writer.flush();
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -62,7 +90,10 @@ public class TeleportService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+         dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         if (isStart){
+            generateLogTxt("log.txt","service開始"+"，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
             account = intent.getStringExtra("account");
             if(account==null){
             }
@@ -86,6 +117,7 @@ public class TeleportService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        generateLogTxt("log.txt","service停止"+"，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
         handler.removeCallbacks(periodicUpdate);
         refreshHandle.removeCallbacks(refreshRunnable);
         // TODO Auto-generated method stub
@@ -106,11 +138,11 @@ public class TeleportService extends Service {
         public void run() {
             getCurrentDataList();
             if (isEnd) {
-//                handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
-                handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
+               // handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
             } else {
-//                handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
-                handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
+               // handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
             }
         }
     };
@@ -119,7 +151,7 @@ public class TeleportService extends Service {
         String CONTENT_STRING = "content://tw.com.efpg.processe_equip.provider.ShareCloud/ShareCloud";
         Calendar mCal = Calendar.getInstance();
         CharSequence currentDate;
-        currentDate = DateFormat.format("yyyy/MM/dd", mCal.getTime());
+        currentDate = format("yyyy/MM/dd", mCal.getTime());
         Uri uri = Uri.parse(CONTENT_STRING);
         Cursor cursor = this.getContentResolver().query(
                 uri,
@@ -208,7 +240,9 @@ public class TeleportService extends Service {
 
                             @Override
                             public void onNext(AddChkInfoResponse addChkInfoResponse) {
+                                generateLogTxt("log.txt","打api成功 設備為:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
                                 if (mChooseDeviceItemData.getPosition() >= totalData) {
+                                    generateLogTxt("log.txt","service停止"+"，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
                                     stopSelf();
 //                            Intent broadcastIntent = new Intent();
 //                            broadcastIntent.setAction("datatest");
@@ -219,6 +253,7 @@ public class TeleportService extends Service {
 
                             @Override
                             public void onError(Throwable e) {
+                                generateLogTxt("log.txt","打api失敗，原因為"+e.toString()+"\n");
                                 onAddChkInfo(mChooseDeviceItemData);
                             }
 

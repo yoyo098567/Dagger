@@ -176,6 +176,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
     private void fetchDevice() {
         onstopTeleportService();
+        deviceonLeaveTheRoute=0;
         autoLogin();
 
         if (fetchDeviceMsg.equals("")) {
@@ -257,6 +258,9 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                     textDeviceNumber.setText(deviceDataList.get(0).getEQNO() + " " + deviceDataList.get(0).getEQNM());
                 }
             }
+            Log.e("rrrrrr","deviceonLeaveTheRoute:"+deviceonLeaveTheRoute);
+            Log.e("rrrrrr",deviceDataList.get(6).getEQNO()+" "+deviceDataList.get(6).getEQNM());
+
             if (deviceDataList.get(deviceDataList.size() - 1).getProgress() == 100) {
                 deviceonLeaveTheRoute = deviceDataList.size() - 1;
             }

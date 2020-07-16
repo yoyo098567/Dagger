@@ -14,6 +14,8 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -60,7 +62,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import retrofit2.http.POST;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
 import static com.example.capturevideoandpictureandsaveandchoose.ui.login.LoginActivity.loginStatus;
@@ -348,11 +349,56 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         startActivity(it);
     }
 
+    private int getBitmapDegree(String path) {
+        int degree = 0;
+        try {
+            // 從指定路徑下讀取圖片，並獲取其EXIF資訊
+            ExifInterface exifInterface = new ExifInterface(path);
+            // 獲取圖片的旋轉資訊
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return degree;
+    }
+    public static Bitmap rotateBitmapByDegree(Bitmap bm, int degree) {
+        Bitmap returnBm = null;
+
+        // 根據旋轉角度，生成旋轉矩陣
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        try {
+            // 將原始圖片按照旋轉矩陣進行旋轉，並得到新的圖片
+            returnBm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
+        } catch (OutOfMemoryError e) {
+        }
+        if (returnBm == null) {
+            returnBm = bm;
+        }
+        if (bm != returnBm) {
+            bm.recycle();
+        }
+        return returnBm;
+    }
+
     private File createImageFile() throws IOException {
+        String imageFileName="";
         String timeStamp =
                 new SimpleDateFormat("yyyyMMdd_HHmmss",
                         Locale.getDefault()).format(new Date());
-        String imageFileName = "IMG_" + timeStamp + "_";
+        imageFileName = deviceDataList.get(currentDataCount).getEQNO()+"_" + timeStamp + "_";
 //        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File storageDir = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
@@ -373,19 +419,29 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         intent.setPackage(listCam.get(0).activityInfo.packageName);
     }
 
+    private static void updateMedia(String path , Context context){
+        File file = new File(path);
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        intent.setData(Uri.fromFile(file));
+        context.sendBroadcast(intent);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
         if (requestCode == REQUEST_CAPTURE_IMAGE && resultCode == RESULT_OK) {
             File imgFile = new File(imageFilePath);
             //照片的檔案
             if (imgFile.exists()) {
+
                 Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                myBitmap=rotateBitmapByDegree(myBitmap,getBitmapDegree(imageFilePath));
                 try {
                     FileOutputStream out = new FileOutputStream(imgFile);
                     myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
                     out.flush();
                     out.close();
-
                     Intent it = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
                     Uri uri = Uri.fromFile(imgFile);
                     it.setData(uri);
@@ -398,7 +454,42 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
         if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
             //影片的uri
+            final String videoFilePath;
             Uri videoUri = data.getData();
+
+            videoFilePath = MagicFileChooser.getAbsolutePathFromUri(this, videoUri);
+            File file = new File(videoFilePath);
+            String originName=file.getName();
+            String timeStamp =
+                    new SimpleDateFormat("yyyyMMdd_HHmmss",
+                            Locale.getDefault()).format(new Date());
+            String changeFileName=deviceDataList.get(currentDataCount).getEQNO()+"_" + timeStamp + "_"+".mp4";
+            File newFile = new File(videoFilePath.replace(originName,changeFileName));
+            final File originFile = new File(videoFilePath);
+            originFile.renameTo(newFile);
+            updateMedia(newFile.getAbsolutePath(),this);
+            showProgressDialog("檔案儲存中");
+            showProgressDialog("檔案儲存中");
+            showProgressDialog("檔案儲存中");
+            showProgressDialog("檔案儲存中");
+
+            showProgressDialog("檔案儲存中");
+            showProgressDialog("檔案儲存中");
+            showProgressDialog("檔案儲存中");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(10000);
+                        updateMedia(new File(videoFilePath).getAbsolutePath(),MainActivity.this); //把舊檔案更新掉，不然媒體庫會有一個額外且不能用的檔案
+                        dismissProgressDialog();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        Log.e("error",e.getMessage());
+                    }
+                }
+            }).start();
+
         }
 
         if (requestCode == PICK_IMAGE_FROM_GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
@@ -540,6 +631,12 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
     }
 
+    public void showItemDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("請選取設備");
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -555,11 +652,19 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 break;
             case R.id.btnCaptureImage:
                 onNonService();
-                openCameraIntent();
+                if (deviceDataList.size()!=0){
+                    openCameraIntent();
+                }else{
+                    showItemDialog();
+                }
                 break;
             case R.id.btnRecordVideo:
                 onNonService();
-                openRecordVideoIntent();
+                if (deviceDataList.size()!=0){
+                    openRecordVideoIntent();
+                }else{
+                    showItemDialog();
+                }
                 break;
             case R.id.btnGetImageFromGallery:
                 onNonService();
@@ -762,6 +867,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                         buildernew.addFormDataPart("", uploadFile.getName(),
                                 RequestBody.create(MediaType.parse("application/octet-stream"),
                                         uploadFile));
+                        Log.d("uploadFile.getName", "run: "+uploadFile.getName());
                     }
                     RequestBody body = buildernew.build();
 

@@ -54,25 +54,25 @@ public class TeleportService extends Service {
     private DateFormat dateFormat;
 
     //創建log.txt
-    public void generateLogTxt(String sBody) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM_dd");
-            Date date = new Date();
-             File root = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/capturevideoandpictureandsaveandchoose/");
-            if (!root.exists()) {
-                root.mkdirs();
-            }
-            String sFileName="log"+sdf.format(date)+".txt";
-            File logttt = new File(root, sFileName);
-            FileWriter writer = new FileWriter(logttt,true);
-            writer.append(sBody);
-            writer.flush();
-            writer.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void generateLogTxt(String sBody) {
+//        try {
+//            SimpleDateFormat sdf = new SimpleDateFormat("MM_dd");
+//            Date date = new Date();
+//             File root = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/capturevideoandpictureandsaveandchoose/");
+//            if (!root.exists()) {
+//                root.mkdirs();
+//            }
+//            String sFileName="log"+sdf.format(date)+".txt";
+//            File logttt = new File(root, sFileName);
+//            FileWriter writer = new FileWriter(logttt,true);
+//            writer.append(sBody);
+//            writer.flush();
+//            writer.close();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -96,7 +96,7 @@ public class TeleportService extends Service {
 
          dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         if (isStart){
-            generateLogTxt("service開始"+"，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
+            //generateLogTxt("service開始"+"，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
             account = intent.getStringExtra("account");
             if(account==null){
             }
@@ -120,7 +120,7 @@ public class TeleportService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        generateLogTxt("service停止"+"，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
+        //generateLogTxt("service停止"+"，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
         handler.removeCallbacks(periodicUpdate);
         refreshHandle.removeCallbacks(refreshRunnable);
         // TODO Auto-generated method stub
@@ -141,7 +141,7 @@ public class TeleportService extends Service {
         public void run() {
             getCurrentDataList();
             if (isEnd) {
-               // handler.postDelayed(periodicUpdate, 20000); // schedule next wake up 10 second
+               // handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
                 handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
             } else {
                 //handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
@@ -243,9 +243,9 @@ public class TeleportService extends Service {
 
                             @Override
                             public void onNext(AddChkInfoResponse addChkInfoResponse) {
-                                generateLogTxt("打api成功 設備為:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
+                               // generateLogTxt("打api成功 設備為:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
                                 if (mChooseDeviceItemData.getPosition() >= totalData) {
-                                    generateLogTxt("service停止"+"，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
+                                    //generateLogTxt("service停止"+"，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
                                     stopSelf();
 //                            Intent broadcastIntent = new Intent();
 //                            broadcastIntent.setAction("datatest");
@@ -256,7 +256,7 @@ public class TeleportService extends Service {
 
                             @Override
                             public void onError(Throwable e) {
-                                generateLogTxt("打api失敗，原因為"+e.toString()+"\n");
+                                //generateLogTxt("打api失敗，原因為"+e.toString()+"\n");
                                 onAddChkInfo(mChooseDeviceItemData);
                             }
 

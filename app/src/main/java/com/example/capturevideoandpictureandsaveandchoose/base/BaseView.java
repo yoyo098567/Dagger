@@ -22,6 +22,8 @@ public interface BaseView {
 
     void showDialogCaveatMessage(String message);
     void showDialogMessage(String message);
+
+    void showLongErroeDialogMessage(String message);
     void showDialogMessage(String title,String message);
     void showDialogCaveatMessage(String title,String message);
     void showDatePickerDialog(DatePickerDialog.OnDateSetListener onDateSetListener);

@@ -92,6 +92,14 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
+    public void showLongErroeDialogMessage(String message){
+            new AlertDialog.Builder(this)
+                    .setMessage(message)
+                    .setPositiveButton(android.R.string.yes, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+    }
+    @Override
     public void showDialogMessage(String message) {
         new AlertDialog.Builder(this)
                 .setTitle(message)

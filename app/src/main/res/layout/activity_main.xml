@@ -57,11 +57,11 @@
         app:layout_constraintGuide_percent="0.05" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guide_line_vertical_10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.1" />
+            android:id="@+id/guide_line_vertical_10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.10218978" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guide_line_vertical_28"
@@ -70,6 +70,18 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.28" />
 
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_line_vertical_15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.15085158" />
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_line_vertical_16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.12" />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guide_line_vertical_90"
         android:layout_width="wrap_content"
@@ -100,7 +112,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="aaaaa"
-        android:textSize="25sp"
+        android:textSize="35sp"
         android:textColor="@color/black"
         app:layout_constraintTop_toTopOf="@id/view_title_bar"
         app:layout_constraintBottom_toBottomOf="@id/view_title_bar"
@@ -154,15 +166,15 @@
         app:layout_constraintTop_toBottomOf="@id/guide_line_horizontal_20" />
 
     <TextView
-        android:id="@+id/text_device_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/device_number"
-        android:textStyle="bold"
-        android:textColor="#2D6EC1"
-        android:textSize="21sp"
-        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_28"
-        app:layout_constraintTop_toBottomOf="@id/guide_line_horizontal_26" />
+            android:id="@+id/text_device_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/device_number"
+            android:textColor="#2D6EC1"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/guide_line_vertical_16"
+            app:layout_constraintTop_toBottomOf="@id/guide_line_horizontal_26" />
 
     <TextView
         android:id="@+id/text_device_number_data"
@@ -170,7 +182,7 @@
         android:layout_height="wrap_content"
         tools:text="1111"
         android:textColor="@color/black"
-        android:textSize="21sp"
+        android:textSize="28sp"
         app:layout_constraintStart_toEndOf="@id/text_device_number"
         app:layout_constraintTop_toTopOf="@id/text_device_number"
         app:layout_constraintBottom_toBottomOf="@id/text_device_number"/>
@@ -218,7 +230,7 @@
         android:text="@string/create"
         android:textStyle="bold"
         android:textColor="@color/black"
-        android:textSize="23sp"
+        android:textSize="40sp"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintStart_toStartOf="@id/view_create_live_data"
         app:layout_constraintEnd_toEndOf="@id/view_create_live_data"
@@ -232,7 +244,7 @@
         android:text="@string/live_data"
         android:textStyle="bold"
         android:textColor="@color/black"
-        android:textSize="23sp"
+        android:textSize="40sp"
         app:layout_constraintTop_toBottomOf="@id/text_create"
         app:layout_constraintStart_toStartOf="@id/view_create_live_data"
         app:layout_constraintEnd_toEndOf="@id/view_create_live_data"
@@ -279,7 +291,7 @@
         android:text="@string/data_upload"
         android:textStyle="bold"
         android:textColor="@color/black"
-        android:textSize="23sp"
+        android:textSize="40sp"
         app:layout_constraintTop_toTopOf="@id/view_data_upload"
         app:layout_constraintBottom_toBottomOf="@id/view_data_upload"
         app:layout_constraintStart_toStartOf="@id/view_data_upload"

@@ -7,20 +7,32 @@
     android:background="@drawable/background"
     tools:context=".ui.adddevice.AddDeviceActivity">
 
+<!--    <androidx.constraintlayout.widget.Guideline-->
+<!--            android:id="@+id/guide_line_vertical_9"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical"-->
+<!--            app:layout_constraintGuide_percent="0.09" />-->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guide_line_vertical_9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.09" />
+        app:layout_constraintGuide_percent="0.05" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guide_line_vertical_35"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.35" />
+            android:id="@+id/guide_line_vertical_35"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.35279804" />
 
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_line_vertical_45"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.38" />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guide_line_vertical_77"
         android:layout_width="wrap_content"
@@ -50,7 +62,7 @@
         android:layout_height="wrap_content"
         android:text="@string/record_date"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@id/text_maintenance_plant"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"
         app:layout_constraintTop_toBottomOf="@id/guide_line_horizontal_13" />
@@ -61,10 +73,10 @@
         android:layout_height="0dp"
         android:background="@drawable/bg_add_device_rectangle"
         android:gravity="center"
-        android:textSize="15sp"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="@id/text_record_date"
         app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_45"
         app:layout_constraintTop_toTopOf="@id/text_record_date"
         app:layout_constraintWidth_percent="0.4" />
 
@@ -77,7 +89,7 @@
         android:layout_height="wrap_content"
         android:text="@string/maintenance_plant"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@id/text_company"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"
         app:layout_constraintTop_toBottomOf="@id/text_record_date" />
@@ -88,10 +100,10 @@
         android:layout_height="0dp"
         android:background="@drawable/bg_add_device_rectangle"
         android:gravity="center"
-        android:textSize="15sp"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="@id/text_maintenance_plant"
         app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_45"
         app:layout_constraintTop_toTopOf="@id/text_maintenance_plant"
         app:layout_constraintWidth_percent="0.55" />
 
@@ -115,7 +127,7 @@
         android:layout_height="wrap_content"
         android:text="@string/device_company"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@id/text_production_plant"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"
         app:layout_constraintTop_toBottomOf="@id/text_maintenance_plant" />
@@ -126,10 +138,10 @@
         android:layout_height="0dp"
         android:background="@drawable/bg_add_device_rectangle"
         android:gravity="center"
-        android:textSize="15sp"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="@id/text_company"
         app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_45"
         app:layout_constraintTop_toTopOf="@id/text_company"
         app:layout_constraintWidth_percent="0.4" />
 
@@ -152,7 +164,7 @@
         android:layout_height="wrap_content"
         android:text="@string/production_plant"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@id/text_device_category"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"
         app:layout_constraintTop_toBottomOf="@id/text_company" />
@@ -163,10 +175,10 @@
         android:layout_height="0dp"
         android:background="@drawable/bg_add_device_rectangle"
         android:gravity="center"
-        android:textSize="15sp"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="@id/text_production_plant"
         app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_45"
         app:layout_constraintTop_toTopOf="@id/text_production_plant"
         app:layout_constraintWidth_percent="0.55" />
 
@@ -190,7 +202,7 @@
         android:layout_height="wrap_content"
         android:text="@string/device_category"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@id/text_value_device_category_name"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"
         app:layout_constraintTop_toBottomOf="@id/text_production_plant" />
@@ -201,10 +213,10 @@
         android:layout_height="0dp"
         android:background="@drawable/bg_add_device_rectangle"
         android:gravity="center"
-        android:textSize="15sp"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="@id/text_device_category"
         app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_45"
         app:layout_constraintTop_toTopOf="@id/text_device_category"
         app:layout_constraintWidth_percent="0.45" />
 
@@ -226,7 +238,7 @@
         android:layout_height="wrap_content"
         android:text="設備名稱: "
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="@id/text_device_number"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"
         app:layout_constraintTop_toBottomOf="@id/text_device_category" />
@@ -239,10 +251,10 @@
         android:gravity="center"
         android:maxLines="1"
         android:paddingStart="10dp"
-        android:textSize="15sp"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="@id/text_value_device_category_name"
         app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_45"
         app:layout_constraintTop_toTopOf="@id/text_value_device_category_name"
         app:layout_constraintWidth_percent="0.6" />
     <!--  設備編號  -->
@@ -253,7 +265,7 @@
         android:layout_marginBottom="8dp"
         android:text="@string/device_number"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="@id/text_value_device_name"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"
         app:layout_constraintTop_toBottomOf="@id/text_value_device_category_name" />
@@ -264,10 +276,10 @@
         android:layout_height="0dp"
         android:background="@drawable/bg_add_device_rectangle"
         android:gravity="center"
-        android:textSize="15sp"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="@id/text_device_number"
         app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_45"
         app:layout_constraintTop_toTopOf="@id/text_device_number"
         app:layout_constraintWidth_percent="0.45" />
 
@@ -290,7 +302,7 @@
         android:layout_height="wrap_content"
         android:text="設備名稱: "
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"
         app:layout_constraintTop_toBottomOf="@id/text_device_number" />
@@ -303,10 +315,10 @@
         android:gravity="center"
         android:maxLines="1"
         android:paddingStart="10dp"
-        android:textSize="15sp"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="@id/text_value_device_name"
         app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_35"
+        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_45"
         app:layout_constraintTop_toTopOf="@id/text_value_device_name"
         app:layout_constraintWidth_percent="0.6" />
 
@@ -411,7 +423,7 @@
         android:background="#006EC7"
         android:text="@string/upload"
         android:textColor="@color/white"
-        android:textSize="25sp"
+        android:textSize="35sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.07"
         app:layout_constraintWidth_percent="0.15" />

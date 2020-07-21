@@ -1,5 +1,6 @@
 package com.example.capturevideoandpictureandsaveandchoose.ui.main;
 
+import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
@@ -201,6 +202,51 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                     @Override
                     public void onError(Throwable e) {
                         getView().dismissProgressDialog();
+                        getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                })
+        );
+    }
+
+    @Override
+    public void onGetEQKDDataNoImg(String account, String CO, String PMFCT, final String EQKD, final Intent data, final Integer nowInList, final Integer urlNow,final Integer pickWhat) {
+      //  getView().showProgressDialog("讀取中");
+        EQKDRequest mEQKDRequest = new EQKDRequest(KEY_SEARCH_EQKD, account, CO, PMFCT);
+        String url = getView().getResourceString(R.string.api_on_getEQKD);
+        getCompositeDisposable().add(getApiService().getEQKD(url, mEQKDRequest)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<EQKDResultList>() {
+
+                    @Override
+                    public void onNext(EQKDResultList mEQKDResultList) {
+                     //   getView().dismissProgressDialog();
+                        String EQKDNM="";
+                        if (mEQKDResultList.getmEQKDResponseList().size() < 1) {
+                            getView().showDialogCaveatMessage(getView().getResourceString(R.string.get_eqkd_error_no_data));
+                        }else{
+                            for(EQKDResponse mEQKDResponse:mEQKDResultList.getmEQKDResponseList()){
+                                if(EQKD.equals(mEQKDResponse.getmEQKD())){
+                                    EQKDNM=mEQKDResponse.getmEQKDNM();
+                                }
+                            }
+                            if("".equals(EQKDNM)){
+                                getView().onSetEQKDdataNoTalk(EQKDNM,data,nowInList,urlNow,pickWhat);
+                            }else{
+                                getView().onSetEQKDdataNoTalk(EQKDNM,data,nowInList,urlNow,pickWhat);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                       // getView().dismissProgressDialog();
                         getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
 
                     }

@@ -1,8 +1,10 @@
 package com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice;
 
-import java.io.Serializable;
+import android.util.Log;
 
-public class ChooseDeviceItemData implements Serializable {
+import java.io.Serializable;
+//,Comparable<ChooseDeviceItemData>
+public class ChooseDeviceItemData implements Serializable{
 
 
     private String OPCO=""; //作業公司
@@ -238,4 +240,17 @@ public class ChooseDeviceItemData implements Serializable {
     public void setPosition(int position) {
         this.position = position;
     }
+
+//    @Override
+//    public int compareTo(ChooseDeviceItemData o) {
+//        return this.EQNO.compareTo(o.EQNM);
+////        if (this.EQNO.compareTo(o.EQNO)==0){
+////            return String.valueOf(EQNM).compareTo(String.valueOf(EQNM));
+////        }else{
+////            Log.d("spllit", "compareTo: "+EQNO.split("-")[0]);
+////
+////        }
+
+
+   // }
 }

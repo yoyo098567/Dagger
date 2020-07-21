@@ -7,20 +7,32 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.capturevideoandpictureandsaveandchoose.R;
 import com.example.capturevideoandpictureandsaveandchoose.utils.ToastCreator;
 
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -48,18 +60,72 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         mProgressDialog.show();
     }
 
+
+
     @Override
     public void showItemDialog(List<String> list, DialogInterface.OnClickListener onClickListener) {
-        new AlertDialog.Builder(this)
-                .setItems(list.toArray(new String[list.size()]), onClickListener)
-                .create()
-                .show();
+//       AlertDialog dialog= new AlertDialog.Builder(this)
+//                .setItems(list.toArray(new String[list.size()]), onClickListener)
+//                .create();
+//        dialog.show();
+        ListAdapter adapter = new ArrayAdapter<String>(
+                this, R.layout.list_row, list.toArray(new String[list.size()])) {
+            ViewHolder holder;
+            class ViewHolder {
+                TextView title;
+            }
+            public View getView(int position, View convertView,
+                                ViewGroup parent) {
+                final LayoutInflater inflater = (LayoutInflater) getApplicationContext()
+                        .getSystemService(
+                                Context.LAYOUT_INFLATER_SERVICE);
+                if (convertView == null) {
+                    convertView = inflater.inflate(
+                            R.layout.list_row, null);
+
+                    holder = new ViewHolder();
+                    holder.title = (TextView) convertView
+                            .findViewById(R.id.title);
+                    convertView.setTag(holder);
+                } else {
+                    // view already defined, retrieve view holder
+                    holder = (ViewHolder) convertView.getTag();
+                }
+                holder.title.setText(list.toArray(new String[list.size()])[position]);
+                return convertView;
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setAdapter(adapter,onClickListener);
+        AlertDialog alert = builder.create();
+        alert.show();
+        //想嘗試用反射，但沒成功有空再改(items無法成功)
+
+//        try {
+//            Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
+//            mAlert.setAccessible(true);
+//            Object mAlertController = mAlert.get(dialog);
+//            Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
+//            mMessage.setAccessible(true);
+//            TextView mMessageView = (TextView) mMessage.get(mAlertController);
+//            mMessageView.setTextColor(Color.BLUE);
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchFieldException e) {
+//            e.printStackTrace();
+//        }
+
+
+
     }
     @Override
     public void showProgressDialog(String text) {
         dismissProgressDialog();
+        SpannableString ss=  new SpannableString(text);
+        ss.setSpan(new RelativeSizeSpan(3f), 0, ss.length(), 0);
         mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setMessage(text);
+        mProgressDialog.setMessage(ss);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setCanceledOnTouchOutside(false);
         mProgressDialog.show();
@@ -74,37 +140,82 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
     @Override
     public void showDialogCaveatMessage(String title, String message) {
-        new AlertDialog.Builder(this)
+       AlertDialog dialog= new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+
     }
 
     @Override
     public void showDialogCaveatMessage(String message) {
-        new AlertDialog.Builder(this)
+        AlertDialog dialog=new AlertDialog.Builder(this)
                 .setTitle(message)
                 .setPositiveButton(android.R.string.yes, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+
+        try {
+            Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
+            mAlert.setAccessible(true);
+            Object mAlertController = mAlert.get(dialog);
+            Field mMessage = mAlertController.getClass().getDeclaredField("mTitleView");
+            mMessage.setAccessible(true);
+            TextView mMessageView = (TextView) mMessage.get(mAlertController);
+            mMessageView.setTextSize(40);
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(30);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void showLongErroeDialogMessage(String message){
-            new AlertDialog.Builder(this)
+           AlertDialog dialog= new AlertDialog.Builder(this)
                     .setMessage(message)
                     .setPositiveButton(android.R.string.yes, null)
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
+        try {
+            Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
+            mAlert.setAccessible(true);
+            Object mAlertController = mAlert.get(dialog);
+            Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
+            mMessage.setAccessible(true);
+            TextView mMessageView = (TextView) mMessage.get(mAlertController);
+            mMessageView.setTextSize(40);
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(30);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
     @Override
     public void showDialogMessage(String message) {
-        new AlertDialog.Builder(this)
+        AlertDialog dialog= new AlertDialog.Builder(this)
                 .setTitle(message)
                 .setPositiveButton(android.R.string.yes, null)
                 .show();
+        try {
+            Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
+            mAlert.setAccessible(true);
+            Object mAlertController = mAlert.get(dialog);
+            Field mMessage = mAlertController.getClass().getDeclaredField("mTitleView");
+            mMessage.setAccessible(true);
+            TextView mMessageView = (TextView) mMessage.get(mAlertController);
+            mMessageView.setTextSize(40);
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(30);
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextSize(30);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

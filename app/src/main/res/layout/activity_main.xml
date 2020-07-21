@@ -82,12 +82,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.12" />
+
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guide_line_vertical_90"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.9" />
+            android:id="@+id/guide_line_vertical_90"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.9026764" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guide_line_vertical_95"
@@ -171,21 +172,25 @@
             android:layout_height="wrap_content"
             android:text="@string/device_number"
             android:textColor="#2D6EC1"
-            android:textSize="28sp"
+            android:textSize="36sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/guide_line_vertical_16"
             app:layout_constraintTop_toBottomOf="@id/guide_line_horizontal_26" />
 
     <TextView
-        android:id="@+id/text_device_number_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="1111"
-        android:textColor="@color/black"
-        android:textSize="28sp"
-        app:layout_constraintStart_toEndOf="@id/text_device_number"
-        app:layout_constraintTop_toTopOf="@id/text_device_number"
-        app:layout_constraintBottom_toBottomOf="@id/text_device_number"/>
+            android:id="@+id/text_device_number_data"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:textColor="@color/black"
+            android:textSize="36sp"
+
+            app:layout_constraintBottom_toTopOf="@+id/guide_line_horizontal_35"
+            app:layout_constraintEnd_toStartOf="@+id/guide_line_vertical_90"
+            app:layout_constraintHorizontal_bias="0.053"
+            app:layout_constraintStart_toEndOf="@id/text_device_number"
+            app:layout_constraintTop_toTopOf="@id/text_device_number"
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="1111111" />
 
     <Button
         android:id="@+id/btn_central_cloud"

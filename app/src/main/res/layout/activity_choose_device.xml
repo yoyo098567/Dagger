@@ -79,7 +79,7 @@
         android:layout_height="wrap_content"
         android:text="@string/device_number"
         android:textStyle="bold"
-        android:textSize="30sp"
+        android:textSize="45sp"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/guide_line_horizontal_13"
         app:layout_constraintStart_toEndOf="@id/guide_line_vertical_9"
@@ -89,7 +89,7 @@
         android:id="@+id/text_device_number_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="30sp"
+        android:textSize="45sp"
         tools:text="1111"
         android:textColor="@color/black"
         app:layout_constraintTop_toTopOf="@id/text_device_number"
@@ -128,13 +128,13 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clickable="true"
-        app:layout_constraintTop_toBottomOf="@id/guide_line_horizontal_20"
-        app:layout_constraintStart_toEndOf="@id/guide_line_vertical_13"
-        app:layout_constraintEnd_toStartOf="@id/guide_line_vertical_87"
-        app:layout_constraintBottom_toTopOf="@id/guide_line_horizontal_78"
-        />
+            android:id="@+id/recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:clickable="true"
+            app:layout_constraintBottom_toTopOf="@id/guide_line_horizontal_78"
+            app:layout_constraintEnd_toStartOf="@id/guide_line_vertical_87"
+            app:layout_constraintStart_toEndOf="@id/guide_line_vertical_13"
+            app:layout_constraintTop_toBottomOf="@id/guide_line_horizontal_20" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -25,8 +25,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,6 +53,7 @@ import com.guoxiaoxing.phoenix.compress.video.format.MediaFormatStrategyPresets;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -522,37 +526,84 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         if (requestCode == PICK_IMAGE_FROM_GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
 
             Context context = this;
-            //  progressDialog = ProgressDialog.show(context, "上傳照片", "正在上傳中", true, false);
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            // Add the buttons
-            builder.setMessage("是否確定選擇這些照片?");
-            builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // User clicked OK button
-                    //
-                    pd = new ProgressDialog(context);
-                    pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    pd.setMessage("讀取中");
-                    pd.setIndeterminate(true);
-                    pd.setCancelable(false);
-                    pd.show();
-                    new Handler().postDelayed(new Runnable(){
+
+            AlertDialog dialog= new AlertDialog.Builder(this)
+                    .setMessage("是否確定選擇這些照片?")
+                    .setPositiveButton("確定", new DialogInterface.OnClickListener() {
                         @Override
-                        public void run() {
-                            postApi(data);
+                        public void onClick(DialogInterface dialog, int which) {
+                            SpannableString ss=  new SpannableString("讀取中");
+                            ss.setSpan(new RelativeSizeSpan(3f), 0, ss.length(), 0);
+                            pd = new ProgressDialog(context);
+                            pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            pd.setMessage(ss);
+                            pd.setIndeterminate(true);
+                            pd.setCancelable(false);
+                            pd.show();
+                            new Handler().postDelayed(new Runnable(){
+                                @Override
+                                public void run() {
+                                    postApi(data);
+                                }
+                            },100);
                         }
-                    },100);
+                    })
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
 
+            try {
+                Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
+                mAlert.setAccessible(true);
+                Object mAlertController = mAlert.get(dialog);
+                Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
+                mMessage.setAccessible(true);
+                TextView mMessageView = (TextView) mMessage.get(mAlertController);
+                mMessageView.setTextSize(40);
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(30);
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextSize(30);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+            //  progressDialog = ProgressDialog.show(context, "上傳照片", "正在上傳中", true, false);
+//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            // Add the buttons
+//            builder.setMessage("是否確定選擇這些照片?");
+//            builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int id) {
+//                    // User clicked OK button
+//                    //
+//                    pd = new ProgressDialog(context);
+//                    pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//                    pd.setMessage("讀取中");
+//                    pd.setIndeterminate(true);
+//                    pd.setCancelable(false);
+//                    pd.show();
+//                    new Handler().postDelayed(new Runnable(){
+//                        @Override
+//                        public void run() {
+//                            postApi(data);
+//                        }
+//                    },100);
+//
+//
+//
+//                }
+//            });
+//            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int id) {
+//                    // User cancelled the dialog
+//                }
+//            });
+//            builder.show();
 
-                }
-            });
-            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // User cancelled the dialog
-                }
-            });
-            builder.show();
             // postApi(data);
 
 
@@ -567,94 +618,198 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
 
             Context context=this;
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            // Add the buttons
-            builder.setMessage("是否確定選擇這些影片?");
-            builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // User clicked OK button
-                    //
-                    pd = new ProgressDialog(context);
-                    pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    pd.setMessage("讀取中");
-                    pd.setIndeterminate(true);
-                    pd.setCancelable(false);
-                    pd.show();
-                    new Handler().postDelayed(new Runnable(){
+            AlertDialog dialog= new AlertDialog.Builder(this)
+                    .setMessage("是否確定選擇這些影片?")
+                    .setPositiveButton("確定", new DialogInterface.OnClickListener() {
                         @Override
-                        public void run() {
-                            Uri selectedVideo = data.getData();
-                            Integer now = 0,urlnow=0;
-                            ArrayList<String> uriList = new ArrayList<String>();
-                            ChooseDeviceItemData intoData=new ChooseDeviceItemData();
-                            allPhoto=data.getClipData().getItemCount();
-                            for (int i = 0; i < data.getClipData().getItemCount(); i++) {
-                                uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
-                            }
+                        public void onClick(DialogInterface dialog, int which) {
+                            SpannableString ss=  new SpannableString("讀取中");
+                            ss.setSpan(new RelativeSizeSpan(3f), 0, ss.length(), 0);
+                            pd = new ProgressDialog(context);
+                            pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            pd.setMessage(ss);
+                            pd.setIndeterminate(true);
+                            pd.setCancelable(false);
+                            pd.show();
+                            new Handler().postDelayed(new Runnable(){
+                                @Override
+                                public void run() {
+                                    Uri selectedVideo = data.getData();
+                                    Integer now = 0,urlnow=0;
+                                    ArrayList<String> uriList = new ArrayList<String>();
+                                    ChooseDeviceItemData intoData=new ChooseDeviceItemData();
+                                    allPhoto=data.getClipData().getItemCount();
+                                    for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+                                        uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
+                                    }
 
-                            // TODO here====================
-                            ArrayList<String> compressList = new ArrayList<>();
-                            compressList.addAll(compressVideo(uriList));
-                            countFile = 0;
-                            allPhoto=data.getClipData().getItemCount();
-                            nowPhoto=0;
-                            for (int i = 0; i < data.getClipData().getItemCount(); i++) {
-                                uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
+                                    // TODO here====================
+                                    ArrayList<String> compressList = new ArrayList<>();
+                                    compressList.addAll(compressVideo(uriList));
+                                    countFile = 0;
+                                    allPhoto=data.getClipData().getItemCount();
+                                    nowPhoto=0;
+                                    for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+                                        uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
 //                filePartition.partition(uriList.get(i), 50 * 1024 * 1024);
-                                for (int j=0;j<deviceDataList.size();j++){
-                                    Log.d("videodialogMessage", "onActivityResult: "+getPath(data.getClipData().getItemAt(i).getUri())  );
+                                        for (int j=0;j<deviceDataList.size();j++){
+                                            Log.d("videodialogMessage", "onActivityResult: "+getPath(data.getClipData().getItemAt(i).getUri())  );
 
-                                    if (getPath(data.getClipData().getItemAt(i).getUri()).split("/")[6].split("_")[0].equals(deviceDataList.get(j).getEQNO())){
-                                        now=j;haveNow=true;urlnow=i;
-                                        intoData=deviceDataList.get(j);
-                                        Log.d("videodialogMessage", "EQNO + haveNow: + Now :"+deviceDataList.get(j).getEQNO()+haveNow.toString()+now.toString());
-                                        break;
+                                            if (getPath(data.getClipData().getItemAt(i).getUri()).split("/")[6].split("_")[0].equals(deviceDataList.get(j).getEQNO())){
+                                                now=j;haveNow=true;urlnow=i;
+                                                intoData=deviceDataList.get(j);
+                                                Log.d("videodialogMessage", "EQNO + haveNow: + Now :"+deviceDataList.get(j).getEQNO()+haveNow.toString()+now.toString());
+                                                break;
+                                            }
+                                        }
+                                        try {
+                                            File file = new File(uriList.get(i));
+                                            MediaPlayer mediaPlayer = new MediaPlayer();
+                                            mediaPlayer.setDataSource(file.getPath());
+                                            mediaPlayer.prepare();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        if (!haveNow){
+                                            allPhoto--;
+                                            setDialogMessage(nowPhoto,false,getPath(data.getClipData().getItemAt(i).getUri()).split("/")[6].split("_")[0]+"此照片無對應資料","");
+
+                                        }else {
+                                            if ("".equals(recordSubjectValue)) {
+                                                deviceDataList.get(now).setRecordSubject("沒有輸入主旨");
+                                            } else {
+                                                deviceDataList.get(now).setRecordSubject(recordSubjectValue);
+                                            }
+                                            Log.d("videodialogMessage", "api: "+now+" 主旨"+deviceDataList.get(now).getRecordSubject());
+                                            mPresenter.onGetEQKDDataNoImg(account, deviceDataList.get(now).getCO(),
+                                                    deviceDataList.get(now).getPMFCT(),
+                                                    deviceDataList.get(now).getEQKD(),
+                                                    data,
+                                                    now,
+                                                    urlnow,
+                                                    //2是影片
+                                                    2
+                                            );
+                                            haveNow=false;
+                                        }
                                     }
                                 }
-                                try {
-                                    File file = new File(uriList.get(i));
-                                    MediaPlayer mediaPlayer = new MediaPlayer();
-                                    mediaPlayer.setDataSource(file.getPath());
-                                    mediaPlayer.prepare();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-                                if (!haveNow){
-                                    allPhoto--;
-                                    setDialogMessage(nowPhoto,false,getPath(data.getClipData().getItemAt(i).getUri()).split("/")[6].split("_")[0]+"上傳失敗，此照片不屬於當前狀態，請切換至巡檢/非巡檢","");
-
-                                }else {
-                                    if ("".equals(recordSubjectValue)) {
-                                        deviceDataList.get(now).setRecordSubject("沒有輸入主旨");
-                                    } else {
-                                        deviceDataList.get(now).setRecordSubject(recordSubjectValue);
-                                    }
-                                    Log.d("videodialogMessage", "api: "+now+" 主旨"+deviceDataList.get(now).getRecordSubject());
-                                    mPresenter.onGetEQKDDataNoImg(account, deviceDataList.get(now).getCO(),
-                                            deviceDataList.get(now).getPMFCT(),
-                                            deviceDataList.get(now).getEQKD(),
-                                            data,
-                                            now,
-                                            urlnow,
-                                            //2是影片
-                                            2
-                                    );
-                                    haveNow=false;
-                                }
-                            }
+                            },100);
                         }
-                    },100);
+                    })
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
 
-
-            }});
-            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // User cancelled the dialog
-                }
-            });
-            builder.show();
+            try {
+                Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
+                mAlert.setAccessible(true);
+                Object mAlertController = mAlert.get(dialog);
+                Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
+                mMessage.setAccessible(true);
+                TextView mMessageView = (TextView) mMessage.get(mAlertController);
+                mMessageView.setTextSize(40);
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(30);
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextSize(30);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            // Add the buttons
+//            builder.setMessage("是否確定選擇這些影片?");
+//            builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int id) {
+//                    // User clicked OK button
+//                    //
+//                    pd = new ProgressDialog(context);
+//                    pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//                    pd.setMessage("讀取中");
+//                    pd.setIndeterminate(true);
+//                    pd.setCancelable(false);
+//                    pd.show();
+//                    new Handler().postDelayed(new Runnable(){
+//                        @Override
+//                        public void run() {
+//                            Uri selectedVideo = data.getData();
+//                            Integer now = 0,urlnow=0;
+//                            ArrayList<String> uriList = new ArrayList<String>();
+//                            ChooseDeviceItemData intoData=new ChooseDeviceItemData();
+//                            allPhoto=data.getClipData().getItemCount();
+//                            for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+//                                uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
+//                            }
+//
+//                            // TODO here====================
+//                            ArrayList<String> compressList = new ArrayList<>();
+//                            compressList.addAll(compressVideo(uriList));
+//                            countFile = 0;
+//                            allPhoto=data.getClipData().getItemCount();
+//                            nowPhoto=0;
+//                            for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+//                                uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
+////                filePartition.partition(uriList.get(i), 50 * 1024 * 1024);
+//                                for (int j=0;j<deviceDataList.size();j++){
+//                                    Log.d("videodialogMessage", "onActivityResult: "+getPath(data.getClipData().getItemAt(i).getUri())  );
+//
+//                                    if (getPath(data.getClipData().getItemAt(i).getUri()).split("/")[6].split("_")[0].equals(deviceDataList.get(j).getEQNO())){
+//                                        now=j;haveNow=true;urlnow=i;
+//                                        intoData=deviceDataList.get(j);
+//                                        Log.d("videodialogMessage", "EQNO + haveNow: + Now :"+deviceDataList.get(j).getEQNO()+haveNow.toString()+now.toString());
+//                                        break;
+//                                    }
+//                                }
+//                                try {
+//                                    File file = new File(uriList.get(i));
+//                                    MediaPlayer mediaPlayer = new MediaPlayer();
+//                                    mediaPlayer.setDataSource(file.getPath());
+//                                    mediaPlayer.prepare();
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//
+//                                if (!haveNow){
+//                                    allPhoto--;
+//                                    setDialogMessage(nowPhoto,false,getPath(data.getClipData().getItemAt(i).getUri()).split("/")[6].split("_")[0]+"上傳失敗，此照片不屬於當前狀態，請切換至巡檢/非巡檢","");
+//
+//                                }else {
+//                                    if ("".equals(recordSubjectValue)) {
+//                                        deviceDataList.get(now).setRecordSubject("沒有輸入主旨");
+//                                    } else {
+//                                        deviceDataList.get(now).setRecordSubject(recordSubjectValue);
+//                                    }
+//                                    Log.d("videodialogMessage", "api: "+now+" 主旨"+deviceDataList.get(now).getRecordSubject());
+//                                    mPresenter.onGetEQKDDataNoImg(account, deviceDataList.get(now).getCO(),
+//                                            deviceDataList.get(now).getPMFCT(),
+//                                            deviceDataList.get(now).getEQKD(),
+//                                            data,
+//                                            now,
+//                                            urlnow,
+//                                            //2是影片
+//                                            2
+//                                    );
+//                                    haveNow=false;
+//                                }
+//                            }
+//                        }
+//                    },100);
+//
+//
+//
+//            }});
+//            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int id) {
+//                    // User cancelled the dialog
+//                }
+//            });
+//            builder.show();
 
             // onUploadFile(compressList.get(i), getResourceString(R.string.on_upload_vedio),intoData);
 
@@ -711,7 +866,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
             if (!haveNow) {
                 allPhoto--;
-                setDialogMessage(nowPhoto, false, getPath(data.getClipData().getItemAt(i).getUri()).split("/")[5].split("_")[0] + "上傳失敗，此照片不屬於當前狀態，請切換至巡檢/非巡檢", "");
+                setDialogMessage(nowPhoto, false, getPath(data.getClipData().getItemAt(i).getUri()).split("/")[5].split("_")[0] + "此照片無對應資料", "");
 
             } else {
 
@@ -966,39 +1121,52 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
            //設備選擇
             case R.id.btn_chose_device:
                 ArrayList<String> dialogDeviceIDString = new ArrayList<>();
-
-                sortList.clear();
-
                 for (ChooseDeviceItemData deviceData : deviceDataList) {
-                  //  dialogDeviceIDString.add(deviceData.getEQNO() + "  " + deviceData.getEQNM());
-                    sortList.add(deviceData);
+                    dialogDeviceIDString.add(deviceData.getEQNO() + "  " + deviceData.getEQNM());
                 }
-                //設備以EQNO排序
-                sortList.sort(
-                        Comparator.<ChooseDeviceItemData, String>comparing(p -> p.getEQNO())
-                );
-//                Collections.sort(sortList);.thenComparing(p -> p.firstName)
-//                                .thenComparing(p -> p.zipCode)
-                for (ChooseDeviceItemData data : sortList){
-                    Log.d("sortList", "sort: "+data.getEQNO());
-                    dialogDeviceIDString.add(data.getEQNO() + "  " + data.getEQNM());
-                }
-
                 showItemDialog(dialogDeviceIDString, onNonInspectionSelectDevice);
                 break;
+//                ArrayList<String> dialogDeviceIDString = new ArrayList<>();
+//
+//                sortList.clear();
+//
+//                for (ChooseDeviceItemData deviceData : deviceDataList) {
+//                  //  dialogDeviceIDString.add(deviceData.getEQNO() + "  " + deviceData.getEQNM());
+//                    sortList.add(deviceData);
+//                }
+//                //設備以EQNO排序
+//                sortList.sort(
+//                        Comparator.<ChooseDeviceItemData, String>comparing(p -> p.getEQNO())
+//                );
+////                Collections.sort(sortList);.thenComparing(p -> p.firstName)
+////                                .thenComparing(p -> p.zipCode)
+//                for (ChooseDeviceItemData data : sortList){
+//                    Log.d("sortList", "sort: "+data.getEQNO());
+//                    dialogDeviceIDString.add(data.getEQNO() + "  " + data.getEQNM());
+//                }
+//
+//                showItemDialog(dialogDeviceIDString, onNonInspectionSelectDevice);
+//                break;
         }
     }
 
     //輸入主旨 主旨Dialog
     private void onShowRecordSubjectDialog(final int ispickImage) {
 
-        final EditText edittext = new EditText(this);
+       // final EditText edittext = new EditText(this);
+        LayoutInflater inflater=getLayoutInflater();
+        View view=inflater.inflate(R.layout.record_subject_dialog,null);
+        final EditText edittext=view.findViewById(R.id.edittext);
+        Button positiveButton=view.findViewById(R.id.positiveButton);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("主旨輸入");
-        alert.setView(edittext);
+//        alert.setTitle("主旨輸入");
+        alert.setView(view);
         recordSubjectValue="";
-        alert.setPositiveButton("確認", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
+        final AlertDialog ad=alert.show();
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view1) {
+                ad.dismiss();
                 recordSubjectValue = edittext.getText().toString();
                 if (deviceDataList.size() > 0) {
 //                    if ("".equals(recordSubjectValue)) {
@@ -1012,13 +1180,13 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 ////                                deviceDataList.get(currentDataCount).getEQKD(),
 ////                                ispickImage);
 //                    } else {
-                        if (ispickImage == 1) {
-                            pickImageFromGallery();
-                        } else if (ispickImage == 2) {
-                            pickVideoFromGallery();
-                        } else {
-                            showDialogCaveatMessage("沒有設備類別名稱，無法使用上傳功能");
-                        }
+                    if (ispickImage == 1) {
+                        pickImageFromGallery();
+                    } else if (ispickImage == 2) {
+                        pickVideoFromGallery();
+                    } else {
+                        showDialogCaveatMessage("沒有設備類別名稱，無法使用上傳功能");
+                    }
 //                    }
                 } else {
                     showDialogMessage("無設備");
@@ -1026,7 +1194,36 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             }
         });
 
-        alert.show();
+//        alert.setPositiveButton("確認", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int whichButton) {
+//                recordSubjectValue = edittext.getText().toString();
+//                if (deviceDataList.size() > 0) {
+////                    if ("".equals(recordSubjectValue)) {
+////                        deviceDataList.get(currentDataCount).setRecordSubject("沒有輸入主旨");
+////                    } else {
+////                        deviceDataList.get(currentDataCount).setRecordSubject(recordSubjectValue);
+////                    }
+////                    if ("".equals(deviceDataList.get(currentDataCount).getEQKDNM())) {
+//////                        mPresenter.onGetEQKDData(account, deviceDataList.get(currentDataCount).getCO(),
+//////                                deviceDataList.get(currentDataCount).getPMFCT(),
+//////                                deviceDataList.get(currentDataCount).getEQKD(),
+//////                                ispickImage);
+////                    } else {
+//                        if (ispickImage == 1) {
+//                            pickImageFromGallery();
+//                        } else if (ispickImage == 2) {
+//                            pickVideoFromGallery();
+//                        } else {
+//                            showDialogCaveatMessage("沒有設備類別名稱，無法使用上傳功能");
+//                        }
+////                    }
+//                } else {
+//                    showDialogMessage("無設備");
+//                }
+//            }
+//        });
+
+
     }
 
     //停止取資料和上傳
@@ -1050,58 +1247,96 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     private DialogInterface.OnClickListener onNonInspectionSelectDevice = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            int inListWhich=0;
             if (loginStatus == 1) {   //自動登入
-//                if (which != deviceonLeaveTheRoute) {
-                if (!sortList.get(which).getEQNO().equals(deviceDataList.get(deviceonLeaveTheRoute).getEQNO())){
-                   // textDeviceNumber.setText(deviceDataList.get(which).getEQNO() + " " + deviceDataList.get(which).getEQNM());
-                    textDeviceNumber.setText(sortList.get(which).getEQNO() + " " + sortList.get(which).getEQNM());
+                if (which != deviceonLeaveTheRoute) {
+                    textDeviceNumber.setText(deviceDataList.get(which).getEQNO() + " " + deviceDataList.get(which).getEQNM());
                     textDeviceNumber.setTextColor(getResources().getColor(R.color.crimson));
                     onstopTeleportService();
-                }
-                else {
+                } else {
                     onStartTeleportService();
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
                     Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
                     String date = sdf.format(curDate);
-
                     deviceDataList.get(currentDataCount).setRecordDate(date);
                     mPresenter.onAddChkInfo(deviceDataList.get(currentDataCount));
                     textDeviceNumber.setText(deviceDataList.get(which).getEQNO() + " " + deviceDataList.get(which).getEQNM());
                     textDeviceNumber.setTextColor(getResources().getColor(R.color.black));
                 }
-
-
-                for (int i=0;i<deviceDataList.size();i++){
-                    if (sortList.get(which).getEQNO().equals(deviceDataList.get(i).getEQNO())){
-                        inListWhich=i;
-                    }
-                }
-                //這樣打API才會是正確的，inListWhich是在哪一個才是正確的
-                currentDataCount=inListWhich;
-               // currentDataCount = which;
+                currentDataCount = which;
                 Log.v("CCCCC", "currentDataCount:" + currentDataCount);
-                Log.v("CCCCC", "which:" + inListWhich);
+                Log.v("CCCCC", "which:" + which);
             } else {      //非自動登入
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
                 Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
                 String date = sdf.format(curDate);
                 NonServiceStatus = true;
-                for (int i=0;i<deviceDataList.size();i++){
-                    if (sortList.get(which).getEQNO().equals(deviceDataList.get(i).getEQNO())){
-                        inListWhich=i;
-                    }
-                }
-                textDeviceNumber.setText(deviceDataList.get(inListWhich).getEQNO() + " " + deviceDataList.get(inListWhich).getEQNM());
-                deviceDataList.get(inListWhich).setWAYNM("非巡檢路線");
-                deviceDataList.get(inListWhich).setWAYID("Non-Ins");
-                deviceDataList.get(inListWhich).setRecordDate(date);
-                mPresenter.onAddChkInfo(deviceDataList.get(inListWhich));
-                currentDataCount = inListWhich;
+                textDeviceNumber.setText(deviceDataList.get(which).getEQNO() + " " + deviceDataList.get(which).getEQNM());
+                deviceDataList.get(which).setWAYNM("非巡檢路線");
+                deviceDataList.get(which).setWAYID("Non-Ins");
+                deviceDataList.get(which).setRecordDate(date);
+                mPresenter.onAddChkInfo(deviceDataList.get(which));
+                currentDataCount = which;
                 onNonService();
             }
         }
     };
+
+    //設備選擇 dialog listener
+//    private DialogInterface.OnClickListener onNonInspectionSelectDevice = new DialogInterface.OnClickListener() {
+//        @Override
+//        public void onClick(DialogInterface dialog, int which) {
+//            int inListWhich=0;
+//            if (loginStatus == 1) {   //自動登入
+////                if (which != deviceonLeaveTheRoute) {
+//                if (!sortList.get(which).getEQNO().equals(deviceDataList.get(deviceonLeaveTheRoute).getEQNO())){
+//                   // textDeviceNumber.setText(deviceDataList.get(which).getEQNO() + " " + deviceDataList.get(which).getEQNM());
+//                    textDeviceNumber.setText(sortList.get(which).getEQNO() + " " + sortList.get(which).getEQNM());
+//                    textDeviceNumber.setTextColor(getResources().getColor(R.color.crimson));
+//                    onstopTeleportService();
+//                }
+//                else {
+//                    onStartTeleportService();
+//                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
+//                    Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
+//                    String date = sdf.format(curDate);
+//
+//                    deviceDataList.get(currentDataCount).setRecordDate(date);
+//                    mPresenter.onAddChkInfo(deviceDataList.get(currentDataCount));
+//                    textDeviceNumber.setText(deviceDataList.get(which).getEQNO() + " " + deviceDataList.get(which).getEQNM());
+//                    textDeviceNumber.setTextColor(getResources().getColor(R.color.black));
+//                }
+//
+//
+//                for (int i=0;i<deviceDataList.size();i++){
+//                    if (sortList.get(which).getEQNO().equals(deviceDataList.get(i).getEQNO())){
+//                        inListWhich=i;
+//                    }
+//                }
+//                //這樣打API才會是正確的，inListWhich是在哪一個才是正確的
+//                currentDataCount=inListWhich;
+//               // currentDataCount = which;
+//                Log.v("CCCCC", "currentDataCount:" + currentDataCount);
+//                Log.v("CCCCC", "which:" + inListWhich);
+//            } else {      //非自動登入
+//                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
+//                Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
+//                String date = sdf.format(curDate);
+//                NonServiceStatus = true;
+//                for (int i=0;i<deviceDataList.size();i++){
+//                    if (sortList.get(which).getEQNO().equals(deviceDataList.get(i).getEQNO())){
+//                        inListWhich=i;
+//                    }
+//                }
+//                textDeviceNumber.setText(deviceDataList.get(inListWhich).getEQNO() + " " + deviceDataList.get(inListWhich).getEQNM());
+//                deviceDataList.get(inListWhich).setWAYNM("非巡檢路線");
+//                deviceDataList.get(inListWhich).setWAYID("Non-Ins");
+//                deviceDataList.get(inListWhich).setRecordDate(date);
+//                mPresenter.onAddChkInfo(deviceDataList.get(inListWhich));
+//                currentDataCount = inListWhich;
+//                onNonService();
+//            }
+//        }
+//    };
 
     //上傳照片 / 圖片
     //如果能改成用retrofit加rxjava最好，已經嘗試過三天的，可能有缺什麼，不過緊急所以先求功能

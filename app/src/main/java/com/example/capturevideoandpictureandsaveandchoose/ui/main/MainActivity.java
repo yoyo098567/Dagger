@@ -729,7 +729,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 //                                        uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
 //                filePartition.partition(uriList.get(i), 50 * 1024 * 1024);
                                         for (int j=0;j<deviceDataList.size();j++){
-                                            Log.d("videodialogMessage", "onActivityResult: "+getPath(data.getClipData().getItemAt(i).getUri())  );
+                                            Log.d("videodialogMessage", "onActivityResult: "+uriList.get(i)  );
 
                                             if (uriList.get(i).split("/")[6].split("_")[0].equals(deviceDataList.get(j).getEQNO())){
                                                 now=j;haveNow=true;urlnow=i;

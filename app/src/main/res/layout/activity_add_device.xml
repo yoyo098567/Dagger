@@ -300,7 +300,7 @@
         android:id="@+id/text_value_device_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="設備名稱: "
+        android:text="@string/device_name"
         android:textColor="@color/black"
         android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"

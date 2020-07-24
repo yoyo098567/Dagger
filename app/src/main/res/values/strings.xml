@@ -31,9 +31,32 @@
     <string name="upload_person">上傳人員:&#160;</string>
     <string name="on_upload_image">照片上傳中</string>
     <string name="on_upload_vedio">影片上傳中</string>
+    <string name="loading">讀取中</string>
+    <string name="check">確定</string>
+    <string name="choose_device">請選取設備</string>
+    <string name="no_device">無設備</string>
+    <string name="chosse_camera_question">是否確定選擇這些照片?</string>
+    <string name="chosse_video_question">是否確定選擇這些影片?</string>
+    <string name="no_camera_data">此照片無對應資料</string>
+    <string name="no_video_data">此影片無對應資料</string>
     <!--chooseDevice部分-->
     <string name="add_device_error_on_choose_device_activity">新增失敗</string>
-
+    <string name="on_no_set_recordSubject">沒有輸入主旨</string>
+    <string name="no_device_le">沒有設備類別名稱，無法使用上傳功能</string>
+    <string name="upload_success">上傳完成</string>
+    <string name="upload_false_plz_upload_again">上傳失敗，此檔案無法上傳，請重新錄影並在上傳</string>
+    <string name="upload_false">上傳失敗，請重新上傳</string>
+    <string name="upload_false_linkfailed">上傳失敗，連結超時</string>
+    <string name="upload_false_bigdata">上傳失敗，檔案過大 </string>
+    <string name="upload_false_internetfailed">上傳失敗請確認網路問題</string>
+    <string name="input_dialog">主旨輸入: </string>
+    <string name="auto_login">自動登入中</string>
+    <string name="auto_login_false">自動登入失敗</string>
+    <string name="login">登入中</string>
+    <string name="login_input_false">登入失敗，帳號密碼輸入格式不符合</string>
+    <string name="login_false">登入失敗</string>
+    <string name="login_false_internet">登入失敗，請檢查網路狀況</string>
+    <string name="g_upload_ok">個上傳成功</string>
     <!--api使用部分-->
     <string name="api_base_url">https://cloud.fpcetg.com.tw/FPC/API/MTN/API_MTN/MTN/</string>
     <string name="api_InsInfo_url">https://cloud.fpcetg.com.tw/FPC/WEB/MTN/MTN_EQPT/MTN_InsInfo.aspx</string>

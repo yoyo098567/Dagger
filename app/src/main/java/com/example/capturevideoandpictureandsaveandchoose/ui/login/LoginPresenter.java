@@ -29,7 +29,7 @@ public class LoginPresenter<V extends LoginContract.View> extends BasePresenter<
 
     @Override
     public void onLogin(String account, String password) {
-        getView().showProgressDialog("登入中");
+        getView().showProgressDialog(getView().getResourceString(R.string.login));
         String url = getView().getResourceString(R.string.api_on_Login);
 //        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,"N000054949","1203-Z");
 //        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,"N000135056","1203-Z");
@@ -49,7 +49,7 @@ public class LoginPresenter<V extends LoginContract.View> extends BasePresenter<
                                     getView().dismissProgressDialog();
                                     getView().onCompleteLogin();
                                 } else {
-                                    getView().showDialogCaveatMessage("登入失敗");
+                                    getView().showDialogCaveatMessage(getView().getResourceString(R.string.login_false));
                                     getView().dismissProgressDialog();
 //                            getView().onCompleteLogin();
                                 }
@@ -59,11 +59,11 @@ public class LoginPresenter<V extends LoginContract.View> extends BasePresenter<
                             public void onError(Throwable e) {
                                 Log.v("LoginResponse", "" + e.getMessage());
                                 if ("HTTP 400 Bad Request".equals(e.getMessage())) {
-                                    getView().showDialogCaveatMessage("登入失敗，帳號密碼輸入格式不符合");
+                                    getView().showDialogCaveatMessage(getView().getResourceString(R.string.login_input_false));
                                 } else if ("java.lang.IllegalStateException: Expected BEGIN_OBJECT but was STRING at line 1 column 2 path $".equals(e.getMessage())) {
-                                    getView().showDialogCaveatMessage("登入失敗");
+                                    getView().showDialogCaveatMessage(getView().getResourceString(R.string.login_false));
                                 } else {
-                                    getView().showDialogCaveatMessage("登入失敗，請檢查網路狀況");
+                                    getView().showDialogCaveatMessage(getView().getResourceString(R.string.login_false_internet));
                                 }
                                 getView().dismissProgressDialog();
 //                        getView().onCompleteLogin();        //API壞掉，暫時修改
@@ -79,7 +79,7 @@ public class LoginPresenter<V extends LoginContract.View> extends BasePresenter<
 
     @Override
     public void onAutoLogin(final String account, String password) {
-        getView().showProgressDialog("自動登入中");
+        getView().showProgressDialog(getView().getResourceString(R.string.auto_login));
         String url = getView().getResourceString(R.string.api_on_Login);
         LoginRequest mLoginRequest = new LoginRequest(LOGIN_AUTHORIZED_ID, account, password);
 //        LoginRequest mLoginRequest=new LoginRequest(LOGIN_AUTHORIZED_ID,"N000135056","1203-Z");
@@ -97,7 +97,7 @@ public class LoginPresenter<V extends LoginContract.View> extends BasePresenter<
                                     getView().dismissProgressDialog();
                                     getView().onCoompleteAutoLogin(account);
                                 } else {
-                                    getView().showDialogCaveatMessage("自動登入失敗");
+                                    getView().showDialogCaveatMessage(getView().getResourceString(R.string.auto_login_false));
                                     getView().dismissProgressDialog();
 //                            getView().onCompleteLogin();
                                 }
@@ -106,7 +106,7 @@ public class LoginPresenter<V extends LoginContract.View> extends BasePresenter<
                             @Override
                             public void onError(Throwable e) {
                                 getView().dismissProgressDialog();
-                                getView().showDialogCaveatMessage("自動登入失敗");
+                                getView().showDialogCaveatMessage(getView().getResourceString(R.string.auto_login_false));
                             }
 
                             @Override

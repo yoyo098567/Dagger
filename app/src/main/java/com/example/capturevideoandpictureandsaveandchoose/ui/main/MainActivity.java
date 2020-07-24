@@ -505,14 +505,14 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             final File originFile = new File(videoFilePath);
             originFile.renameTo(newFile);
             updateMedia(newFile.getAbsolutePath(), this);
-            showProgressDialog("檔案儲存中");
-            showProgressDialog("檔案儲存中");
-            showProgressDialog("檔案儲存中");
-            showProgressDialog("檔案儲存中");
+            showProgressDialog("儲存中");
+            showProgressDialog("儲存中");
+            showProgressDialog("儲存中");
+            showProgressDialog("儲存中");
 
-            showProgressDialog("檔案儲存中");
-            showProgressDialog("檔案儲存中");
-            showProgressDialog("檔案儲存中");
+            showProgressDialog("儲存中");
+            showProgressDialog("儲存中");
+            showProgressDialog("儲存中");
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -585,7 +585,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
                                         if (!haveNow) {
                                             allPhoto--;
-                                            setDialogMessage(nowPhoto, false, getPath(data.getClipData().getItemAt(i).getUri()).split("/")[5].split("_")[0] + "此照片無對應資料", "");
+                                            setDialogMessage(nowPhoto, false, uriList.get(i).split("/")[5].split("_")[0] + "此照片無對應資料", "");
 
                                         } else {
 

@@ -535,11 +535,11 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             Context context = this;
 
             AlertDialog dialog= new AlertDialog.Builder(this)
-                    .setMessage("是否確定選擇這些照片?")
-                    .setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                    .setMessage(getResourceString(R.string.chosse_camera_question))
+                    .setPositiveButton(getResourceString(R.string.check), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            SpannableString ss=  new SpannableString("讀取中");
+                            SpannableString ss=  new SpannableString(getResourceString(R.string.loading));
                             ss.setSpan(new RelativeSizeSpan(3f), 0, ss.length(), 0);
                             pd = new ProgressDialog(context);
                             pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -585,12 +585,12 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
                                         if (!haveNow) {
                                             allPhoto--;
-                                            setDialogMessage(nowPhoto, false, uriList.get(i).split("/")[5].split("_")[0] + "此照片無對應資料", "");
+                                            setDialogMessage(nowPhoto, false, uriList.get(i).split("/")[5].split("_")[0] + getResourceString(R.string.no_camera_data), "");
 
                                         } else {
 
                                             if ("".equals(recordSubjectValue)) {
-                                                deviceDataList.get(now).setRecordSubject("沒有輸入主旨");
+                                                deviceDataList.get(now).setRecordSubject(getResourceString(R.string.on_no_set_recordSubject));
                                             } else {
                                                 deviceDataList.get(now).setRecordSubject(recordSubjectValue);
                                             }
@@ -686,11 +686,11 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
             Context context=this;
             AlertDialog dialog= new AlertDialog.Builder(this)
-                    .setMessage("是否確定選擇這些影片?")
-                    .setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                    .setMessage(getResourceString(R.string.chosse_video_question))
+                    .setPositiveButton(getResourceString(R.string.check), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            SpannableString ss=  new SpannableString("讀取中");
+                            SpannableString ss=  new SpannableString(getResourceString(R.string.loading));
                             ss.setSpan(new RelativeSizeSpan(3f), 0, ss.length(), 0);
                             pd = new ProgressDialog(context);
                             pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -749,11 +749,11 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
                                         if (!haveNow){
                                             allPhoto--;
-                                            setDialogMessage(nowPhoto,false,uriList.get(i).split("/")[6].split("_")[0]+"此照片無對應資料","");
+                                            setDialogMessage(nowPhoto,false,uriList.get(i).split("/")[6].split("_")[0]+getResourceString(R.string.no_video_data),"");
 
                                         }else {
                                             if ("".equals(recordSubjectValue)) {
-                                                deviceDataList.get(now).setRecordSubject("沒有輸入主旨");
+                                                deviceDataList.get(now).setRecordSubject(getResourceString(R.string.on_no_set_recordSubject));
                                             } else {
                                                 deviceDataList.get(now).setRecordSubject(recordSubjectValue);
                                             }
@@ -1103,7 +1103,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
     public void showItemDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("請選取設備");
+        builder.setMessage(getResourceString(R.string.choose_device));
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -1114,7 +1114,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         switch (view.getId()) {
             case R.id.btn_basic_information:
                 if (textDeviceNumber.getText().equals("")) {
-                    showDialogMessage("無設備");
+                    showDialogMessage(getResourceString(R.string.no_device));
                 } else {
                     deviceInformation();
                 }
@@ -1177,7 +1177,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                 //中心雲端
             case R.id.btn_central_cloud:
                 if (textDeviceNumber.getText().equals("")) {
-                    showDialogMessage("無設備");
+                    showDialogMessage(getResourceString(R.string.no_device));
                 } else {
                     Intent intentCentralCloud = new Intent();
                     intentCentralCloud.setAction(Intent.ACTION_VIEW);
@@ -1270,11 +1270,11 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                     } else if (ispickImage == 2) {
                         pickVideoFromGallery();
                     } else {
-                        showDialogCaveatMessage("沒有設備類別名稱，無法使用上傳功能");
+                        showDialogCaveatMessage(getResourceString(R.string.no_device_le));
                     }
 //                    }
                 } else {
-                    showDialogMessage("無設備");
+                    showDialogMessage(getResourceString(R.string.no_device));
                 }
             }
         });
@@ -1485,7 +1485,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                                    // dismissProgressDialog();
                                   //  showDialogMessage("上傳完成");
                                     nowPhoto++;
-                                    setDialogMessage(nowPhoto,true,"上傳完成",data.getEQNO());
+                                    setDialogMessage(nowPhoto,true,getResourceString(R.string.upload_success),data.getEQNO());
                                 }
                             });
                         } else if (responseBody.length() <= 23) {
@@ -1496,7 +1496,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
                                    //showDialogMessage("上傳失敗，此檔案無法上傳，請重新錄影並在上傳");
                                     nowPhoto++;
-                                    setDialogMessage(nowPhoto,false,"上傳失敗，此檔案無法上傳，請重新錄影並在上傳",data.getEQNO());
+                                    setDialogMessage(nowPhoto,false,getResourceString(R.string.upload_false_plz_upload_again),data.getEQNO());
                                 }
                             });
                         } else {
@@ -1506,7 +1506,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                                     //dismissProgressDialog();
                                    // showDialogMessage("上傳失敗，請重新上傳");
                                     nowPhoto++;
-                                    setDialogMessage(nowPhoto,false,"上傳失敗，請重新上傳",data.getEQNO());
+                                    setDialogMessage(nowPhoto,false,getResourceString(R.string.upload_false),data.getEQNO());
 //                                    if (data.getEQNO().length()!=0){
 //                                        setDialogMessage(nowPhoto,false,"上傳失敗，請重新上傳",data.getEQNO());
 //                                    }else{
@@ -1525,15 +1525,15 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                                 if ("connect timed out".equals(e.toString())) {
                                     //showDialogCaveatMessage("上傳失敗，連結超時");
                                     nowPhoto++;
-                                    setDialogMessage(nowPhoto,false,"上傳失敗，連結超時",data.getEQNO());
+                                    setDialogMessage(nowPhoto,false,getResourceString(R.string.upload_false_linkfailed),data.getEQNO());
                                 } else if (" closed".equals(e.toString())) {
                                     //showDialogCaveatMessage("上傳失敗，檔案過大");
                                     nowPhoto++;
-                                    setDialogMessage(nowPhoto,false,"上傳失敗，檔案過大",data.getEQNO());
+                                    setDialogMessage(nowPhoto,false,getResourceString(R.string.upload_false_bigdata),data.getEQNO());
                                 } else {
                                     //showDialogCaveatMessage("上傳失敗請確認網路問題");
                                     nowPhoto++;
-                                    setDialogMessage(nowPhoto,false,"上傳失敗請確認網路問題",data.getEQNO());
+                                    setDialogMessage(nowPhoto,false,getResourceString(R.string.upload_false_internetfailed),data.getEQNO());
                                 }
                             }
                         });
@@ -1562,7 +1562,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         if (nowPhoto>=allPhoto){
              pd.dismiss();
             dismissProgressDialog();
-             dialog="共"+success+"個上傳成功"+"\n"+false_message;
+             dialog="共"+success+getResourceString(R.string.g_upload_ok)+"\n"+false_message;
             showLongErroeDialogMessage(dialog);
            dialog="";success=0;false_message="";allPhoto=0;
 
@@ -1688,7 +1688,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             deviceDataList.get(currentDataCount).setEQKDNM(mEQKDNM);
             pickVideoFromGallery();
         } else {
-            showDialogCaveatMessage("沒有設備類別名稱，無法使用上傳功能");
+            showDialogCaveatMessage(getResourceString(R.string.no_device_le));
         }
     }
 

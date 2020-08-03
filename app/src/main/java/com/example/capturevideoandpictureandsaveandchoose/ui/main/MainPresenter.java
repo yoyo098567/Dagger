@@ -115,10 +115,12 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
                     @Override
                     public void onNext(AddChkInfoResponse addChkInfoResponse) {
+                        generateLogTxt("Presenter 打API成功:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        generateLogTxt("Presenter 打API失敗:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
                         onAddChkInfo(mChooseDeviceItemData);
                     }
 
@@ -184,7 +186,9 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                         getView().dismissProgressDialog();
                         String EQKDNM="";
                         if (mEQKDResultList.getmEQKDResponseList().size() < 1) {
+                            // getView().dismissProgressDialog();
                             getView().showDialogCaveatMessage(getView().getResourceString(R.string.get_eqkd_error_no_data));
+
                         }else{
                             for(EQKDResponse mEQKDResponse:mEQKDResultList.getmEQKDResponseList()){
                                 if(EQKD.equals(mEQKDResponse.getmEQKD())){
@@ -216,7 +220,7 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
     @Override
     public void onGetEQKDDataNoImg(String account, String CO, String PMFCT, final String EQKD, final Intent data, final Integer nowInList, final Integer urlNow,final Integer pickWhat) {
-      //  getView().showProgressDialog("讀取中");
+        //  getView().showProgressDialog("讀取中");
         EQKDRequest mEQKDRequest = new EQKDRequest(KEY_SEARCH_EQKD, account, CO, PMFCT);
         String url = getView().getResourceString(R.string.api_on_getEQKD);
         getCompositeDisposable().add(getApiService().getEQKD(url, mEQKDRequest)
@@ -226,11 +230,11 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
                     @Override
                     public void onNext(EQKDResultList mEQKDResultList) {
-                     //   getView().dismissProgressDialog();
-                        Log.d("dialogMessage", "在第一支API內: "+nowInList+" urlnow:"+urlNow);
+                        //   getView().dismissProgressDialog();
                         String EQKDNM="";
                         if (mEQKDResultList.getmEQKDResponseList().size() < 1) {
-                            getView().showDialogCaveatMessage(getView().getResourceString(R.string.get_eqkd_error_no_data));
+                            //getView().showDialogCaveatMessage(getView().getResourceString(R.string.get_eqkd_error_no_data));
+                            getView().onSetEQKDdataNoTalk("",data,nowInList,urlNow,pickWhat);
                         }else{
                             for(EQKDResponse mEQKDResponse:mEQKDResultList.getmEQKDResponseList()){
                                 if(EQKD.equals(mEQKDResponse.getmEQKD())){
@@ -247,8 +251,9 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
                     @Override
                     public void onError(Throwable e) {
-                       // getView().dismissProgressDialog();
-                        getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
+                        // getView().dismissProgressDialog();
+                        getView().onSetEQKDdataNoTalk("Internnet",data,nowInList,urlNow,pickWhat);
+                        //  getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
 
                     }
 

@@ -113,7 +113,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="aaaaa"
-        android:textSize="35sp"
+        android:textSize="28sp"
         android:textColor="@color/black"
         app:layout_constraintTop_toTopOf="@id/view_title_bar"
         app:layout_constraintBottom_toBottomOf="@id/view_title_bar"

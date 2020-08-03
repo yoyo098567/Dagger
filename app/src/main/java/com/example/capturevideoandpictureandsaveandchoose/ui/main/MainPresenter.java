@@ -115,12 +115,14 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
                     @Override
                     public void onNext(AddChkInfoResponse addChkInfoResponse) {
-                        generateLogTxt("Presenter 打API成功:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
+                        generateLogTxt("Presenter 打API成功"+"\n");
+                       // generateLogTxt("Presenter 打API成功:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        generateLogTxt("Presenter 打API失敗:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
+                        generateLogTxt("Presenter 打API失敗:"+"\n");
+                        //generateLogTxt("Presenter 打API失敗:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
                         onAddChkInfo(mChooseDeviceItemData);
                     }
 

@@ -1,5 +1,6 @@
 package com.example.capturevideoandpictureandsaveandchoose.ui.main;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
@@ -19,6 +20,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.media.MediaPlayer;
+import android.media.MediaScannerConnection;
 import android.media.tv.TvContract;
 import android.net.Uri;
 import android.os.Build;
@@ -68,6 +70,11 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -302,6 +309,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
     private void pickImageFromGallery() {
         //Create an Intent with action as ACTION_PICK
+
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         // Sets the type as image/*. This ensures only components of type image are selected
         intent.setType("image/*");
@@ -469,9 +477,10 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
+
         if (requestCode == REQUEST_CAPTURE_IMAGE && resultCode == RESULT_OK) {
             File imgFile = new File(imageFilePath);
-            //照片的檔案
+            //儲存照片的檔案
             if (imgFile.exists()) {
 
                 Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
@@ -482,6 +491,57 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                     out.flush();
                     out.close();
                     Log.d("123", "onActivityResult: "+imageFilePath);
+
+                    //刷新媒體庫
+                    //updateFileFromDatabase(this,imgFile,imageFilePath);
+                    final Observer<String> observer = new Observer<String>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                        }
+
+                        @Override
+                        public void onNext(String value) {
+
+                            Log.v("123",""+value);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            dismissProgressDialog();
+                        }
+
+                    };
+                    Observable.create(new ObservableOnSubscribe<String>(){
+                        @Override
+                        public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
+//                                updateFileFromDatabase(getApplicationContext(),getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"");
+                          showProgressDialog("儲存中");
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                String[] paths = new String[]{Environment.getExternalStorageDirectory().toString()};
+                                MediaScannerConnection.scanFile(getApplicationContext(), paths, null, null);
+                                MediaScannerConnection.scanFile(getApplicationContext(), new String[]{
+                                                imgFile.getAbsolutePath()},
+                                        null, new MediaScannerConnection.OnScanCompletedListener() {
+                                            public void onScanCompleted(String path, Uri uri) {
+                                                Log.d("uppppppppp", "onScanCompleted: "+imgFile.getName());
+                                                generateLogTxt("刷新媒體庫"+imgFile.getName());
+                                                e.onComplete();
+                                            }
+                                        });
+                            }
+                            else {
+                                e.onComplete();
+                                getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+                            }
+
+                        }
+                    }).subscribe(observer);//订阅
+
                     sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,Uri.parse("file://"+imageFilePath)));
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -1003,10 +1063,17 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
             intoData=deviceDataList.get(nowInList);
             ArrayList<String> uriList = new ArrayList<String>();
             if (data.getClipData() != null) {
-                for (int i = 0; i < data.getClipData().getItemCount(); i++) {
-                    uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
+                if (data.getClipData().getItemCount()>0){
+                    for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+                        uriList.add(getPath(data.getClipData().getItemAt(i).getUri()));
 //                    Log.e("gggg", "" + uriList.get(i));
+                    }
+                }else{
+                    allPhoto--;
+                    generateLogTxt("data.getClipData().getItemCount()<0 無資料 :"+"\n");
+                    setDialogMessage(nowPhoto, false, "無資料","");
                 }
+
             } else if (Build.VERSION.SDK_INT >= 16 && data.getClipData() == null) {
                 uriList.add(getPath(data.getData()));
             }
@@ -1281,7 +1348,70 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 ////                                ispickImage);
 //                    } else {
                     if (ispickImage == 1) {
-                        pickImageFromGallery();
+                        final Observer<String> observer = new Observer<String>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                            }
+
+                            @Override
+                            public void onNext(String value) {
+
+                                Log.v("123",""+value);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                dismissProgressDialog();
+                                pickImageFromGallery();
+                            }
+
+                        };
+                        Observable.create(new ObservableOnSubscribe<String>(){
+
+                            @Override
+                            public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
+                                showProgressDialog("讀取中");
+//                                updateFileFromDatabase(getApplicationContext(),getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"");
+                                File file = new File(String.valueOf(getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)));
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                    String[] paths = new String[]{Environment.getExternalStorageDirectory().toString()};
+                                    if (file!=null){
+                                        MediaScannerConnection.scanFile(getApplicationContext(), paths, null, null);
+                                        MediaScannerConnection.scanFile(getApplicationContext(), new String[]{
+                                                        file.getAbsolutePath()},
+                                                null, new MediaScannerConnection.OnScanCompletedListener() {
+                                                    public void onScanCompleted(String path, Uri uri) {
+                                                        Log.d("uppppppppp", "onScanCompleted: "+file.getName());
+                                                        generateLogTxt("刷新媒體庫"+file.getName());
+                                                        e.onComplete();
+                                                    }
+                                                });
+                                    }
+                                    else {
+                                        if (imageFilePath.length()>0){
+                                        MediaScannerConnection.scanFile(getApplicationContext(), new String[]{imageFilePath}, null,
+                                                new MediaScannerConnection.OnScanCompletedListener() {
+                                                    public void onScanCompleted(String path, Uri uri) {
+                                                        e.onComplete();
+                                                        Log.i("*******", "Scanned " + path + ":");
+                                                        Log.i("*******", "-> uri=" + uri);
+                                                    }
+                                                });
+                                    }
+                                    }
+                                }
+                                else {
+                                     e.onComplete();
+                                     getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+                                }
+
+                            }
+                        }).subscribe(observer);//订阅
                     } else if (ispickImage == 2) {
                         pickVideoFromGallery();
                     } else {
@@ -1391,8 +1521,38 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         }
     };
 
+    //刷新媒體庫
+    public  void updateFileFromDatabase(Context context, File file,String imageFilePath) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            String[] paths = new String[]{Environment.getExternalStorageDirectory().toString()};
+            if (file!=null){
+                MediaScannerConnection.scanFile(context, paths, null, null);
+                MediaScannerConnection.scanFile(context, new String[]{
+                                file.getAbsolutePath()},
+                        null, new MediaScannerConnection.OnScanCompletedListener() {
+                            public void onScanCompleted(String path, Uri uri) {
+                                Log.d("uppppppppp", "onScanCompleted: "+file.getName());
+                                generateLogTxt("刷新媒體庫"+file.getName());
 
+                            }
+                        });
+            }else {
+                if (imageFilePath.length()>0){
+                    MediaScannerConnection.scanFile(context, new String[]{imageFilePath}, null,
+                            new MediaScannerConnection.OnScanCompletedListener() {
+                                public void onScanCompleted(String path, Uri uri) {
+                                    Log.i("*******", "Scanned " + path + ":");
+                                    Log.i("*******", "-> uri=" + uri);
+                                }
+                            });
+                }
 
+            }
+
+        } else {
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+        }
+    }
     //上傳照片 / 圖片
     //如果能改成用retrofit加rxjava最好，已經嘗試過三天的，可能有缺什麼，不過緊急所以先求功能
     private void onUploadFile(final String url, final String type,final ChooseDeviceItemData data) {
@@ -1731,7 +1891,70 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     public void onSetEQKDNMData(String mEQKDNM, int ispickImage) {
         if (ispickImage == 1) {
             deviceDataList.get(currentDataCount).setEQKDNM(mEQKDNM);
-            pickImageFromGallery();
+            final Observer<String> observer = new Observer<String>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+                }
+
+                @Override
+                public void onNext(String value) {
+
+                    Log.v("123",""+value);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onComplete() {
+                    dismissProgressDialog();
+                    pickImageFromGallery();
+                }
+
+            };
+            Observable.create(new ObservableOnSubscribe<String>(){
+                @Override
+                public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
+//                                updateFileFromDatabase(getApplicationContext(),getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"");
+                    showProgressDialog("讀取中");
+                    File file = new File(String.valueOf(getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        String[] paths = new String[]{Environment.getExternalStorageDirectory().toString()};
+                        if (file!=null){
+                            MediaScannerConnection.scanFile(getApplicationContext(), paths, null, null);
+                            MediaScannerConnection.scanFile(getApplicationContext(), new String[]{
+                                            file.getAbsolutePath()},
+                                    null, new MediaScannerConnection.OnScanCompletedListener() {
+                                        public void onScanCompleted(String path, Uri uri) {
+                                            Log.d("uppppppppp", "onScanCompleted: "+file.getName());
+                                            generateLogTxt("刷新媒體庫"+file.getName());
+                                            e.onComplete();
+                                        }
+                                    });
+                        }
+                        else {
+                            if (imageFilePath.length()>0){
+                                MediaScannerConnection.scanFile(getApplicationContext(), new String[]{imageFilePath}, null,
+                                        new MediaScannerConnection.OnScanCompletedListener() {
+                                            public void onScanCompleted(String path, Uri uri) {
+                                                e.onComplete();
+                                                Log.i("*******", "Scanned " + path + ":");
+                                                Log.i("*******", "-> uri=" + uri);
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                    else {
+                        e.onComplete();
+                        getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+                    }
+
+                }
+            }).subscribe(observer);//订阅
+            //pickImageFromGallery();
         } else if (ispickImage == 2) {
             deviceDataList.get(currentDataCount).setEQKDNM(mEQKDNM);
             pickVideoFromGallery();

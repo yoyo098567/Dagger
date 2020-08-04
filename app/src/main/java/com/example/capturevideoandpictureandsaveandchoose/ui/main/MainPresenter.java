@@ -233,9 +233,11 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                     @Override
                     public void onNext(EQKDResultList mEQKDResultList) {
                         //   getView().dismissProgressDialog();
+                        generateLogTxt("GetEQKDData onNext"+"\n");
                         String EQKDNM="";
                         if (mEQKDResultList.getmEQKDResponseList().size() < 1) {
                             //getView().showDialogCaveatMessage(getView().getResourceString(R.string.get_eqkd_error_no_data));
+                            generateLogTxt("GetEQKDData onNext 但回傳無資料 "+"\n");
                             getView().onSetEQKDdataNoTalk("",data,nowInList,urlNow,pickWhat);
                         }else{
                             for(EQKDResponse mEQKDResponse:mEQKDResultList.getmEQKDResponseList()){
@@ -244,8 +246,10 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                                 }
                             }
                             if("".equals(EQKDNM)){
+                                generateLogTxt("GetEQKDData onNext資料 :"+EQKDNM+"\n");
                                 getView().onSetEQKDdataNoTalk(EQKDNM,data,nowInList,urlNow,pickWhat);
                             }else{
+                                generateLogTxt("GetEQKDData onNext資料 :"+EQKDNM+"\n");
                                 getView().onSetEQKDdataNoTalk(EQKDNM,data,nowInList,urlNow,pickWhat);
                             }
                         }
@@ -254,6 +258,7 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                     @Override
                     public void onError(Throwable e) {
                         // getView().dismissProgressDialog();
+                        generateLogTxt("GetEQKDData Internnet失敗"+e+"\n");
                         getView().onSetEQKDdataNoTalk("Internnet",data,nowInList,urlNow,pickWhat);
                         //  getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
 

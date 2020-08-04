@@ -139,6 +139,7 @@ public class TeleportService extends Service {
     private Runnable periodicUpdate = new Runnable() {
         @Override
         public void run() {
+
             getCurrentDataList();
             if (isEnd) {
                handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second

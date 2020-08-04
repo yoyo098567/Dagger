@@ -142,11 +142,11 @@ public class TeleportService extends Service {
 
             getCurrentDataList();
             if (isEnd) {
-               handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
-                //handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
+               //handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
             } else {
-               handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
-               // handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
+               //handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
             }
         }
     };

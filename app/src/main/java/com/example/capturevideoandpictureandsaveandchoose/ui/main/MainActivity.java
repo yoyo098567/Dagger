@@ -493,60 +493,18 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                     Log.d("123", "onActivityResult: "+imageFilePath);
 
                     //刷新媒體庫
-                    //updateFileFromDatabase(this,imgFile,imageFilePath);
-                    final Observer<String> observer = new Observer<String>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                        }
+                   updateFileFromDatabase(this,imgFile,imageFilePath, new onCompleteListener() {
+                       @Override
+                       public void onComplete() {
+                           sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,Uri.parse("file://"+imageFilePath)));
+                           Intent intent = new Intent();
+                           intent.setAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                           intent.setData(Uri.fromFile(imgFile));
+                           getApplicationContext().sendBroadcast(intent);
+                       }
+                   });
 
-                        @Override
-                        public void onNext(String value) {
 
-                            Log.v("123",""+value);
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            dismissProgressDialog();
-                        }
-
-                    };
-                    Observable.create(new ObservableOnSubscribe<String>(){
-                        @Override
-                        public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
-//                                updateFileFromDatabase(getApplicationContext(),getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"");
-                          showProgressDialog("儲存中");
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                String[] paths = new String[]{Environment.getExternalStorageDirectory().toString()};
-                                MediaScannerConnection.scanFile(getApplicationContext(), paths, null, null);
-                                MediaScannerConnection.scanFile(getApplicationContext(), new String[]{
-                                                imgFile.getAbsolutePath()},
-                                        null, new MediaScannerConnection.OnScanCompletedListener() {
-                                            public void onScanCompleted(String path, Uri uri) {
-                                                Log.d("uppppppppp", "onScanCompleted: "+imgFile.getName());
-                                                generateLogTxt("刷新媒體庫"+imgFile.getName());
-                                                e.onComplete();
-                                            }
-                                        });
-                            }
-                            else {
-                                e.onComplete();
-                                getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
-                            }
-
-                        }
-                    }).subscribe(observer);//订阅
-
-                    sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,Uri.parse("file://"+imageFilePath)));
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                    intent.setData(Uri.fromFile(imgFile));
-                    this.sendBroadcast(intent);
 //                    Intent it = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 //                    Uri uri = Uri.fromFile(imgFile);
 //                    it.setData(uri);
@@ -1366,52 +1324,24 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
                             @Override
                             public void onComplete() {
-                                dismissProgressDialog();
                                 pickImageFromGallery();
                             }
 
                         };
-                        Observable.create(new ObservableOnSubscribe<String>(){
 
+                        Observable.create(new ObservableOnSubscribe<String>(){
                             @Override
                             public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
-                                showProgressDialog("讀取中");
-//                                updateFileFromDatabase(getApplicationContext(),getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"");
-                                File file = new File(String.valueOf(getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)));
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                    String[] paths = new String[]{Environment.getExternalStorageDirectory().toString()};
-                                    if (file!=null){
-                                        MediaScannerConnection.scanFile(getApplicationContext(), paths, null, null);
-                                        MediaScannerConnection.scanFile(getApplicationContext(), new String[]{
-                                                        file.getAbsolutePath()},
-                                                null, new MediaScannerConnection.OnScanCompletedListener() {
-                                                    public void onScanCompleted(String path, Uri uri) {
-                                                        Log.d("uppppppppp", "onScanCompleted: "+file.getName());
-                                                        generateLogTxt("刷新媒體庫"+file.getName());
-                                                        e.onComplete();
-                                                    }
-                                                });
-                                    }
-                                    else {
-                                        if (imageFilePath.length()>0){
-                                        MediaScannerConnection.scanFile(getApplicationContext(), new String[]{imageFilePath}, null,
-                                                new MediaScannerConnection.OnScanCompletedListener() {
-                                                    public void onScanCompleted(String path, Uri uri) {
-                                                        e.onComplete();
-                                                        Log.i("*******", "Scanned " + path + ":");
-                                                        Log.i("*******", "-> uri=" + uri);
-                                                    }
-                                                });
-                                    }
-                                    }
-                                }
-                                else {
-                                     e.onComplete();
-                                     getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
-                                }
-
-                            }
+                           updateFileFromDatabase(getApplicationContext(),getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"", new onCompleteListener(){
+                               @Override
+                               public void onComplete() {
+                                   e.onComplete();
+                               }
+                           });
+                           }
                         }).subscribe(observer);//订阅
+
+
                     } else if (ispickImage == 2) {
                         pickVideoFromGallery();
                     } else {
@@ -1521,8 +1451,13 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
         }
     };
 
+
+    interface onCompleteListener {
+        void onComplete();
+    }
+
     //刷新媒體庫
-    public  void updateFileFromDatabase(Context context, File file,String imageFilePath) {
+    public  void updateFileFromDatabase(Context context, File file,String imageFilePath, onCompleteListener listener) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             String[] paths = new String[]{Environment.getExternalStorageDirectory().toString()};
             if (file!=null){
@@ -1533,7 +1468,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                             public void onScanCompleted(String path, Uri uri) {
                                 Log.d("uppppppppp", "onScanCompleted: "+file.getName());
                                 generateLogTxt("刷新媒體庫"+file.getName());
-
+                                listener.onComplete();
                             }
                         });
             }else {
@@ -1543,6 +1478,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
                                 public void onScanCompleted(String path, Uri uri) {
                                     Log.i("*******", "Scanned " + path + ":");
                                     Log.i("*******", "-> uri=" + uri);
+                                    listener.onComplete();
                                 }
                             });
                 }
@@ -1551,6 +1487,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
 
         } else {
             context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+            listener.onComplete();
         }
     }
     //上傳照片 / 圖片
@@ -1891,70 +1828,13 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     public void onSetEQKDNMData(String mEQKDNM, int ispickImage) {
         if (ispickImage == 1) {
             deviceDataList.get(currentDataCount).setEQKDNM(mEQKDNM);
-            final Observer<String> observer = new Observer<String>() {
-                @Override
-                public void onSubscribe(Disposable d) {
-                }
-
-                @Override
-                public void onNext(String value) {
-
-                    Log.v("123",""+value);
-                }
-
-                @Override
-                public void onError(Throwable e) {
-
-                }
-
+            updateFileFromDatabase(this,getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"", new onCompleteListener() {
                 @Override
                 public void onComplete() {
-                    dismissProgressDialog();
-                    pickImageFromGallery();
-                }
-
-            };
-            Observable.create(new ObservableOnSubscribe<String>(){
-                @Override
-                public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
-//                                updateFileFromDatabase(getApplicationContext(),getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"");
-                    showProgressDialog("讀取中");
-                    File file = new File(String.valueOf(getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        String[] paths = new String[]{Environment.getExternalStorageDirectory().toString()};
-                        if (file!=null){
-                            MediaScannerConnection.scanFile(getApplicationContext(), paths, null, null);
-                            MediaScannerConnection.scanFile(getApplicationContext(), new String[]{
-                                            file.getAbsolutePath()},
-                                    null, new MediaScannerConnection.OnScanCompletedListener() {
-                                        public void onScanCompleted(String path, Uri uri) {
-                                            Log.d("uppppppppp", "onScanCompleted: "+file.getName());
-                                            generateLogTxt("刷新媒體庫"+file.getName());
-                                            e.onComplete();
-                                        }
-                                    });
-                        }
-                        else {
-                            if (imageFilePath.length()>0){
-                                MediaScannerConnection.scanFile(getApplicationContext(), new String[]{imageFilePath}, null,
-                                        new MediaScannerConnection.OnScanCompletedListener() {
-                                            public void onScanCompleted(String path, Uri uri) {
-                                                e.onComplete();
-                                                Log.i("*******", "Scanned " + path + ":");
-                                                Log.i("*******", "-> uri=" + uri);
-                                            }
-                                        });
-                            }
-                        }
-                    }
-                    else {
-                        e.onComplete();
-                        getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
-                    }
 
                 }
-            }).subscribe(observer);//订阅
-            //pickImageFromGallery();
+            });
+            pickImageFromGallery();
         } else if (ispickImage == 2) {
             deviceDataList.get(currentDataCount).setEQKDNM(mEQKDNM);
             pickVideoFromGallery();

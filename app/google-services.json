@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "83291851666",
+    "firebase_url": "https://capturevideoandpictureandsavea.firebaseio.com",
+    "project_id": "capturevideoandpictureandsavea",
+    "storage_bucket": "capturevideoandpictureandsavea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:83291851666:android:58a70a5ecdf9f904190f4b",
+        "android_client_info": {
+          "package_name": "com.example.capturevideoandpictureandsaveandchoose"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "83291851666-1ikn4jk7b8h39orutfsoi00tepjnn0d9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.capturevideoandpictureandsaveandchoose",
+            "certificate_hash": "e50b47cb43eb1d2efbdc240ba58656134eac4641"
+          }
+        },
+        {
+          "client_id": "83291851666-33jegd6vvmtnl434atuhnvdg2vqdj8ta.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALLYHvlseg0IcjR61WfcUeuWI_G_6kpYQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "83291851666-33jegd6vvmtnl434atuhnvdg2vqdj8ta.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

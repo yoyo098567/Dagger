@@ -91,4 +91,7 @@
     <string name="auto_login_error_message">巡检取得不到资料，无法自动登入</string>
     <string name="get_inspection_data_error_message">无法取得巡检资料</string>
     <string name="upload_device_data_is_null">无设备资料，无法上传档案</string>
+
+    <string name="crash_error">程式崩溃，请帮我回报给开发者</string>
+    <string name="crash_title">程式有些问题</string>
 </resources>

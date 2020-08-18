@@ -90,4 +90,7 @@
     <string name="auto_login_error_message">巡檢取得不到資料，無法自動登入</string>
     <string name="get_inspection_data_error_message">無法取得巡檢資料</string>
     <string name="upload_device_data_is_null">無設備資料，無法上傳檔案</string>
+
+    <string name="crash_error">請幫我回報錯誤訊息給開發者</string>
+    <string name="crash_title"><string name="crash_error">程式有些問題</string></string>
 </resources>

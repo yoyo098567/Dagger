@@ -10,9 +10,12 @@ import com.example.capturevideoandpictureandsaveandchoose.di.component.DaggerBas
 import com.example.capturevideoandpictureandsaveandchoose.di.module.APIModule;
 import com.example.capturevideoandpictureandsaveandchoose.di.module.ApplicationModule;
 
+
+
 /**
  * Created by 5*N on 2017/12/24
  */
+
 
 public class Application extends android.app.Application {
     private BaseComponent mApplicationComponent;
@@ -30,11 +33,13 @@ public class Application extends android.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         mApplicationComponent = DaggerBaseComponent.builder()
                 .applicationModule(new ApplicationModule(this))
                 .aPIModule(new APIModule())
                 .build();
         mApplicationComponent.inject(this);
+
     }
 
     public BaseComponent getApplicationComponent() {

@@ -122,6 +122,7 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     private Integer count=0;
     private  ProgressDialog pd;
     private SimpleDateFormat dateFormat;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

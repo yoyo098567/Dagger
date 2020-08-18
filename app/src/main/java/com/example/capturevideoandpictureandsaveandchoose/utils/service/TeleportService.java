@@ -142,11 +142,11 @@ public class TeleportService extends Service {
 
             getCurrentDataList();
             if (isEnd) {
-               handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
-                //handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
+               //handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
             } else {
-               handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
-                //handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
+              // handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
+                handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
             }
         }
     };
@@ -217,7 +217,15 @@ public class TeleportService extends Service {
                         }
                     }else{
                         if (tempDataList.get(currentDataCount).getProgress() == 100) {
-                            currentDataCount++;
+
+                            for (int i=currentDataCount;i<tempDataList.size()-1;i++){
+                                if (tempDataList.get(currentDataCount).getProgress()==100){
+                                    generateLogTxt("service 目前在 currentDataCount:"+currentDataCount+" + "+tempDataList.get(currentDataCount).getEQNO()+tempDataList.get(currentDataCount).getEQNM()+"時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
+                                    currentDataCount++;
+                                }else {
+                                    break;
+                                }
+                            }
                             generateLogTxt("service 準備打目前 currentDataCount:"+currentDataCount+" + "+tempDataList.get(currentDataCount).getEQNO()+tempDataList.get(currentDataCount).getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
                             SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                             Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
@@ -225,6 +233,7 @@ public class TeleportService extends Service {
                             tempDataList.get(currentDataCount).setRecordDate(str);
                             tempDataList.get(currentDataCount).setPosition(currentDataCount);
                             onAddChkInfo(tempDataList.get(currentDataCount));
+
                         }else{
                             generateLogTxt("service 準備打目前 currentDataCount:"+currentDataCount+" + "+tempDataList.get(currentDataCount).getEQNO()+tempDataList.get(currentDataCount).getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
                             SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

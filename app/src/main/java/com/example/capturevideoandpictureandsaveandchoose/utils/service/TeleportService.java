@@ -14,8 +14,10 @@ import android.widget.Toast;
 
 import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceItemData;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.ApiService;
+import com.example.capturevideoandpictureandsaveandchoose.utils.api.ErpAPI;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.addchkInfo.AddChkInfoRequest;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.addchkInfo.AddChkInfoResponse;
+import com.example.capturevideoandpictureandsaveandchoose.utils.sharepreferences.LoginPreferencesProvider;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -26,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -52,7 +56,8 @@ public class TeleportService extends Service {
     private Retrofit retrofit;
     private Handler refreshHandle;
     private DateFormat dateFormat;
-
+    @Inject
+    LoginPreferencesProvider loginPreferencesProvider;
     //創建log.txt
     public void generateLogTxt(String sBody) {
         try {
@@ -101,7 +106,12 @@ public class TeleportService extends Service {
             if(account==null){
             }
             currentDataCount = Integer.valueOf(intent.getStringExtra("currentDataCount"));
-            onCreateApi();
+            if (loginPreferencesProvider.getPersonId()==0){
+                onCreateCNApi();
+            }else if (loginPreferencesProvider.getPersonId()==1){
+                onCreateApi();
+            }
+
             handler.post(periodicUpdate);
             refreshHandle.post(refreshRunnable);
             isStart=false;
@@ -145,7 +155,7 @@ public class TeleportService extends Service {
                //handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
                 handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
             } else {
-              // handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
+              //handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
                 handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
             }
         }
@@ -201,7 +211,12 @@ public class TeleportService extends Service {
                     tempDataList.get(tempDataList.size() - 1).setRecordDate(str);
                     tempDataList.get(tempDataList.size() - 1).setEQNO("end");
                     tempDataList.get(tempDataList.size() - 1).setPosition(currentDataCount);
-                    onAddChkInfo(tempDataList.get(tempDataList.size() - 1));
+                    if (loginPreferencesProvider.getPersonId()==0){
+                        onCNAddChkInfo(tempDataList.get(tempDataList.size() - 1));
+                    }else if (loginPreferencesProvider.getPersonId()==1){
+                        onAddChkInfo(tempDataList.get(tempDataList.size() - 1));
+                    }
+
                     currentDataCount++;
                 } else {
                     if (currentDataCount == tempDataList.size() - 1){
@@ -212,12 +227,17 @@ public class TeleportService extends Service {
                             String str = formatter.format(curDate);
                             tempDataList.get(currentDataCount).setRecordDate(str);
                             tempDataList.get(currentDataCount).setPosition(currentDataCount);
-                            onAddChkInfo(tempDataList.get(currentDataCount));
+                            if (loginPreferencesProvider.getPersonId()==0){
+                                onCNAddChkInfo(tempDataList.get(currentDataCount));
+                            }else if (loginPreferencesProvider.getPersonId()==1){
+                                onAddChkInfo(tempDataList.get(currentDataCount));
+                            }
+
                             currentDataCount++;
                         }
                     }else{
                         if (tempDataList.get(currentDataCount).getProgress() == 100) {
-
+                            currentDataCount=100;
                             for (int i=currentDataCount;i<tempDataList.size()-1;i++){
                                 if (tempDataList.get(currentDataCount).getProgress()==100){
                                     generateLogTxt("service 目前在 currentDataCount:"+currentDataCount+" + "+tempDataList.get(currentDataCount).getEQNO()+tempDataList.get(currentDataCount).getEQNM()+"時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
@@ -232,7 +252,12 @@ public class TeleportService extends Service {
                             String str = formatter.format(curDate);
                             tempDataList.get(currentDataCount).setRecordDate(str);
                             tempDataList.get(currentDataCount).setPosition(currentDataCount);
-                            onAddChkInfo(tempDataList.get(currentDataCount));
+                            if (loginPreferencesProvider.getPersonId()==0){
+                                onCNAddChkInfo(tempDataList.get(currentDataCount));
+                            }else if (loginPreferencesProvider.getPersonId()==1){
+                                onAddChkInfo(tempDataList.get(currentDataCount));
+                            }
+
 
                         }else{
                             generateLogTxt("service 準備打目前 currentDataCount:"+currentDataCount+" + "+tempDataList.get(currentDataCount).getEQNO()+tempDataList.get(currentDataCount).getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
@@ -241,7 +266,13 @@ public class TeleportService extends Service {
                             String str = formatter.format(curDate);
                             tempDataList.get(currentDataCount).setRecordDate(str);
                             tempDataList.get(currentDataCount).setPosition(currentDataCount);
-                            onAddChkInfo(tempDataList.get(currentDataCount));
+
+                            if (loginPreferencesProvider.getPersonId()==0){
+                                onCNAddChkInfo(tempDataList.get(currentDataCount));
+                            }else if (loginPreferencesProvider.getPersonId()==1){
+                                onAddChkInfo(tempDataList.get(currentDataCount));
+                            }
+
                         }
                     }
 
@@ -304,6 +335,56 @@ public class TeleportService extends Service {
         );
     }
 
+    public void onCNAddChkInfo(final ChooseDeviceItemData mChooseDeviceItemData) {
+        String authorizedId = "a5019f21-3c03-468c-8195-6ce6260b45da";
+
+        AddChkInfoRequest mAddChkInfoRequest = new AddChkInfoRequest(authorizedId,
+                mChooseDeviceItemData.getOPCO(),
+                mChooseDeviceItemData.getOPPLD(),
+                mChooseDeviceItemData.getWAYID(),
+                mChooseDeviceItemData.getWAYNM(),
+                mChooseDeviceItemData.getCO(),
+                mChooseDeviceItemData.getCONM(),
+                mChooseDeviceItemData.getPMFCT(),
+                mChooseDeviceItemData.getPMFCTNM(),
+                mChooseDeviceItemData.getEQNO(),
+                account,
+                mChooseDeviceItemData.getUploadNM(),
+                mChooseDeviceItemData.getRecordDate());
+        ErpAPI apiService = retrofit.create(ErpAPI.class);
+        CompositeDisposable compositeDisposable = new CompositeDisposable();
+        compositeDisposable.add(apiService.onCNAddChkInfo("AddChkInfo", mAddChkInfoRequest)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableObserver<AddChkInfoResponse>() {
+
+                            @Override
+                            public void onNext(AddChkInfoResponse addChkInfoResponse) {
+                                generateLogTxt("打api onNext 成功 設備為:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
+                                if (mChooseDeviceItemData.getPosition() >= totalData) {
+                                    generateLogTxt("service position > totalDate 停止"+"，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
+                                    stopSelf();
+//                            Intent broadcastIntent = new Intent();
+//                            broadcastIntent.setAction("datatest");
+//                            broadcastIntent.putExtra("end", "true");
+//                            sendBroadcast(broadcastIntent);
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                generateLogTxt("打api失敗，原因為"+e.toString()+"\n");
+                                onAddChkInfo(mChooseDeviceItemData);
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        })
+        );
+    }
+
 
     private void onCreateApi() {
         Interceptor interceptor = new Interceptor() {
@@ -324,6 +405,33 @@ public class TeleportService extends Service {
 
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://cloud.fpcetg.com.tw/FPC/API/MTN/API_MTN/MTN/")
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build();
+
+    }
+
+
+    private void onCreateCNApi(){
+        Interceptor interceptor = new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                return chain.proceed(chain.request().newBuilder()
+                        .header("Content-Type", "application/json")
+                        .build());
+            }
+        };
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .addNetworkInterceptor(interceptor)
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .build();
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl("https://cloud.fpcetg.com.tw/FPC/API/MTN/API_MTN/LB_MTN/")
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

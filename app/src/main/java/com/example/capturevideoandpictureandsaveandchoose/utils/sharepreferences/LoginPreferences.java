@@ -39,13 +39,13 @@ public class LoginPreferences extends PreferencesHelper implements LoginPreferen
     }
 
     @Override
-    public void setPersonId(String mPersonId) {
+    public void setAccount(String mPersonId) {
         save(Type.STRING, PERSON_ID, mPersonId);
     }
 
     @Override
-    public void setPersonName(String mName) {
-        save(Type.STRING, PERSON_NAME, mName);
+    public void setPersonId(Integer mName) {
+        save(Type.INT, PERSON_NAME, mName);
     }
 
     @Override
@@ -54,13 +54,13 @@ public class LoginPreferences extends PreferencesHelper implements LoginPreferen
     }
 
     @Override
-    public String getPersonId() {
+    public String getAccount() {
         return (String) get(Type.STRING, PERSON_ID);
     }
 
     @Override
-    public String getPersonName() {
-        return (String) get(Type.STRING, PERSON_NAME);
+    public Integer getPersonId() {
+        return (Integer) get(Type.INT, PERSON_NAME);
     }
 
     @Override

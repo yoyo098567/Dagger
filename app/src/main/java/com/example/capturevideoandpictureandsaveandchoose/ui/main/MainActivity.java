@@ -1055,6 +1055,14 @@ public class MainActivity extends BaseActivity implements MainContract.View {
                         "MNTFCT=" + deviceDataList.get(currentDataCount).getMNTFCT() + "&" +
                         "EQNO=" + deviceDataList.get(currentDataCount).getEQNO() + "&" +
                         "token=" + mPresenter.getDisposableToken()));
+
+                Log.d("1233qqqqqqqqqqqqqqqqqq", "OnCentralCloudClick: "+"https://cloud.fpcetg.com.tw/FPC/WEB/MTN/MTN_EQPT/LB_Default.aspx?" +
+                        "CO=" + deviceDataList.get(currentDataCount).getCO() + "&" +
+                        "PMFCT=" + deviceDataList.get(currentDataCount).getPMFCT() + "&" +
+                        "MNTCO=" + deviceDataList.get(currentDataCount).getMNTCO() + "&" +
+                        "MNTFCT=" + deviceDataList.get(currentDataCount).getMNTFCT() + "&" +
+                        "EQNO=" + deviceDataList.get(currentDataCount).getEQNO() + "&" +
+                        "token=" + mPresenter.getDisposableToken());
             }
             else if (loginPreferencesProvider.getPersonId()==1){
                 intentCentralCloud.setData(Uri.parse("https://cloud.fpcetg.com.tw/FPC/WEB/MTN/MTN_EQPT/Default.aspx?" +
@@ -1064,6 +1072,14 @@ public class MainActivity extends BaseActivity implements MainContract.View {
                         "MNTFCT=" + deviceDataList.get(currentDataCount).getMNTFCT() + "&" +
                         "EQNO=" + deviceDataList.get(currentDataCount).getEQNO() + "&" +
                         "token=" + mPresenter.getDisposableToken()));
+
+                Log.d("1233qqqqqqqqqqqqqqqqqq", "OnCentralCloudClick: "+"https://cloud.fpcetg.com.tw/FPC/WEB/MTN/MTN_EQPT/Default.aspx?" +
+                        "CO=" + deviceDataList.get(currentDataCount).getCO() + "&" +
+                        "PMFCT=" + deviceDataList.get(currentDataCount).getPMFCT() + "&" +
+                        "MNTCO=" + deviceDataList.get(currentDataCount).getMNTCO() + "&" +
+                        "MNTFCT=" + deviceDataList.get(currentDataCount).getMNTFCT() + "&" +
+                        "EQNO=" + deviceDataList.get(currentDataCount).getEQNO() + "&" +
+                        "token=" + mPresenter.getDisposableToken());
             }
 
             startActivity(intentCentralCloud);
@@ -1587,7 +1603,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         if (nowPhoto>=allPhoto){
             pd.dismiss();
             dismissProgressDialog();
-            dialog="共"+success+R.string.g_upload_ok+"\n"+false_message;
+            dialog="共"+success+getResourceString(R.string.g_upload_ok)+"\n"+false_message;
             showLongErroeDialogMessage(dialog);
             dialog="";success=0;false_message="";allPhoto=0;
 

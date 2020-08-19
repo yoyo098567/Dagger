@@ -336,7 +336,7 @@ public class TeleportService extends Service {
     }
 
     public void onCNAddChkInfo(final ChooseDeviceItemData mChooseDeviceItemData) {
-        String authorizedId = "a5019f21-3c03-468c-8195-6ce6260b45da";
+        String authorizedId = "b654a8cb-d874-4ad1-beef-174fc0013f99";
 
         AddChkInfoRequest mAddChkInfoRequest = new AddChkInfoRequest(authorizedId,
                 mChooseDeviceItemData.getOPCO(),

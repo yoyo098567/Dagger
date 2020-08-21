@@ -985,7 +985,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
 
     public void showItemDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("請選取設備");
+        builder.setMessage(getResourceString(R.string.choose_device));
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -1039,7 +1039,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     @Override
     public void OnCentralCloudClick() {
         if (activityMainBinding.textDeviceNumberData.getText().equals("")) {
-            showDialogMessage("無設備");
+            showDialogMessage(getResourceString(R.string.no_device));
         } else {
 
             Intent intentCentralCloud = new Intent();
@@ -1089,7 +1089,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     @Override
     public void OnBasicInformationClick() {
         if (activityMainBinding.textDeviceNumberData.getText().equals("")) {
-            showDialogMessage("無設備");
+            showDialogMessage(getResourceString(R.string.no_device));
         } else {
             deviceInformation();
         }
@@ -1216,7 +1216,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
                     }
 //                    }
                 } else {
-                    showDialogMessage("無設備");
+                    showDialogMessage(getResourceString(R.string.no_device));
                 }
             }
         });

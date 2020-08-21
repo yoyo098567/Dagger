@@ -1617,7 +1617,8 @@ public class MainActivity extends BaseActivity implements MainContract.View {
 //        final String currentTime = curTime.format(curDate);
 //        final String currentDate = formatter.format(curDate);
 //        if (deviceDataList.size() < 1) {
-//            showDialogCaveatMessage(getResourceString(R.string.upload_device_data_is_null));
+//            showDialogCaveatMessage(getResourceString(R.string.
+//            _device_data_is_null));
 //        } else {
 //            showProgressDialog(type);
 //            new Thread(new Runnable() {

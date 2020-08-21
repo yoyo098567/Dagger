@@ -4,7 +4,7 @@
     <string name="login_account">帐号</string>
     <string name="login_password">密码</string>
     <string name="login_btn_login">登入</string>
-    <string name="login_account_hint">请输入帐号</string>
+    <string name="login_account_hint">请输入账号</string>
     <string name="login_password_hint">请输入密码</string>
     <string name="open_camera_for_capture">拍照</string>
     <string name="open_camera_for_video">录影</string>
@@ -20,10 +20,10 @@
     <string name="route_code">路线代号:&#160;</string>
     <string name="route_name">路线名称:&#160;</string>
     <string name="device_category">设备类别:&#160;</string>
-    <string name="device_number">设备:&#160;</string>
+    <string name="device_number">设备编号:&#160;</string>
     <string name="device_name">设备名称:&#160;</string>
     <string name="create">建立</string>
-    <string name="live_data">现场资料</string>
+    <string name="live_data">现场数据</string>
     <string name="data_upload">资料上传</string>
     <string name="record_date">纪录日期:&#160;</string>
     <string name="maintenance_plant">保 &#160;养 &#160;厂 &#160;</string>

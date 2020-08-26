@@ -36,6 +36,7 @@
     <string name="device_nodata">设备类别查无资料，时间为 :</string>
     <string name="on_no_set_recordSubject">没有输入主旨</string>
     <string name="search_not_ok">查询资料失败，请重试或检查网路状态，时间为 :</string>
+    <string name="search_not_ok_nt">查询资料失败，请重试或检查网路状态</string>
     <string name="device_no">设备类别查无资料</string>
     <string name="loading">读取中</string>
     <string name="check">确定</string>

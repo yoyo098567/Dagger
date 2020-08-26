@@ -60,6 +60,7 @@
     <string name="g_upload_ok">個上傳成功</string>
     <string name="g_nodata">無資料</string>
     <string name="search_not_ok">查詢資料失敗，請重試或檢查網路狀態，時間為 : </string>
+    <string name="search_not_ok_nt">查詢資料失敗，請重試或檢查網路狀態</string>
     <string name="device_nodata">設備類別查無資料，時間為 : </string>
     <string name="device_no">設備類別查無資料</string>
     <!--api使用部分-->

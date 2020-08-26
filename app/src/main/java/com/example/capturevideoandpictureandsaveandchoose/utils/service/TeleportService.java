@@ -12,6 +12,12 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.capturevideoandpictureandsaveandchoose.Application;
+import com.example.capturevideoandpictureandsaveandchoose.di.component.main.DaggerMainComponent;
+import com.example.capturevideoandpictureandsaveandchoose.di.component.service.DaggerTeleportServiceComponent;
+import com.example.capturevideoandpictureandsaveandchoose.di.component.service.TeleportServiceComponent;
+import com.example.capturevideoandpictureandsaveandchoose.di.module.main.MainModule;
+import com.example.capturevideoandpictureandsaveandchoose.di.module.service.TeleportServiceModule;
 import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceItemData;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.ApiService;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.ErpAPI;
@@ -58,6 +64,7 @@ public class TeleportService extends Service {
     private DateFormat dateFormat;
     @Inject
     LoginPreferencesProvider loginPreferencesProvider;
+    private TeleportServiceComponent teleportServiceComponent;
     //創建log.txt
     public void generateLogTxt(String sBody) {
         try {
@@ -94,6 +101,12 @@ public class TeleportService extends Service {
         handler = new Handler();
         refreshHandle = new Handler();
         isEnd = false;
+
+        teleportServiceComponent = DaggerTeleportServiceComponent.builder()
+                .teleportServiceModule(new TeleportServiceModule(this.getApplication()))
+                .baseComponent(((Application) getApplication()).getApplicationComponent())
+                .build();
+        teleportServiceComponent.inject(this);
     }
 
     @Override
@@ -152,11 +165,11 @@ public class TeleportService extends Service {
 
             getCurrentDataList();
             if (isEnd) {
-               //handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
-                handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
+                //handler.postDelayed(periodicUpdate, 10000); // schedule next wake up 10 second
+                  handler.postDelayed(periodicUpdate, 300000); // schedule next wake up 10 second
             } else {
-              //handler.postDelayed(periodicUpdate, 5000); // schedule next wake up 10 second
-                handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
+               // handler.postDelayed(periodicUpdate, 20000); // schedule next wake up 10 second
+                  handler.postDelayed(periodicUpdate, 180000); // schedule next wake up 10 second
             }
         }
     };
@@ -235,9 +248,23 @@ public class TeleportService extends Service {
 
                             currentDataCount++;
                         }
+                        else{
+                            generateLogTxt("service 準備打目前 currentDataCount:"+currentDataCount+" + "+tempDataList.get(currentDataCount).getEQNO()+tempDataList.get(currentDataCount).getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
+                            SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                            Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
+                            String str = formatter.format(curDate);
+                            tempDataList.get(currentDataCount).setRecordDate(str);
+                            tempDataList.get(currentDataCount).setPosition(currentDataCount);
+
+                            if (loginPreferencesProvider.getPersonId()==0){
+                                onCNAddChkInfo(tempDataList.get(currentDataCount));
+                            }else if (loginPreferencesProvider.getPersonId()==1){
+                                onAddChkInfo(tempDataList.get(currentDataCount));
+                            }
+
+                        }
                     }else{
                         if (tempDataList.get(currentDataCount).getProgress() == 100) {
-                            currentDataCount=100;
                             for (int i=currentDataCount;i<tempDataList.size()-1;i++){
                                 if (tempDataList.get(currentDataCount).getProgress()==100){
                                     generateLogTxt("service 目前在 currentDataCount:"+currentDataCount+" + "+tempDataList.get(currentDataCount).getEQNO()+tempDataList.get(currentDataCount).getEQNM()+"時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
@@ -246,20 +273,43 @@ public class TeleportService extends Service {
                                     break;
                                 }
                             }
-                            generateLogTxt("service 準備打目前 currentDataCount:"+currentDataCount+" + "+tempDataList.get(currentDataCount).getEQNO()+tempDataList.get(currentDataCount).getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
-                            SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                            Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
-                            String str = formatter.format(curDate);
-                            tempDataList.get(currentDataCount).setRecordDate(str);
-                            tempDataList.get(currentDataCount).setPosition(currentDataCount);
-                            if (loginPreferencesProvider.getPersonId()==0){
-                                onCNAddChkInfo(tempDataList.get(currentDataCount));
-                            }else if (loginPreferencesProvider.getPersonId()==1){
-                                onAddChkInfo(tempDataList.get(currentDataCount));
+                            Log.d("llllllllllllllllll",""+currentDataCount);
+
+                            if (currentDataCount == tempDataList.size() - 1) {
+                                if (tempDataList.get(currentDataCount).getProgress() == 100) {
+                                    Log.d("llllllllllllllllll", "tempDataList.size() - 1: ");
+                                    generateLogTxt("service 準備打目前 currentDataCount:"+currentDataCount+" + "+tempDataList.get(currentDataCount).getEQNO()+tempDataList.get(currentDataCount).getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
+                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                                    Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
+                                    String str = formatter.format(curDate);
+                                    tempDataList.get(currentDataCount).setRecordDate(str);
+                                    tempDataList.get(currentDataCount).setPosition(currentDataCount);
+                                    if (loginPreferencesProvider.getPersonId()==0){
+                                        onCNAddChkInfo(tempDataList.get(currentDataCount));
+                                    }else if (loginPreferencesProvider.getPersonId()==1){
+                                        onAddChkInfo(tempDataList.get(currentDataCount));
+                                    }
+                                    currentDataCount++;
+                                }
+                            }else{
+                                generateLogTxt("service 準備打目前 currentDataCount:"+currentDataCount+" + "+tempDataList.get(currentDataCount).getEQNO()+tempDataList.get(currentDataCount).getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
+                                SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                                Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
+                                String str = formatter.format(curDate);
+                                tempDataList.get(currentDataCount).setRecordDate(str);
+                                tempDataList.get(currentDataCount).setPosition(currentDataCount);
+                                if (loginPreferencesProvider.getPersonId()==0){
+                                    onCNAddChkInfo(tempDataList.get(currentDataCount));
+                                }else if (loginPreferencesProvider.getPersonId()==1){
+                                    onAddChkInfo(tempDataList.get(currentDataCount));
+                                }
                             }
 
 
-                        }else{
+
+
+                        }
+                        else{
                             generateLogTxt("service 準備打目前 currentDataCount:"+currentDataCount+" + "+tempDataList.get(currentDataCount).getEQNO()+tempDataList.get(currentDataCount).getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
                             SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                             Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間

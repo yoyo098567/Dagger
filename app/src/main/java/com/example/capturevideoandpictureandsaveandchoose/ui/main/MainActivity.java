@@ -161,7 +161,8 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         deviceonLeaveTheRoute = 0;
         Log.v("LoginStatus", "" + loginStatus);
         if (loginStatus == 1) {
-            activityMainBinding.btnFetchDevice.setEnabled(false);
+            activityMainBinding.btnDeviceEdit.setEnabled(false);
+
             autoLogin();
             generateLogTxt("onCreate 打開Service : "+dateFormat.format(Calendar.getInstance().getTime())+"\n");
             onStartTeleportService();
@@ -856,7 +857,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         }else if (EQKDM.equals("Internnet")){
             allPhoto--;
             generateLogTxt("EQNO :"+uuList.get(urlNow).split("/")[5].split("_")[0]+getResourceString(R.string.search_not_ok)+dateFormat.format(Calendar.getInstance().getTime())+"\n");
-            setDialogMessage(nowPhoto, false, uuList.get(urlNow).split("/")[5].split("_")[0] + getResourceString(R.string.search_not_ok), "");
+            setDialogMessage(nowPhoto, false, uuList.get(urlNow).split("/")[5].split("_")[0] + getResourceString(R.string.search_not_ok_nt), "");
         } else {
             deviceDataList.get(nowInList).setEQKDNM(EQKDM);
             intoData=deviceDataList.get(nowInList);

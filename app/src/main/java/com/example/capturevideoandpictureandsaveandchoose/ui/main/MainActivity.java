@@ -230,71 +230,68 @@ public class MainActivity extends BaseActivity implements MainContract.View {
             showDialogCaveatMessage(getResourceString(R.string.get_inspection_data_error_message));
         } else {
             while (cursor.moveToNext()) {
-                //  mChooseDeviceItemData.setEQKDNM(cursor.getString(cursor.getColumnIndexOrThrow("EQKDNM")));
-//                String OPCO = cursor.getString(cursor.getColumnIndexOrThrow("OPCO"));
-//                String OPPLD = cursor.getString(cursor.getColumnIndexOrThrow("OPPLD"));
-//                String PMFCT = cursor.getString(cursor.getColumnIndexOrThrow("PMFCT"));
-//                String WAYID = cursor.getString(cursor.getColumnIndexOrThrow("WAYID"));
-//                String WAYNM = cursor.getString(cursor.getColumnIndexOrThrow("WAYNM"));
-//                String CTLPTID = cursor.getString(cursor.getColumnIndexOrThrow("CTLPTID"));
-//                String IT = cursor.getString(cursor.getColumnIndexOrThrow("IT"));
-//                String EQNO = cursor.getString(cursor.getColumnIndexOrThrow("EQNO"));
-//                String EQNM = cursor.getString(cursor.getColumnIndexOrThrow("EQNM"));
-//                String EQKD = cursor.getString(cursor.getColumnIndexOrThrow("EQKD"));
-//                int progress = cursor.getInt(cursor.getColumnIndexOrThrow("Progress"));
-//                String CO = cursor.getString(cursor.getColumnIndexOrThrow("CO"));
-//                String CONM = cursor.getString(cursor.getColumnIndexOrThrow("CONM"));
-//                String PMFCTNM = cursor.getString(cursor.getColumnIndexOrThrow("PMFCTNM"));
-                String WAYID = cursor.getString(cursor.getColumnIndexOrThrow("WAYID"));
-                String EQNO = cursor.getString(cursor.getColumnIndexOrThrow("EQNO"));
-                ChooseDeviceItemData mChooseDeviceItemData = new ChooseDeviceItemData();
-                mChooseDeviceItemData.setOPCO(cursor.getString(cursor.getColumnIndexOrThrow("OPCO")));
-                mChooseDeviceItemData.setOPPLD(cursor.getString(cursor.getColumnIndexOrThrow("OPPLD")));
-                mChooseDeviceItemData.setPMFCT(cursor.getString(cursor.getColumnIndexOrThrow("PMFCT")));
-                //MNTFCT=OPPLD
-                mChooseDeviceItemData.setMNTFCT(cursor.getString(cursor.getColumnIndexOrThrow("OPPLD")));
-                mChooseDeviceItemData.setWAYID(WAYID);
-                mChooseDeviceItemData.setWAYNM(cursor.getString(cursor.getColumnIndexOrThrow("WAYNM")));
-                mChooseDeviceItemData.setEQNO(EQNO);
-                mChooseDeviceItemData.setEQNM(cursor.getString(cursor.getColumnIndexOrThrow("EQNM")));
-                mChooseDeviceItemData.setEQKD(cursor.getString(cursor.getColumnIndexOrThrow("EQKD")));
-                //
+                try {
+                    String WAYID = cursor.getString(cursor.getColumnIndexOrThrow("WAYID"));
+                    String EQNO = cursor.getString(cursor.getColumnIndexOrThrow("EQNO"));
+                    ChooseDeviceItemData mChooseDeviceItemData = new ChooseDeviceItemData();
+                    mChooseDeviceItemData.setOPCO(cursor.getString(cursor.getColumnIndexOrThrow("OPCO")));
+                    mChooseDeviceItemData.setOPPLD(cursor.getString(cursor.getColumnIndexOrThrow("OPPLD")));
+                    mChooseDeviceItemData.setPMFCT(cursor.getString(cursor.getColumnIndexOrThrow("PMFCT")));
+                    //MNTFCT=OPPLD
+                    mChooseDeviceItemData.setMNTFCT(cursor.getString(cursor.getColumnIndexOrThrow("OPPLD")));
+                    mChooseDeviceItemData.setWAYID(WAYID);
+                    mChooseDeviceItemData.setWAYNM(cursor.getString(cursor.getColumnIndexOrThrow("WAYNM")));
+                    mChooseDeviceItemData.setEQNO(EQNO);
+                    mChooseDeviceItemData.setEQNM(cursor.getString(cursor.getColumnIndexOrThrow("EQNM")));
+                    mChooseDeviceItemData.setEQKD(cursor.getString(cursor.getColumnIndexOrThrow("EQKD")));
+                    //
 
-                //
-                mChooseDeviceItemData.setProgress(cursor.getInt(cursor.getColumnIndexOrThrow("Progress")));
-                mChooseDeviceItemData.setCO(cursor.getString(cursor.getColumnIndexOrThrow("CO")));
-                mChooseDeviceItemData.setCONM(cursor.getString(cursor.getColumnIndexOrThrow("CONM")));
-                mChooseDeviceItemData.setPMFCTNM(cursor.getString(cursor.getColumnIndexOrThrow("PMFCTNM")));
-                mChooseDeviceItemData.setUploadNM("");
-                mChooseDeviceItemData.setUploadEMP(account);
-                mChooseDeviceItemData.setChcekDataFromAPP(true);
-                deviceDataList.add(mChooseDeviceItemData);
-                if (mChooseDeviceItemData.getProgress() == 100) {
-                    deviceonLeaveTheRoute++;
+                    //
+                    mChooseDeviceItemData.setProgress(cursor.getInt(cursor.getColumnIndexOrThrow("Progress")));
+                    mChooseDeviceItemData.setCO(cursor.getString(cursor.getColumnIndexOrThrow("CO")));
+                    mChooseDeviceItemData.setCONM(cursor.getString(cursor.getColumnIndexOrThrow("CONM")));
+                    mChooseDeviceItemData.setPMFCTNM(cursor.getString(cursor.getColumnIndexOrThrow("PMFCTNM")));
+                    mChooseDeviceItemData.setUploadNM("");
+                    mChooseDeviceItemData.setUploadEMP(account);
+                    mChooseDeviceItemData.setChcekDataFromAPP(true);
+                    deviceDataList.add(mChooseDeviceItemData);
+                    if (mChooseDeviceItemData.getProgress() == 100) {
+                        deviceonLeaveTheRoute++;
+                    }
+                    if (loginStatus == 1) {
+                        activityMainBinding.textRouteCodeData.setText(WAYID);
+                        activityMainBinding.textDeviceNumberData.setText(deviceDataList.get(0).getEQNO() + " " + deviceDataList.get(0).getEQNM());
+                    }
                 }
-                if (loginStatus == 1) {
-                    activityMainBinding.textRouteCodeData.setText(WAYID);
-                    activityMainBinding.textDeviceNumberData.setText(deviceDataList.get(0).getEQNO() + " " + deviceDataList.get(0).getEQNM());
+                catch (IndexOutOfBoundsException e) {
+                    generateLogTxt("IndexOutOfBoundsException exception :"+e);
                 }
+
             }
             Log.e("rrrrrr","deviceonLeaveTheRoute:"+deviceonLeaveTheRoute);
             // Log.e("rrrrrr",deviceDataList.get(6).getEQNO()+" "+deviceDataList.get(6).getEQNM());
 
+
             if (deviceDataList.get(deviceDataList.size() - 1).getProgress() == 100) {
                 deviceonLeaveTheRoute = deviceDataList.size() - 1;
             }
-            fetchDeviceMsg = "筆數:" + deviceDataList.size() + "首筆資料:{CO:" + deviceDataList.get(0).getCO() +
-                    ",CONM:" + deviceDataList.get(0).getCONM() +
-                    ",EQKD:" + deviceDataList.get(0).getEQKD() +
-                    ",EQNM:" + deviceDataList.get(0).getEQNM() +
-                    ",EQNO:" + deviceDataList.get(0).getEQNO() +
-                    ",OPCO:" + deviceDataList.get(0).getOPCO() +
-                    ",OPPLD:" + deviceDataList.get(0).getOPPLD() +
-                    ",PMFCT:" + deviceDataList.get(0).getPMFCT() +
-                    ",PMFCTNM:" + deviceDataList.get(0).getPMFCTNM() +
-                    ",Progress:" + deviceDataList.get(0).getProgress() +
-                    ",WAYID:" + deviceDataList.get(0).getWAYID() +
-                    ",WAYNM:" + deviceDataList.get(0).getWAYNM() + "}";
+            try {
+                fetchDeviceMsg = "筆數:" + deviceDataList.size() + "首筆資料:{CO:" + deviceDataList.get(0).getCO() +
+                        ",CONM:" + deviceDataList.get(0).getCONM() +
+                        ",EQKD:" + deviceDataList.get(0).getEQKD() +
+                        ",EQNM:" + deviceDataList.get(0).getEQNM() +
+                        ",EQNO:" + deviceDataList.get(0).getEQNO() +
+                        ",OPCO:" + deviceDataList.get(0).getOPCO() +
+                        ",OPPLD:" + deviceDataList.get(0).getOPPLD() +
+                        ",PMFCT:" + deviceDataList.get(0).getPMFCT() +
+                        ",PMFCTNM:" + deviceDataList.get(0).getPMFCTNM() +
+                        ",Progress:" + deviceDataList.get(0).getProgress() +
+                        ",WAYID:" + deviceDataList.get(0).getWAYID() +
+                        ",WAYNM:" + deviceDataList.get(0).getWAYNM() + "}";
+            }catch (Exception e){
+                generateLogTxt("IndexOutOfBoundsException exception :"+e);
+            }
+
         }
         if (loginStatus == 0) {
             deviceDataList = new ArrayList<>();

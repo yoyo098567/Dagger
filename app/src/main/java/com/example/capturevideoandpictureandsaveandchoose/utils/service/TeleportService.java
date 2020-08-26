@@ -191,28 +191,33 @@ public class TeleportService extends Service {
         if (cursor == null) {
         } else {
             while (cursor.moveToNext()) {
-                String WAYID = cursor.getString(cursor.getColumnIndexOrThrow("WAYID"));
-                String EQNO = cursor.getString(cursor.getColumnIndexOrThrow("EQNO"));
-                ChooseDeviceItemData mChooseDeviceItemData = new ChooseDeviceItemData();
-                mChooseDeviceItemData.setOPCO(cursor.getString(cursor.getColumnIndexOrThrow("OPCO")));
-                mChooseDeviceItemData.setOPPLD(cursor.getString(cursor.getColumnIndexOrThrow("OPPLD")));
-                mChooseDeviceItemData.setPMFCT(cursor.getString(cursor.getColumnIndexOrThrow("PMFCT")));
-                //MNTFCT=OPPLD
-                mChooseDeviceItemData.setMNTFCT(cursor.getString(cursor.getColumnIndexOrThrow("OPPLD")));
-                mChooseDeviceItemData.setWAYID(WAYID);
-                mChooseDeviceItemData.setWAYNM(cursor.getString(cursor.getColumnIndexOrThrow("WAYNM")));
-                mChooseDeviceItemData.setEQNO(EQNO);
-                mChooseDeviceItemData.setRecordDate(currentDate.toString());
-                mChooseDeviceItemData.setEQNM(cursor.getString(cursor.getColumnIndexOrThrow("EQNM")));
-                mChooseDeviceItemData.setEQKD(cursor.getString(cursor.getColumnIndexOrThrow("EQKD")));
-                mChooseDeviceItemData.setProgress(cursor.getInt(cursor.getColumnIndexOrThrow("Progress")));
-                mChooseDeviceItemData.setCO(cursor.getString(cursor.getColumnIndexOrThrow("CO")));
-                mChooseDeviceItemData.setCONM(cursor.getString(cursor.getColumnIndexOrThrow("CONM")));
-                mChooseDeviceItemData.setPMFCTNM(cursor.getString(cursor.getColumnIndexOrThrow("PMFCTNM")));
-                mChooseDeviceItemData.setUploadNM("");
-                mChooseDeviceItemData.setUploadEMP(account);
-                mChooseDeviceItemData.setChcekDataFromAPP(true);
-                tempDataList.add(mChooseDeviceItemData);
+                try {
+                    String WAYID = cursor.getString(cursor.getColumnIndexOrThrow("WAYID"));
+                    String EQNO = cursor.getString(cursor.getColumnIndexOrThrow("EQNO"));
+                    ChooseDeviceItemData mChooseDeviceItemData = new ChooseDeviceItemData();
+                    mChooseDeviceItemData.setOPCO(cursor.getString(cursor.getColumnIndexOrThrow("OPCO")));
+                    mChooseDeviceItemData.setOPPLD(cursor.getString(cursor.getColumnIndexOrThrow("OPPLD")));
+                    mChooseDeviceItemData.setPMFCT(cursor.getString(cursor.getColumnIndexOrThrow("PMFCT")));
+                    //MNTFCT=OPPLD
+                    mChooseDeviceItemData.setMNTFCT(cursor.getString(cursor.getColumnIndexOrThrow("OPPLD")));
+                    mChooseDeviceItemData.setWAYID(WAYID);
+                    mChooseDeviceItemData.setWAYNM(cursor.getString(cursor.getColumnIndexOrThrow("WAYNM")));
+                    mChooseDeviceItemData.setEQNO(EQNO);
+                    mChooseDeviceItemData.setRecordDate(currentDate.toString());
+                    mChooseDeviceItemData.setEQNM(cursor.getString(cursor.getColumnIndexOrThrow("EQNM")));
+                    mChooseDeviceItemData.setEQKD(cursor.getString(cursor.getColumnIndexOrThrow("EQKD")));
+                    mChooseDeviceItemData.setProgress(cursor.getInt(cursor.getColumnIndexOrThrow("Progress")));
+                    mChooseDeviceItemData.setCO(cursor.getString(cursor.getColumnIndexOrThrow("CO")));
+                    mChooseDeviceItemData.setCONM(cursor.getString(cursor.getColumnIndexOrThrow("CONM")));
+                    mChooseDeviceItemData.setPMFCTNM(cursor.getString(cursor.getColumnIndexOrThrow("PMFCTNM")));
+                    mChooseDeviceItemData.setUploadNM("");
+                    mChooseDeviceItemData.setUploadEMP(account);
+                    mChooseDeviceItemData.setChcekDataFromAPP(true);
+                    tempDataList.add(mChooseDeviceItemData);
+                } catch (IndexOutOfBoundsException e) {
+                    generateLogTxt("IndexOutOfBoundsException exception :"+e);
+                }
+
             }
             totalData=tempDataList.size();
             if(currentDataCount<=tempDataList.size()){

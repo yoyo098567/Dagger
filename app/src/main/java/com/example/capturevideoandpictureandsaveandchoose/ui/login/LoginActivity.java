@@ -13,7 +13,9 @@ import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.databinding.DataBindingUtil;
 
+import com.example.capturevideoandpictureandsaveandchoose.databinding.ActivityLoginBinding;
 import com.example.capturevideoandpictureandsaveandchoose.di.component.login.DaggerLoginComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.module.login.LoginModule;
 import com.example.capturevideoandpictureandsaveandchoose.ui.main.MainActivity;
@@ -25,12 +27,12 @@ import com.example.capturevideoandpictureandsaveandchoose.utils.sharepreferences
 
 import javax.inject.Inject;
 
-public class LoginActivity extends BaseActivity implements LoginContract.View,View.OnClickListener {
+public class LoginActivity extends BaseActivity implements LoginContract.View {
     @Inject
     LoginContract.Presenter<LoginContract.View> mPresenter;
 
-    private EditText editAccount, editPassword;
-    private Button btnLogin;
+    @Inject
+    LoginPreferencesProvider loginPreferencesProvider;
     private String  account = "";
     private String  pwd = "";
     private LoginComponent mLoginActivityComponent;
@@ -41,6 +43,9 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.CAMERA};
+     ActivityLoginBinding activityLoginBinding;
+     private LoginData loginData;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,58 +56,72 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
         mPresenter.onAttached(this);
         getAccount();
         if(loginStatus==1){
-            mPresenter.onAutoLogin(account,pwd);
+            if (account.substring(0,2).contains("PP")){
+                loginPreferencesProvider.setPersonId(0);
+                mPresenter.onCNAutoLogin(account,pwd);
+            }else if (account.substring(0,2).contains("N")){
+                loginPreferencesProvider.setPersonId(1);
+                mPresenter.onAutoLogin(account,pwd);
+            }
         }
     }
 
     @Override
     public void init() {
         loginStatus = 0;
-        editAccount = findViewById(R.id.edit_account);
-        editPassword = findViewById(R.id.edit_password);
-        btnLogin = findViewById(R.id.btn_login);
-        btnLogin.setOnClickListener(this);
         mLoginActivityComponent = DaggerLoginComponent.builder()
                 .loginModule(new LoginModule(this))
                 .baseComponent(((Application) getApplication()).getApplicationComponent())
                 .build();
         mLoginActivityComponent.inject(this);
+
+        loginData=new LoginData();
+        activityLoginBinding= DataBindingUtil.setContentView(this,R.layout.activity_login);
+        activityLoginBinding.setView(this);
+        activityLoginBinding.setData(loginData);
+
     }
+
+
     @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_login:
-//                Intent intentCentralCloud = new Intent();
-//                intentCentralCloud.setAction(Intent.ACTION_VIEW);
-//                intentCentralCloud.setData(Uri.parse("https://cloud.fpcetg.com.tw/FPC/WEB/MTN/MTN_EQPT/Default.aspx?" +
-//                        "CO=" + "1" + "&" +
-//                        "PMFCT=" + "A3" + "&" +
-//                        "MNTCO=" + "1" + "&" +
-//                        "MNTFCT=" +"123" + "&" +
-//                        "EQNO=" + "P-166"+ "&" +
-//                        "token=" + "wwwww"));
-//                startActivity(intentCentralCloud);
-                if(loginStatus == 1){
-                    if(onCheckUserisEmpty()){
-                        account=editAccount.getText().toString();
-                        mPresenter.onLogin(account,editPassword.getText().toString());
-                    }
-                }else{
-                    if(onCheckUserisEmpty()){
-                        account=editAccount.getText().toString();
-                        mPresenter.onLogin(account,editPassword.getText().toString());
-                    }
+    public void onLoginClick() {
+        if(loginStatus == 1){
+            if(onCheckUserisEmpty()){
+                account=loginData.getAccount();
+                if (account.substring(0,2).contains("PP")){
+                    loginPreferencesProvider.setPersonId(0);
+                    mPresenter.onCNLogin(account,loginData.getPw());
+                }else if (account.substring(0,2).contains("N")){
+                    loginPreferencesProvider.setPersonId(1);
+                    mPresenter.onLogin(account,loginData.getPw());
                 }
-                break;
+                loginPreferencesProvider.setAccount(loginData.getAccount());
+
+            }
+        }else{
+            if(onCheckUserisEmpty()){
+                account=loginData.getAccount();
+                if (account.substring(0,2).contains("PP")){
+                    loginPreferencesProvider.setPersonId(0);
+                    mPresenter.onCNLogin(account,loginData.getPw());
+                }else if (account.substring(0,2).contains("N")){
+                    loginPreferencesProvider.setPersonId(1);
+                    mPresenter.onLogin(account,loginData.getPw());
+                }
+                loginPreferencesProvider.setAccount(loginData.getAccount());
+
+            }
         }
     }
+
+
     private boolean onCheckUserisEmpty(){
         Log.v("LoginStatus","8888888888888");
-        if ("".equals(editAccount.getText().toString())) {
+        if ("".equals(loginData.getAccount())) {
             showDialogMessage(getResourceString(R.string.login_account_hint));
             return false;
         }
-        if ("".equals(editPassword.getText().toString())) {
+        if ("".equals(loginData.getPw())) {
             showDialogMessage(getResourceString(R.string.login_password_hint));
             return false;
         }
@@ -140,11 +159,14 @@ public class LoginActivity extends BaseActivity implements LoginContract.View,Vi
             }
         }
     }
+
+
+
     @Override
     public void onCompleteLogin() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("AccessToken",mPresenter.getAccessToken());
-        intent.putExtra("account",editAccount.getText().toString());
+        intent.putExtra("account",loginData.getAccount());
         startActivity(intent);
     }
 

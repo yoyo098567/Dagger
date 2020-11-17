@@ -37,11 +37,33 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
     LoginPreferencesProvider mLoginPreferencesProvider;
     private String disposableToken;
     private String KEY_SEARCH_EQKD = "378540a4-6d39-448d-ad34-1db12e61550a";
+    private String KEY_CN_SEARCH_EQKD = "d53dc261-d0e8-4835-90f0-14916ad00ccf";
+
     private DateFormat dateFormat;
 
     @Inject
     public MainPresenter(ApiService api, ErpAPI erpAPI, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable) {
         super(api, erpAPI, schedulerProvider, compositeDisposable);
+    }
+
+    public void generateLogTxt(String sBody) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM_dd");
+            Date date = new Date();
+            File root = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/capturevideoandpictureandsaveandchoose/");
+            if (!root.exists()) {
+                root.mkdirs();
+            }
+            String sFileName="log"+sdf.format(date)+".txt";
+            File logttt = new File(root, sFileName);
+            FileWriter writer = new FileWriter(logttt,true);
+            writer.append(sBody);
+            writer.flush();
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -71,24 +93,161 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
         );
     }
 
-    public void generateLogTxt(String sBody) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM_dd");
-            Date date = new Date();
-            File root = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/capturevideoandpictureandsaveandchoose/");
-            if (!root.exists()) {
-                root.mkdirs();
-            }
-            String sFileName="log"+sdf.format(date)+".txt";
-            File logttt = new File(root, sFileName);
-            FileWriter writer = new FileWriter(logttt,true);
-            writer.append(sBody);
-            writer.flush();
-            writer.close();
+    @Override
+    public void onCNGetDisposableToken(String DeviceId) {
+        String authorizedId ="a5019f21-3c03-468c-8195-6ce6260b45da";
+        String url = getView().getResourceString(R.string.api_on_DisposableToken);
+        DisposableTokenRequest mDisposableTokenRequest=new DisposableTokenRequest(authorizedId,mLoginPreferencesProvider.getToken(),DeviceId);
+        getCompositeDisposable().add(getErpAPI().onCNDisposableToken(url, mDisposableTokenRequest)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<DisposableTokenResponse>() {
+                    @Override
+                    public void onNext(DisposableTokenResponse disposableTokenResponse) {
+                        disposableToken = disposableTokenResponse.getmDisposableToken();
+                        Log.d("DisposableToken", "onNext: "+disposableToken);
+                    }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                })
+        );
+    }
+
+    @Override
+    public void onCNAddChkInfo(ChooseDeviceItemData chooseDeviceItemData) {
+        String authorizedId ="b654a8cb-d874-4ad1-beef-174fc0013f99";
+        AddChkInfoRequest mAddChkInfoRequest=new AddChkInfoRequest(authorizedId,
+                chooseDeviceItemData.getCO(),
+                chooseDeviceItemData.getMNTFCT(),
+                chooseDeviceItemData.getWAYID(),
+                chooseDeviceItemData.getWAYNM(),
+                chooseDeviceItemData.getCO(),
+                chooseDeviceItemData.getCONM(),
+                chooseDeviceItemData.getPMFCT(),
+                chooseDeviceItemData.getPMFCTNM(),
+                chooseDeviceItemData.getEQNO(),
+                chooseDeviceItemData.getUploadEMP(),
+                chooseDeviceItemData.getUploadNM(),
+                chooseDeviceItemData.getRecordDate());
+        String url = getView().getResourceString(R.string.api_on_AddChkInfo);
+        getCompositeDisposable().add(getErpAPI().onCNAddChkInfo(url, mAddChkInfoRequest)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<AddChkInfoResponse>() {
+
+                    @Override
+                    public void onNext(AddChkInfoResponse addChkInfoResponse) {
+                        generateLogTxt("Presenter 打API成功"+"\n");
+                        // generateLogTxt("Presenter 打API成功:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        generateLogTxt("Presenter 打API失敗:"+"\n");
+                        //generateLogTxt("Presenter 打API失敗:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
+                        onAddChkInfo(chooseDeviceItemData);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                })
+        );
+    }
+
+    @Override
+    public void onCNAddEndChkInfo(ChooseDeviceItemData chooseDeviceItemData) {
+        String authorizedId ="b654a8cb-d874-4ad1-beef-174fc0013f99";
+        AddChkInfoRequest mAddChkInfoRequest=new AddChkInfoRequest(authorizedId,
+                chooseDeviceItemData.getCO(),
+                chooseDeviceItemData.getMNTFCT(),
+                chooseDeviceItemData.getWAYID(),
+                chooseDeviceItemData.getWAYNM(),
+                chooseDeviceItemData.getCO(),
+                chooseDeviceItemData.getCONM(),
+                chooseDeviceItemData.getPMFCT(),
+                chooseDeviceItemData.getPMFCTNM(),
+                "end",
+                chooseDeviceItemData.getUploadEMP(),
+                chooseDeviceItemData.getUploadNM(),
+                chooseDeviceItemData.getRecordDate());
+        String url = getView().getResourceString(R.string.api_on_AddChkInfo);
+        getCompositeDisposable().add(getErpAPI().onCNAddChkInfo(url, mAddChkInfoRequest)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<AddChkInfoResponse>() {
+
+                    @Override
+                    public void onNext(AddChkInfoResponse addChkInfoResponse) {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onAddEndChkInfo(chooseDeviceItemData);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                })
+        );
+    }
+
+    @Override
+    public void onCNGetEQKDDataNoImg(String account, String CO, String PMFCT, String EQKD, Intent data, Integer nowInList, Integer urlNow, Integer pickWhat) {
+        getView().showProgressDialog(R.string.loading);
+        EQKDRequest mEQKDRequest = new EQKDRequest(KEY_CN_SEARCH_EQKD, account, CO, PMFCT);
+        String url = getView().getResourceString(R.string.api_on_getEQKD);
+        getCompositeDisposable().add(getErpAPI().getCNEQKD(url, mEQKDRequest)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<EQKDResultList>() {
+
+                    @Override
+                    public void onNext(EQKDResultList mEQKDResultList) {
+                        generateLogTxt("GetEQKDData onNext"+"\n");
+                        String EQKDNM="";
+                        if (mEQKDResultList.getmEQKDResponseList().size() < 1) {
+                            //getView().showDialogCaveatMessage(getView().getResourceString(R.string.get_eqkd_error_no_data));
+                            generateLogTxt("GetEQKDData onNext 但回傳無資料 "+"\n");
+                            getView().onSetEQKDdataNoTalk("",data,nowInList,urlNow,pickWhat);
+                        }else{
+                            for(EQKDResponse mEQKDResponse:mEQKDResultList.getmEQKDResponseList()){
+                                if(EQKD.equals(mEQKDResponse.getmEQKD())){
+                                    EQKDNM=mEQKDResponse.getmEQKDNM();
+                                }
+                            }
+                            if("".equals(EQKDNM)){
+                                generateLogTxt("GetEQKDData onNext資料 :"+EQKDNM+"\n");
+                                getView().onSetEQKDdataNoTalk(EQKDNM,data,nowInList,urlNow,pickWhat);
+                            }else{
+                                generateLogTxt("GetEQKDData onNext資料 :"+EQKDNM+"\n");
+                                getView().onSetEQKDdataNoTalk(EQKDNM,data,nowInList,urlNow,pickWhat);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        generateLogTxt("GetEQKDData Internnet失敗"+e+"\n");
+                        getView().onSetEQKDdataNoTalk("Internnet",data,nowInList,urlNow,pickWhat);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                })
+        );
     }
 
     @Override
@@ -163,53 +322,6 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                     @Override
                     public void onError(Throwable e) {
                         onAddEndChkInfo(mChooseDeviceItemData);
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                })
-        );
-    }
-
-    @Override
-    public void onGetEQKDData(String account, String CO, String PMFCT, final String EQKD, final int ispickImage) {
-        getView().showProgressDialog("讀取中");
-        EQKDRequest mEQKDRequest = new EQKDRequest(KEY_SEARCH_EQKD, account, CO, PMFCT);
-        String url = getView().getResourceString(R.string.api_on_getEQKD);
-        getCompositeDisposable().add(getApiService().getEQKD(url, mEQKDRequest)
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<EQKDResultList>() {
-
-                    @Override
-                    public void onNext(EQKDResultList mEQKDResultList) {
-                        getView().dismissProgressDialog();
-                        String EQKDNM="";
-                        if (mEQKDResultList.getmEQKDResponseList().size() < 1) {
-                            // getView().dismissProgressDialog();
-                            getView().showDialogCaveatMessage(getView().getResourceString(R.string.get_eqkd_error_no_data));
-
-                        }else{
-                            for(EQKDResponse mEQKDResponse:mEQKDResultList.getmEQKDResponseList()){
-                                if(EQKD.equals(mEQKDResponse.getmEQKD())){
-                                    EQKDNM=mEQKDResponse.getmEQKDNM();
-                                }
-                            }
-                            if("".equals(EQKDNM)){
-                                getView().onSetEQKDNMData(EQKDNM,3);
-                            }else{
-                                getView().onSetEQKDNMData(EQKDNM,ispickImage);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().dismissProgressDialog();
-                        getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
-
                     }
 
                     @Override
@@ -300,4 +412,6 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
     public String getDisposableToken(){
         return disposableToken;
     }
+
+
 }

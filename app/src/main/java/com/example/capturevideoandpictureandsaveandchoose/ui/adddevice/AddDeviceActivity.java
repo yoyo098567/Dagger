@@ -11,9 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.databinding.DataBindingUtil;
+
 import com.example.capturevideoandpictureandsaveandchoose.Application;
 import com.example.capturevideoandpictureandsaveandchoose.R;
 import com.example.capturevideoandpictureandsaveandchoose.base.BaseActivity;
+import com.example.capturevideoandpictureandsaveandchoose.databinding.ActivityAddDeviceBinding;
 import com.example.capturevideoandpictureandsaveandchoose.di.component.adddevice.AddDeviceComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.component.adddevice.DaggerAddDeviceComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.module.adddevice.AddDeviceModule;
@@ -23,29 +26,30 @@ import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.sear
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searcheqno.EQNOResponse;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchmntfct.MNTFCTResponse;
 import com.example.capturevideoandpictureandsaveandchoose.utils.api.apidata.searchpmfct.PMFCTResponse;
+import com.example.capturevideoandpictureandsaveandchoose.utils.sharepreferences.LoginPreferences;
+import com.example.capturevideoandpictureandsaveandchoose.utils.sharepreferences.LoginPreferencesProvider;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
-
-public class AddDeviceActivity extends BaseActivity implements View.OnClickListener, AddDeviceContract.View {
+// implements View.OnClickListener
+public class AddDeviceActivity extends BaseActivity implements AddDeviceContract.View {
     @Inject
     AddDeviceContract.Presenter<AddDeviceContract.View> mPresenter;
-    private TextView textMaintenancePlant,textCompany,textProductionPlant,textDeviceCategory,
-           textDeviceNumber;
-    private TextView textRecordDate,textDeviceNameValue,textDeviceCategoryNameValue;
-//    private TextView textFile, textUploadPerson;
-//    private EditText editKeynote;
+
+    @Inject
+    LoginPreferencesProvider loginPreferencesProvider;
     private AddDeviceData mAddDeviceData;
     private ChooseDeviceItemData mChooseDeviceItemData;
-    private Button btnUpload;
-    private Button btnBrowse;
     private AddDeviceComponent mAddDeviceComponent;
     private ArrayList<String> dialogString;
     String account;
     CharSequence date;
+    ActivityAddDeviceBinding activityAddDeviceBinding;
+    private AddActivityViewData addActivityViewData;
+    private Integer isWhereAccount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,84 +63,107 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void init() {
-        Calendar mCal = Calendar.getInstance();
-        date = DateFormat.format("yyyy/MM/dd", mCal.getTime());
-        textMaintenancePlant = findViewById(R.id.text_value_maintenance_plant);
-        textCompany = findViewById(R.id.text_value_company);
-        textDeviceCategoryNameValue=findViewById(R.id.text_device_category_name_value);
-        textProductionPlant = findViewById(R.id.text_value_production_plant);
-        textDeviceCategory = findViewById(R.id.text_value_device_category);
-        textDeviceNumber = findViewById(R.id.text_value_device_number);
-        textRecordDate = findViewById(R.id.text_record_date_data);
-        textDeviceNameValue=findViewById(R.id.text_device_name_value);
-//        textFile = findViewById(R.id.text_file_data);
-//        textUploadPerson = findViewById(R.id.text_upload_person_data);
-//        editKeynote=findViewById(R.id.edit_keynote_data);
-//        btnBrowse = findViewById(R.id.btn_browse);
-        btnUpload = findViewById(R.id.btn_upload);
+
         mAddDeviceComponent = DaggerAddDeviceComponent.builder()
                 .addDeviceModule(new AddDeviceModule(this))
                 .baseComponent(((Application) getApplication()).getApplicationComponent())
                 .build();
         mAddDeviceComponent.inject(this);
+
+        Calendar mCal = Calendar.getInstance();
+        date = DateFormat.format("yyyy/MM/dd", mCal.getTime());
+
+        isWhereAccount=loginPreferencesProvider.getPersonId();
+
+        addActivityViewData=new AddActivityViewData();
+        activityAddDeviceBinding= DataBindingUtil.setContentView(this,R.layout.activity_add_device);
+        activityAddDeviceBinding.setView(this);
+        addActivityViewData.setDate(date.toString());
+        activityAddDeviceBinding.setData(addActivityViewData);
+
         dialogString=new ArrayList<>();
         mAddDeviceData=new AddDeviceData();
         mChooseDeviceItemData=new ChooseDeviceItemData();
-        mChooseDeviceItemData =new ChooseDeviceItemData();
-        textRecordDate.setText(date);
-        btnUpload.setOnClickListener(this);
-//        btnBrowse.setOnClickListener(this);
-        textMaintenancePlant.setOnClickListener(this);
-        textCompany.setOnClickListener(this);
-        textProductionPlant.setOnClickListener(this);
-        textDeviceCategory.setOnClickListener(this);
-        textDeviceNumber.setOnClickListener(this);
+    }
+
+
+    @Override
+    public void OnUploadClick() {
+        uploadDevice();
+    }
+
+    @Override
+    public void OnMaintenancePlantClick() {
+        if (isWhereAccount==1){
+            mPresenter.onGetMNTFCTData();
+        }else if (isWhereAccount==0){
+            mPresenter.onCNGetMNTFCTData();
+        }
 
     }
 
     @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-//            case R.id.btn_browse:
-//                break;
-            case R.id.btn_upload:
-                uploadDevice();
-                break;
-            case R.id.text_value_maintenance_plant:
-                mPresenter.onGetMNTFCTData();
-                break;
-            case R.id.text_value_production_plant:
-                if (mChooseDeviceItemData.getMNTFCTNM().equals("")|| mChooseDeviceItemData.getMNTFCT().equals("")){
-                    showDialogCaveatMessage(getResourceString(R.string.add_device_no_maintenance_plant_error));
-                }
-                mPresenter.onGetPMFCTData(mChooseDeviceItemData.getMNTCO(), mChooseDeviceItemData.getMNTFCT());
-                break;
-            case R.id.text_value_device_number:
-                if (mChooseDeviceItemData.getCO().equals("")){
-                    showDialogCaveatMessage(getResourceString(R.string.add_device_no_company_error));
-                }
-                if (mChooseDeviceItemData.getPMFCT().equals("")){
-                    showDialogCaveatMessage(getResourceString(R.string.add_device_no_production_plant_error));
-                }
-                if (mChooseDeviceItemData.getEQKD().equals("")){
-                    showDialogCaveatMessage(getResourceString(R.string.add_device_no_device_categry_error));
-                }
-                mPresenter.onGetEQNOData(mChooseDeviceItemData.getCO(), mChooseDeviceItemData.getPMFCT(), mChooseDeviceItemData.getEQKD());
-                break;
-            case R.id.text_value_device_category:
-                if (mChooseDeviceItemData.getCO().equals("")){
-                    showDialogCaveatMessage(getResourceString(R.string.add_device_no_company_error));
-                }
-                if (mChooseDeviceItemData.getPMFCT().equals("")){
-                    showDialogCaveatMessage(getResourceString(R.string.add_device_no_production_plant_error));
-                }
-                mPresenter.onGetEQKDData(mChooseDeviceItemData.getCO(), mChooseDeviceItemData.getPMFCT());
-                break;
-            case R.id.text_value_company:
-                mPresenter.onGetCOData();
-                break;
+    public void OnCompanyClick() {
+
+        if (isWhereAccount==1){
+            mPresenter.onGetCOData();
+        }else if (isWhereAccount==0){
+            mPresenter.onCNGetCOData();
         }
+
     }
+
+    @Override
+    public void OnProductionPlantClick() {
+
+        if (mChooseDeviceItemData.getMNTFCTNM().equals("")|| mChooseDeviceItemData.getMNTFCT().equals("")){
+            showDialogCaveatMessage(getResourceString(R.string.add_device_no_maintenance_plant_error));
+        }
+        if (isWhereAccount==1){
+            mPresenter.onGetPMFCTData(mChooseDeviceItemData.getMNTCO(), mChooseDeviceItemData.getMNTFCT());
+        }else if (isWhereAccount==0){
+            mPresenter.onCNGetPMFCTData(mChooseDeviceItemData.getMNTCO(), mChooseDeviceItemData.getMNTFCT());
+        }
+
+    }
+
+    @Override
+    public void OnDeviceCategoryClick() {
+        if (mChooseDeviceItemData.getCO().equals("")){
+            showDialogCaveatMessage(getResourceString(R.string.add_device_no_company_error));
+        }
+        if (mChooseDeviceItemData.getPMFCT().equals("")){
+            showDialogCaveatMessage(getResourceString(R.string.add_device_no_production_plant_error));
+        }
+
+        if (isWhereAccount==1){
+            mPresenter.onGetEQKDData(mChooseDeviceItemData.getCO(), mChooseDeviceItemData.getPMFCT());
+        }else if (isWhereAccount==0){
+            mPresenter.onCNGetEQKDData(mChooseDeviceItemData.getCO(), mChooseDeviceItemData.getPMFCT());
+        }
+
+    }
+
+    @Override
+    public void OnDeviceNumberClick() {
+        if (mChooseDeviceItemData.getCO().equals("")){
+            showDialogCaveatMessage(getResourceString(R.string.add_device_no_company_error));
+        }
+        if (mChooseDeviceItemData.getPMFCT().equals("")){
+            showDialogCaveatMessage(getResourceString(R.string.add_device_no_production_plant_error));
+        }
+        if (mChooseDeviceItemData.getEQKD().equals("")){
+            showDialogCaveatMessage(getResourceString(R.string.add_device_no_device_categry_error));
+        }
+
+        if (isWhereAccount==1){
+            mPresenter.onGetEQNOData(mChooseDeviceItemData.getCO(), mChooseDeviceItemData.getPMFCT(), mChooseDeviceItemData.getEQKD());
+        }else if (isWhereAccount==0){
+            mPresenter.onCNGetEQNOData(mChooseDeviceItemData.getCO(), mChooseDeviceItemData.getPMFCT(), mChooseDeviceItemData.getEQKD());
+        }
+
+    }
+
 
     @Override
     public void setCOData(List<COResponse> adapterData) {
@@ -194,7 +221,9 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
     private DialogInterface.OnClickListener onCompanyDialogItemClick = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            textCompany.setText(mAddDeviceData.getmCODataList().get(which).getcONM());
+            addActivityViewData.setCOData(mAddDeviceData.getmCODataList().get(which).getcONM());
+            activityAddDeviceBinding.setData(addActivityViewData);
+           // textCompany.setText(mAddDeviceData.getmCODataList().get(which).getcONM());
             mChooseDeviceItemData.setCONM(mAddDeviceData.getmCODataList().get(which).getcONM());
             mChooseDeviceItemData.setCO(mAddDeviceData.getmCODataList().get(which).getcO());
         }
@@ -202,7 +231,9 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
     private DialogInterface.OnClickListener onMaintenanceDialogItemClick = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            textMaintenancePlant.setText(mAddDeviceData.getmMNTFCTDataList().get(which).getmNTFCTNM());
+
+            addActivityViewData.setMNTFCTData(mAddDeviceData.getmMNTFCTDataList().get(which).getmNTFCTNM());
+            activityAddDeviceBinding.setData(addActivityViewData);
             mChooseDeviceItemData.setMNTFCTNM(mAddDeviceData.getmMNTFCTDataList().get(which).getmNTFCTNM());
             mChooseDeviceItemData.setMNTCO(mAddDeviceData.getmMNTFCTDataList().get(which).getmNTCO());
             mChooseDeviceItemData.setMNTFCT(mAddDeviceData.getmMNTFCTDataList().get(which).getmNTFCT());
@@ -212,7 +243,9 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
     private DialogInterface.OnClickListener onProductionDialogItemClick = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            textProductionPlant.setText(mAddDeviceData.getmPMFCTDataList().get(which).getmPMFCTNM());
+            addActivityViewData.setPMFCTData(mAddDeviceData.getmPMFCTDataList().get(which).getmPMFCTNM());
+            activityAddDeviceBinding.setData(addActivityViewData);
+            ///textProductionPlant.setText(mAddDeviceData.getmPMFCTDataList().get(which).getmPMFCTNM());
             mChooseDeviceItemData.setPMFCTNM(mAddDeviceData.getmPMFCTDataList().get(which).getmPMFCTNM());
             mChooseDeviceItemData.setPMFCT(mAddDeviceData.getmPMFCTDataList().get(which).getmPMFCT());
         }
@@ -220,8 +253,11 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
     private DialogInterface.OnClickListener onDeviceCategoryDialogItemClick = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            textDeviceCategory.setText(mAddDeviceData.getmEQKDDataList().get(which).getmEQKD());
-            textDeviceCategoryNameValue.setText(mAddDeviceData.getmEQKDDataList().get(which).getmEQKDNM());
+            addActivityViewData.setEQKDData(mAddDeviceData.getmEQKDDataList().get(which).getmEQKD());
+            addActivityViewData.setCategoryNameValue(mAddDeviceData.getmEQKDDataList().get(which).getmEQKDNM());
+            activityAddDeviceBinding.setData(addActivityViewData);
+//            textDeviceCategory.setText(mAddDeviceData.getmEQKDDataList().get(which).getmEQKD());
+//            textDeviceCategoryNameValue.setText(mAddDeviceData.getmEQKDDataList().get(which).getmEQKDNM());
             mChooseDeviceItemData.setEQKDNM(mAddDeviceData.getmEQKDDataList().get(which).getmEQKDNM());
             mChooseDeviceItemData.setEQKD(mAddDeviceData.getmEQKDDataList().get(which).getmEQKD());
         }
@@ -229,8 +265,11 @@ public class AddDeviceActivity extends BaseActivity implements View.OnClickListe
     private DialogInterface.OnClickListener onDeciceDialogItemClick = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            textDeviceNumber.setText(mAddDeviceData.getmEQNODataList().get(which).getmEQNO());
-            textDeviceNameValue.setText(mAddDeviceData.getmEQNODataList().get(which).getmEQNM());
+            addActivityViewData.setEQNOData(mAddDeviceData.getmEQNODataList().get(which).getmEQNO());
+            addActivityViewData.setDeviceNameValue(mAddDeviceData.getmEQNODataList().get(which).getmEQNO());
+            activityAddDeviceBinding.setData(addActivityViewData);
+//            textDeviceNumber.setText(mAddDeviceData.getmEQNODataList().get(which).getmEQNO());
+//            textDeviceNameValue.setText(mAddDeviceData.getmEQNODataList().get(which).getmEQNM());
             mChooseDeviceItemData.setEQNO(mAddDeviceData.getmEQNODataList().get(which).getmEQNO());
             mChooseDeviceItemData.setEQNM(mAddDeviceData.getmEQNODataList().get(which).getmEQNM());
         }

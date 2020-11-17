@@ -9,15 +9,17 @@ public interface LoginPreferencesProvider {
     void setPersonPassword(String mPassword);
     void setToken(String token);
 
-    void setPersonId(String mPersonId);
 
-    void setPersonName(String mName);
+    void setAccount(String mPersonId);
+
+    void setPersonId(Integer mName);
 
     void setFactoryNumber(String mNumber);
 
-    String getPersonId();
+    String getAccount();
 
-    String getPersonName();
+    //0是寧波，1是台灣
+    Integer getPersonId();
 
     String getFactoryNumber();
 

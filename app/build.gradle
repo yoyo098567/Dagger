@@ -8,7 +8,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
-        versionName "1.2.1"
+        versionName "1.2.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -32,6 +32,11 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 dependencies {
 
+
+    //crash
+    implementation 'com.balsikandar.android:crashreporter:1.1.0'
+
+    
     // Recommended: Add the Firebase SDK for Google Analytics.
     implementation ("com.google.android.gms:play-services-base:+") {
         force = true

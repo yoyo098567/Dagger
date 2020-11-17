@@ -45,12 +45,13 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
             Manifest.permission.CAMERA};
      ActivityLoginBinding activityLoginBinding;
      private LoginData loginData;
-
+    private Button button;
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         init();
         requestPermissions(permissions, REQUEST_PERMISSIONS_CODE);
         mPresenter.onAttached(this);

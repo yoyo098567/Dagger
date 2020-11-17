@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
+import com.example.capturevideoandpictureandsaveandchoose.GenerateLog;
 import com.example.capturevideoandpictureandsaveandchoose.R;
 import com.example.capturevideoandpictureandsaveandchoose.base.BasePresenter;
 import com.example.capturevideoandpictureandsaveandchoose.ui.choosedevice.ChooseDeviceItemData;
@@ -38,7 +39,7 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
     private String disposableToken;
     private String KEY_SEARCH_EQKD = "378540a4-6d39-448d-ad34-1db12e61550a";
     private String KEY_CN_SEARCH_EQKD = "d53dc261-d0e8-4835-90f0-14916ad00ccf";
-
+    private GenerateLog generateLogger=new GenerateLog();
     private DateFormat dateFormat;
 
     @Inject
@@ -46,28 +47,9 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
         super(api, erpAPI, schedulerProvider, compositeDisposable);
     }
 
-    public void generateLogTxt(String sBody) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM_dd");
-            Date date = new Date();
-            File root = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/capturevideoandpictureandsaveandchoose/");
-            if (!root.exists()) {
-                root.mkdirs();
-            }
-            String sFileName="log"+sdf.format(date)+".txt";
-            File logttt = new File(root, sFileName);
-            FileWriter writer = new FileWriter(logttt,true);
-            writer.append(sBody);
-            writer.flush();
-            writer.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void onGetDisposableToken(String DeviceId) {
+        generateLogger.generateLogTxt("onGetDisposableToken start"+"\n");
         String authorizedId ="fec40e7e-48c2-4226-81ca-5044b72a8e1f";
         String url = getView().getResourceString(R.string.api_on_DisposableToken);
         DisposableTokenRequest mDisposableTokenRequest=new DisposableTokenRequest(authorizedId,mLoginPreferencesProvider.getToken(),DeviceId);
@@ -78,11 +60,13 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                     @Override
                     public void onNext(DisposableTokenResponse disposableTokenResponse) {
                         disposableToken = disposableTokenResponse.getmDisposableToken();
+                        generateLogger.generateLogTxt("onGetDisposableToken next"+disposableToken+"\n");
                         Log.d("DisposableToken", "onNext: "+disposableToken);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        generateLogger.generateLogTxt("onGetDisposableToken error"+e+"\n");
                     }
 
                     @Override
@@ -95,6 +79,7 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
     @Override
     public void onCNGetDisposableToken(String DeviceId) {
+        generateLogger.generateLogTxt("onCNGetDisposableToken start"+"\n");
         String authorizedId ="a5019f21-3c03-468c-8195-6ce6260b45da";
         String url = getView().getResourceString(R.string.api_on_DisposableToken);
         DisposableTokenRequest mDisposableTokenRequest=new DisposableTokenRequest(authorizedId,mLoginPreferencesProvider.getToken(),DeviceId);
@@ -105,11 +90,13 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                     @Override
                     public void onNext(DisposableTokenResponse disposableTokenResponse) {
                         disposableToken = disposableTokenResponse.getmDisposableToken();
+                        generateLogger.generateLogTxt("onCNGetDisposableToken next  "+disposableToken+"\n");
                         Log.d("DisposableToken", "onNext: "+disposableToken);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        generateLogger.generateLogTxt("onCNGetDisposableToken error "+e+"\n");
                     }
 
                     @Override
@@ -122,6 +109,7 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
     @Override
     public void onCNAddChkInfo(ChooseDeviceItemData chooseDeviceItemData) {
+        generateLogger.generateLogTxt("onCNAddChkInfo start "+"\n");
         String authorizedId ="b654a8cb-d874-4ad1-beef-174fc0013f99";
         AddChkInfoRequest mAddChkInfoRequest=new AddChkInfoRequest(authorizedId,
                 chooseDeviceItemData.getCO(),
@@ -144,13 +132,13 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
                     @Override
                     public void onNext(AddChkInfoResponse addChkInfoResponse) {
-                        generateLogTxt("Presenter 打API成功"+"\n");
+                        generateLogger.generateLogTxt("onCNAddChkInfo Presenter 打API成功"+"\n");
                         // generateLogTxt("Presenter 打API成功:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        generateLogTxt("Presenter 打API失敗:"+"\n");
+                        generateLogger.generateLogTxt("onCNAddChkInfo Presenter 打API失敗:"+"\n");
                         //generateLogTxt("Presenter 打API失敗:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
                         onAddChkInfo(chooseDeviceItemData);
                     }
@@ -165,6 +153,7 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
     @Override
     public void onCNAddEndChkInfo(ChooseDeviceItemData chooseDeviceItemData) {
+        generateLogger.generateLogTxt("onCNAddEndChkInfo start "+"\n");
         String authorizedId ="b654a8cb-d874-4ad1-beef-174fc0013f99";
         AddChkInfoRequest mAddChkInfoRequest=new AddChkInfoRequest(authorizedId,
                 chooseDeviceItemData.getCO(),
@@ -187,10 +176,13 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
                     @Override
                     public void onNext(AddChkInfoResponse addChkInfoResponse) {
+                        generateLogger.generateLogTxt("onCNAddEndChkInfo next "+"\n");
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(Throwable e)
+                    {
+                        generateLogger.generateLogTxt("onCNAddEndChkInfo error "+e+"\n");
                         onAddEndChkInfo(chooseDeviceItemData);
                     }
 
@@ -204,6 +196,7 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
     @Override
     public void onCNGetEQKDDataNoImg(String account, String CO, String PMFCT, String EQKD, Intent data, Integer nowInList, Integer urlNow, Integer pickWhat) {
+        generateLogger.generateLogTxt("onCNGetEQKDDataNoImg start "+"\n");
         getView().showProgressDialog(R.string.loading);
         EQKDRequest mEQKDRequest = new EQKDRequest(KEY_CN_SEARCH_EQKD, account, CO, PMFCT);
         String url = getView().getResourceString(R.string.api_on_getEQKD);
@@ -214,11 +207,11 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
                     @Override
                     public void onNext(EQKDResultList mEQKDResultList) {
-                        generateLogTxt("GetEQKDData onNext"+"\n");
+                        generateLogger.generateLogTxt("CNGetEQKDData onNext"+"\n");
                         String EQKDNM="";
                         if (mEQKDResultList.getmEQKDResponseList().size() < 1) {
                             //getView().showDialogCaveatMessage(getView().getResourceString(R.string.get_eqkd_error_no_data));
-                            generateLogTxt("GetEQKDData onNext 但回傳無資料 "+"\n");
+                            generateLogger.generateLogTxt("CNGetEQKDData onNext 但回傳無資料 "+"\n");
                             getView().onSetEQKDdataNoTalk("",data,nowInList,urlNow,pickWhat);
                         }else{
                             for(EQKDResponse mEQKDResponse:mEQKDResultList.getmEQKDResponseList()){
@@ -227,10 +220,10 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                                 }
                             }
                             if("".equals(EQKDNM)){
-                                generateLogTxt("GetEQKDData onNext資料 :"+EQKDNM+"\n");
+                                generateLogger.generateLogTxt("CNGetEQKDData onNext資料 :EQKDNM=' ' "+"\n");
                                 getView().onSetEQKDdataNoTalk(EQKDNM,data,nowInList,urlNow,pickWhat);
                             }else{
-                                generateLogTxt("GetEQKDData onNext資料 :"+EQKDNM+"\n");
+                                generateLogger.generateLogTxt("CNGetEQKDData onNext資料 :"+EQKDNM+"\n");
                                 getView().onSetEQKDdataNoTalk(EQKDNM,data,nowInList,urlNow,pickWhat);
                             }
                         }
@@ -238,7 +231,7 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
                     @Override
                     public void onError(Throwable e) {
-                        generateLogTxt("GetEQKDData Internnet失敗"+e+"\n");
+                        generateLogger.generateLogTxt("GetCNEQKDData Internnet失敗"+e+"\n");
                         getView().onSetEQKDdataNoTalk("Internnet",data,nowInList,urlNow,pickWhat);
                     }
 
@@ -252,6 +245,7 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
     @Override
     public void onAddChkInfo(final ChooseDeviceItemData mChooseDeviceItemData) {
+        generateLogger.generateLogTxt("onAddChkInfo start "+"\n");
         String authorizedId ="e1569364-6066-48af-8f47-8f11bb4916dd";
         AddChkInfoRequest mAddChkInfoRequest=new AddChkInfoRequest(authorizedId,
                 mChooseDeviceItemData.getCO(),
@@ -274,13 +268,13 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
                     @Override
                     public void onNext(AddChkInfoResponse addChkInfoResponse) {
-                        generateLogTxt("Presenter 打API成功"+"\n");
+                        generateLogger.generateLogTxt("onAddChkInfo Presenter 打API成功"+"\n");
                        // generateLogTxt("Presenter 打API成功:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        generateLogTxt("Presenter 打API失敗:"+"\n");
+                        generateLogger.generateLogTxt("onAddChkInfo Presenter 打API失敗:"+e+"\n");
                         //generateLogTxt("Presenter 打API失敗:"+mChooseDeviceItemData.getEQNO()+mChooseDeviceItemData.getEQNM()+"API，時間為"+dateFormat.format(Calendar.getInstance().getTime())+"\n");
                         onAddChkInfo(mChooseDeviceItemData);
                     }
@@ -295,6 +289,7 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
     @Override
     public void onAddEndChkInfo(final ChooseDeviceItemData mChooseDeviceItemData) {
+        generateLogger.generateLogTxt("onAddEndChkInfo start "+"\n");
         String authorizedId ="e1569364-6066-48af-8f47-8f11bb4916dd";
         AddChkInfoRequest mAddChkInfoRequest=new AddChkInfoRequest(authorizedId,
                 mChooseDeviceItemData.getCO(),
@@ -317,10 +312,12 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
 
                     @Override
                     public void onNext(AddChkInfoResponse addChkInfoResponse) {
+                        generateLogger.generateLogTxt("onAddEndChkInfo next "+"\n");
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        generateLogger.generateLogTxt("onAddEndChkInfo error "+e+"\n");
                         onAddEndChkInfo(mChooseDeviceItemData);
                     }
 
@@ -335,6 +332,7 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
     @Override
     public void onGetEQKDDataNoImg(String account, String CO, String PMFCT, final String EQKD, final Intent data, final Integer nowInList, final Integer urlNow,final Integer pickWhat) {
         //  getView().showProgressDialog("讀取中");
+        generateLogger.generateLogTxt("onGetEQKDDataNoImg start "+"\n");
         EQKDRequest mEQKDRequest = new EQKDRequest(KEY_SEARCH_EQKD, account, CO, PMFCT);
         String url = getView().getResourceString(R.string.api_on_getEQKD);
         getCompositeDisposable().add(getApiService().getEQKD(url, mEQKDRequest)
@@ -345,11 +343,11 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                     @Override
                     public void onNext(EQKDResultList mEQKDResultList) {
                         //   getView().dismissProgressDialog();
-                        generateLogTxt("GetEQKDData onNext"+"\n");
+                        generateLogger.generateLogTxt("GetEQKDData onNext"+"\n");
                         String EQKDNM="";
                         if (mEQKDResultList.getmEQKDResponseList().size() < 1) {
                             //getView().showDialogCaveatMessage(getView().getResourceString(R.string.get_eqkd_error_no_data));
-                            generateLogTxt("GetEQKDData onNext 但回傳無資料 "+"\n");
+                            generateLogger.generateLogTxt("GetEQKDData onNext 但回傳無資料 "+"\n");
                             getView().onSetEQKDdataNoTalk("",data,nowInList,urlNow,pickWhat);
                         }else{
                             for(EQKDResponse mEQKDResponse:mEQKDResultList.getmEQKDResponseList()){
@@ -358,10 +356,10 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                                 }
                             }
                             if("".equals(EQKDNM)){
-                                generateLogTxt("GetEQKDData onNext資料 :"+EQKDNM+"\n");
+                                generateLogger.generateLogTxt("GetEQKDData onNext資料 :EQKDNM= ' ' "+"\n");
                                 getView().onSetEQKDdataNoTalk(EQKDNM,data,nowInList,urlNow,pickWhat);
                             }else{
-                                generateLogTxt("GetEQKDData onNext資料 :"+EQKDNM+"\n");
+                                generateLogger.generateLogTxt("GetEQKDData onNext資料 :"+EQKDNM+"\n");
                                 getView().onSetEQKDdataNoTalk(EQKDNM,data,nowInList,urlNow,pickWhat);
                             }
                         }
@@ -370,7 +368,7 @@ public class MainPresenter<V extends MainContract.View> extends BasePresenter<V>
                     @Override
                     public void onError(Throwable e) {
                         // getView().dismissProgressDialog();
-                        generateLogTxt("GetEQKDData Internnet失敗"+e+"\n");
+                        generateLogger.generateLogTxt("GetEQKDData Internnet失敗"+e+"\n");
                         getView().onSetEQKDdataNoTalk("Internnet",data,nowInList,urlNow,pickWhat);
                         //  getView().showDialogCaveatMessage(getView().getResourceString(R.string.add_device_error));
 

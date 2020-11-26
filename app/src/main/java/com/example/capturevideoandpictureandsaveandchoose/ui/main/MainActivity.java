@@ -233,10 +233,12 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         );
         if (cursor == null) {
             showDialogCaveatMessage(getResourceString(R.string.get_inspection_data_error_message));
+            generateLogger.generateLogTxt("showDialogCaveatMessage"+"\n");
         } else {
             while (cursor.moveToNext()) {
                 try {
                     String WAYID = cursor.getString(cursor.getColumnIndexOrThrow("WAYID"));
+                    generateLogger.generateLogTxt("WAYID"+WAYID+"\n");
                     String EQNO = cursor.getString(cursor.getColumnIndexOrThrow("EQNO"));
                     ChooseDeviceItemData mChooseDeviceItemData = new ChooseDeviceItemData();
                     mChooseDeviceItemData.setOPCO(cursor.getString(cursor.getColumnIndexOrThrow("OPCO")));
@@ -260,6 +262,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
                     mChooseDeviceItemData.setUploadEMP(account);
                     mChooseDeviceItemData.setChcekDataFromAPP(true);
                     deviceDataList.add(mChooseDeviceItemData);
+                    generateLogger.generateLogTxt("deviceDataList : "+mChooseDeviceItemData.getCO()+"\n");
                     if (mChooseDeviceItemData.getProgress() == 100) {
                         deviceonLeaveTheRoute++;
                     }
@@ -275,11 +278,21 @@ public class MainActivity extends BaseActivity implements MainContract.View {
             }
             Log.e("rrrrrr","deviceonLeaveTheRoute:"+deviceonLeaveTheRoute);
             // Log.e("rrrrrr",deviceDataList.get(6).getEQNO()+" "+deviceDataList.get(6).getEQNM());
-
-
-            if (deviceDataList.get(deviceDataList.size() - 1).getProgress() == 100) {
-                deviceonLeaveTheRoute = deviceDataList.size() - 1;
+            generateLogger.generateLogTxt("deviceDataList.size()"+deviceDataList.size()+"\n");
+            try {
+                if (deviceDataList.size()>0){
+                    if (deviceDataList.get(deviceDataList.size() - 1).getProgress() == 100) {
+                        deviceonLeaveTheRoute = deviceDataList.size() - 1;
+                    }
+                }
+            } catch(IndexOutOfBoundsException e) {
+                generateLogger.generateLogTxt("deviceDataList IndexOutOfBoundsException exception :"+e+deviceDataList.size());
             }
+            catch (Exception e){
+                generateLogger.generateLogTxt("deviceDataList Exception exception :"+e+deviceDataList.size());
+            }
+
+
             try {
                 fetchDeviceMsg = "筆數:" + deviceDataList.size() + "首筆資料:{CO:" + deviceDataList.get(0).getCO() +
                         ",CONM:" + deviceDataList.get(0).getCONM() +

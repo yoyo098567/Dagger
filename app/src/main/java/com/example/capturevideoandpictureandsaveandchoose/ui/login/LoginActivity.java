@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -89,12 +90,15 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
         if(loginStatus == 1){
             if(onCheckUserisEmpty()){
                 account=loginData.getAccount();
-                if (account.substring(0,2).contains("PP")){
+                if ((account.substring(0,2).contains("PP")) || (account.substring(0,2).contains("pp"))){
                     loginPreferencesProvider.setPersonId(0);
                     mPresenter.onCNLogin(account,loginData.getPw());
-                }else if (account.substring(0,2).contains("N")){
+                }else if ((account.substring(0,2).contains("N")) || account.substring(0,2).contains("n")){
                     loginPreferencesProvider.setPersonId(1);
                     mPresenter.onLogin(account,loginData.getPw());
+                }
+                else {
+                    Toast.makeText(this, "請輸入正確帳密 台灣廠為n/N開頭 寧波廠為PP開頭", Toast.LENGTH_SHORT).show();
                 }
                 loginPreferencesProvider.setAccount(loginData.getAccount());
 

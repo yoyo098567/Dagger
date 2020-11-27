@@ -2,14 +2,17 @@ package com.example.capturevideoandpictureandsaveandchoose;
 
 
 import android.content.Context;
+import android.os.Environment;
 
 import androidx.multidex.MultiDex;
 
+import com.balsikandar.crashreporter.CrashReporter;
 import com.example.capturevideoandpictureandsaveandchoose.di.component.BaseComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.component.DaggerBaseComponent;
 import com.example.capturevideoandpictureandsaveandchoose.di.module.APIModule;
 import com.example.capturevideoandpictureandsaveandchoose.di.module.ApplicationModule;
 
+import java.io.File;
 
 
 /**
@@ -39,6 +42,8 @@ public class Application extends android.app.Application {
                 .aPIModule(new APIModule())
                 .build();
         mApplicationComponent.inject(this);
+        String crashReporterPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "capturevideoandpictureandsaveandchoose";
+        CrashReporter.initialize(this, crashReporterPath);
 
     }
 

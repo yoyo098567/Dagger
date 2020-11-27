@@ -169,6 +169,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
 
             autoLogin();
             generateLogger.generateLogTxt("onCreate 打開Service : "+dateFormat.format(Calendar.getInstance().getTime())+"\n");
+            //開service 沒資料不能開
             onStartTeleportService();
         } else {
             NonHandler = new Handler();
@@ -206,8 +207,10 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     //訊息擷取
     private void fetchDevice() {
         generateLogger.generateLogTxt("設備擷取 停止Service"+"\n");
+        //關Service (要小心)
         onstopTeleportService();
         deviceonLeaveTheRoute=0;
+        //自動登入
         autoLogin();
 
         if (fetchDeviceMsg.equals("")) {
@@ -216,6 +219,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
             showDialogMessage(fetchDeviceMsg);
         }
         generateLogger.generateLogTxt("設備擷取 打開Service"+"\n");
+        //開service 沒資料不要開
         onStartTeleportService();
         currentDataCount = 0;
     }
@@ -223,6 +227,8 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     private void autoLogin() {
         generateLogger.generateLogTxt("autoLogin start "+"\n");
         deviceDataList.clear();
+
+        //找資料 (拆出來)
         String CONTENT_STRING = "content://tw.com.efpg.processe_equip.provider.ShareCloud/ShareCloud";
         Uri uri = Uri.parse(CONTENT_STRING);
         Cursor cursor = this.getContentResolver().query(
@@ -1019,6 +1025,8 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+    //資料擷取
     @Override
     public void OnFetchDeviceClick() {
         fetchDevice();
